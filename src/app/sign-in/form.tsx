@@ -5,7 +5,7 @@ import { Label } from '@/components/ui/label'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Icons } from '@/components/ui/icons'
 import { Card, CardContent } from '@/components/ui/card'
-import { useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import Logo2 from '@/images/logo-2.png'
 import Image from 'next/image'
 import { useAuth } from '@/core/auth/hooks'
@@ -16,9 +16,14 @@ import { useGoogleLogin } from '@react-oauth/google'
 import toast from 'react-hot-toast'
 import { motion } from 'framer-motion'
 import { Spotlight } from '@/components/homepage/Spotlight'
+import ResendEmailVerifyDialog from './dialog'
 
 export default function SignInForm() {
-  const { signIn, isSigningIn, isRememberMe, setIsRememberMe } = useAuth()
+  const [isDialogResendEmailOpen, setIsDialogResendEmailOpen] = useState(false)
+  const [enableResend, setEnableResend] = useState(false)
+  const [emailLogin, setEmailLogin] = useState('')
+  const { signIn, isSigningIn, isRememberMe, setIsRememberMe, resendVerifyEmail } = useAuth()
+  const { isSending, isSuccess } = resendVerifyEmail(emailLogin, enableResend)
   const formRef = useRef<HTMLFormElement>(null)
   const router = useRouter()
   if (isSigningIn) router.push('/dashboard')
@@ -33,6 +38,14 @@ export default function SignInForm() {
       toast.error('An error occurred. Please try again later.')
     }
   })
+
+  useEffect(() => {
+    if (isSuccess) {
+      setIsDialogResendEmailOpen(false)
+      setEmailLogin('')
+      setEnableResend(false)
+    }
+  }, [isSuccess])
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -115,6 +128,7 @@ export default function SignInForm() {
                   formFieldBody={signInFormBody}
                   formSchema={signInSchema}
                   onSubmit={(value) => {
+                    setEmailLogin(value.email)
                     signIn(value)
                   }}
                   submitRef={formRef}
@@ -176,6 +190,30 @@ export default function SignInForm() {
                     Sign in with GitHub
                   </Button>
                 </div>
+                <div className='relative mt-6'>
+                  <div className='absolute flex items-center'>
+                    <span className='w-full border-t border-muted-foreground/30' />
+                  </div>
+                  <div className='relative flex justify-center text-xs uppercase'>
+                    <span
+                      className='mb-2 px-2 text-muted-foreground'
+                      style={{ userSelect: 'none' }}
+                      onClick={() => setIsDialogResendEmailOpen(true)}
+                    >
+                      resend email verify account
+                    </span>
+                  </div>
+                </div>
+                <ResendEmailVerifyDialog
+                  email={emailLogin}
+                  handle={(email: string) => {
+                    setEmailLogin(email)
+                    setEnableResend(true)
+                  }}
+                  isOpen={isDialogResendEmailOpen}
+                  setIsOpen={setIsDialogResendEmailOpen}
+                  isResending={isSending}
+                />
               </motion.div>
             </CardContent>
           </Card>
