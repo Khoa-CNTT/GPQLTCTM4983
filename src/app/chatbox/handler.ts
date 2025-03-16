@@ -57,7 +57,7 @@ export const handleSend = async ({
   setTimeout(scrollToBottom, 100)
 
   try {
-    const response = await fetch('https://bot.uniko.id.vn/chat', {
+    const response = await fetch('http://localhost:3003/chat', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

@@ -22,6 +22,7 @@ import { ETypeOfTrackerTransactionType } from '@/core/tracker-transaction-type/m
 import { GET_ADVANCED_ACCOUNT_SOURCE_KEY } from '@/core/account-source/constants'
 import { ICreateTrackerTransactionBody, IGetTransactionResponse } from '@/core/transaction/models'
 import { useExpenditureFund } from '@/core/expenditure-fund/hooks'
+import Robot from '@/images/robot.gif'
 import { useUpdateModel } from '@/hooks/useQueryModel'
 import {
   GET_ADVANCED_TRANSACTION_KEY,
@@ -88,11 +89,11 @@ export function ChatBox() {
   const { getAllTrackerTransactionType, createTrackerTxType, updateTrackerTxType } = useTrackerTransactionType()
   const { dataTrackerTransactionType, refetchTrackerTransactionType } = getAllTrackerTransactionType(fundId)
   const { getAllAccountSource } = useAccountSource()
-  const { getAllData: getAllAccountSourceData } = getAllAccountSource(fundId)
+  // const { getAllAccountSourceData } = getAllAccountSource(fundId)
   const { getAllExpenditureFund } = useExpenditureFund()
   const { getAllExpenditureFundData } = getAllExpenditureFund()
   const [typesState, setTypesState] = useState<Record<string, ETypeOfTrackerTransactionType>>({})
-  const { resetData: resetAccountSource } = useUpdateModel([GET_ADVANCED_ACCOUNT_SOURCE_KEY], () => {})
+  const { resetData: resetAccountSource } = useUpdateModel([GET_ADVANCED_ACCOUNT_SOURCE_KEY], () => { })
   const { resetData: resetCacheTransaction } = useUpdateModel<IGetTransactionResponse>(
     [GET_ADVANCED_TRANSACTION_KEY],
     updateCacheDataTransactionForClassify
@@ -108,15 +109,15 @@ export function ChatBox() {
   })
   const { resetData: resetCacheTodayTxs } = useUpdateModel(
     [GET_TODAY_TRANSACTION_KEY, mergeQueryParams(initQueryOptions)],
-    () => {}
+    () => { }
   )
-  const { resetData: resetCacheUnclassifiedTxs } = useUpdateModel([GET_UNCLASSIFIED_TRANSACTION_KEY], () => {})
+  const { resetData: resetCacheUnclassifiedTxs } = useUpdateModel([GET_UNCLASSIFIED_TRANSACTION_KEY], () => { })
   const { resetData: resetCacheStatisticExpenditureFund } = useUpdateModel(
     [GET_STATISTIC_EXPENDITURE_FUND_KEY],
-    () => {}
+    () => { }
   )
 
-  const { resetData: resetCacheExpenditureFund } = useUpdateModel([GET_ADVANCED_EXPENDITURE_FUND_KEY], () => {})
+  const { resetData: resetCacheExpenditureFund } = useUpdateModel([GET_ADVANCED_EXPENDITURE_FUND_KEY], () => { })
   const actionMap: Partial<Record<TTrackerTransactionActions, () => void>> = {
     getTransactions: resetCacheTransaction,
     getTodayTransactions: resetCacheTodayTxs,
@@ -357,9 +358,8 @@ export function ChatBox() {
                       className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'} mb-3`}
                     >
                       <div
-                        className={`relative flex ${
-                          message.sender === 'user' ? 'flex-row-reverse' : 'flex-row'
-                        } items-end gap-2`}
+                        className={`relative flex ${message.sender === 'user' ? 'flex-row-reverse' : 'flex-row'
+                          } items-end gap-2`}
                       >
                         {/* Avatar */}
                         <Avatar className='h-8 w-8'>
@@ -377,7 +377,11 @@ export function ChatBox() {
                               <AvatarImage src='/user-avatar.png' alt='User' />
                             )
                           ) : (
-                            <AvatarImage src={AvatarUniko.src} alt='Uniko' />
+                            <AvatarImage
+                              src={Robot.src}
+                              alt='Uniko'
+                              className='bg-transparent scale-x-[-1]'
+                            />
                           )}
                           <AvatarFallback>
                             {message.sender === 'user' ? user?.fullName?.charAt(0) || 'U' : 'UN'}
@@ -388,11 +392,10 @@ export function ChatBox() {
                             initial={{ height: 0, opacity: 0 }}
                             animate={{ height: 'auto', opacity: 1 }}
                             transition={{ duration: 0.2 }}
-                            className={`overflow-hidden rounded-md px-3 py-2 text-sm ${
-                              message.sender === 'user'
-                                ? 'bg-primary text-white'
-                                : 'bg-slate-200 text-slate-800 dark:bg-slate-700 dark:text-slate-200'
-                            }`}
+                            className={`overflow-hidden rounded-md px-3 py-2 text-sm ${message.sender === 'user'
+                              ? 'bg-primary text-white'
+                              : 'bg-slate-200 text-slate-800 dark:bg-slate-700 dark:text-slate-200'
+                              }`}
                           >
                             <motion.div
                               initial={{ opacity: 0 }}
@@ -409,9 +412,8 @@ export function ChatBox() {
                                   className='overflow-hidden whitespace-nowrap'
                                 >
                                   <span
-                                    className={`text-sm font-medium ${
-                                      message.sender === 'user' ? 'text-white/90' : 'text-slate-700 dark:text-slate-200'
-                                    } `}
+                                    className={`text-sm font-medium ${message.sender === 'user' ? 'text-white/90' : 'text-slate-700 dark:text-slate-200'
+                                      } `}
                                   >
                                     Đợi tui chút
                                   </span>
@@ -421,9 +423,8 @@ export function ChatBox() {
                                   {Array.from({ length: 3 }).map((_, index) => (
                                     <motion.div
                                       key={index}
-                                      className={`h-1.5 w-1.5 rounded-full ${
-                                        message.sender === 'user' ? 'bg-white/80' : 'bg-slate-600 dark:bg-slate-300'
-                                      } `}
+                                      className={`h-1.5 w-1.5 rounded-full ${message.sender === 'user' ? 'bg-white/80' : 'bg-slate-600 dark:bg-slate-300'
+                                        } `}
                                       animate={{
                                         scale: [0.6, 1, 0.6],
                                         opacity: [0.3, 1, 0.3]
@@ -449,11 +450,10 @@ export function ChatBox() {
                             initial={{ height: 0, opacity: 0 }}
                             animate={{ height: 'auto', opacity: 1 }}
                             transition={{ duration: 0.2 }}
-                            className={`max-w-[70%] overflow-hidden rounded-md px-3 py-2 text-sm ${
-                              message.sender === 'user'
-                                ? 'bg-primary text-white'
-                                : 'bg-slate-200 text-slate-800 dark:bg-slate-700 dark:text-slate-200'
-                            }`}
+                            className={`max-w-[70%] overflow-hidden rounded-md px-3 py-2 text-sm ${message.sender === 'user'
+                              ? 'bg-primary text-white'
+                              : 'bg-slate-200 text-slate-800 dark:bg-slate-700 dark:text-slate-200'
+                              }`}
                           >
                             <motion.div
                               initial={{ opacity: 0 }}
@@ -595,11 +595,20 @@ export function ChatBox() {
             transition={{ type: 'spring', stiffness: 300, damping: 25 }}
           >
             <Button
-              className='h-12 w-12 rounded-full bg-primary/90 shadow-lg hover:bg-primary dark:bg-primary'
+              className='h-16 w-16 rounded-full p-0 shadow-lg bg-transparent hover:bg-white/5 backdrop-blur-[2px] border border-white/10 dark:border-slate-700/30'
               size='icon'
               onClick={() => setIsOpen(true)}
             >
-              <MessageCircle className='h-5 w-5' />
+              <div className="relative w-full h-full p-1.5 overflow-hidden rounded-full">
+                <Image
+                  src={Robot}
+                  alt="Robot assistant"
+                  width={48}
+                  height={48}
+                  className="h-full w-full object-contain animate-bounce-slow drop-shadow-[0_0_5px_rgba(255,255,255,0.5)]"
+                  priority
+                />
+              </div>
             </Button>
           </motion.div>
         )}
@@ -651,7 +660,7 @@ export function ChatBox() {
                         incomeTrackerType={incomingTrackerType}
                         expenseTrackerType={expenseTrackerType}
                         trackerType={trackerType}
-                        accountSources={getAllAccountSourceData?.data || []}
+                        accountSources={[]}
                         transaction={transaction}
                       />
                     ) : (
