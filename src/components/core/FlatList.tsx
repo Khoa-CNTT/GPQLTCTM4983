@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card'
@@ -26,12 +26,28 @@ interface IFlatListProps {
   onClick?: (item: IFlatListData) => void
   isLoading?: boolean
   className?: string
-  checkHeightRange?: boolean
+  viewportHeight?: number
 }
 
-export default function FlatList({ data, onClick, isLoading, className, checkHeightRange }: IFlatListProps) {
+export default function FlatList({ data, onClick, isLoading, className, viewportHeight }: IFlatListProps) {
+  const [heightFlatList, setHeightFlatList] = useState('')
+  useEffect(() => {
+    if (viewportHeight && viewportHeight >= 600 && viewportHeight <= 771) {
+      setHeightFlatList('py-4 min-h-[166px] max-h-[200px]')
+    } else if (viewportHeight && viewportHeight >= 1000) {
+      setHeightFlatList('py-4 min-h-[300px] max-h-[400px]')
+    } else if (viewportHeight && viewportHeight >= 926) {
+      setHeightFlatList('py-4 min-h-[250px] max-h-[400px]')
+    } else if (viewportHeight && viewportHeight >= 800) {
+      setHeightFlatList('py-4 min-h-[208px] max-h-[400px]')
+    } else if (viewportHeight && viewportHeight >= 772) {
+      setHeightFlatList('py-4 min-h-[200px] max-h-[400px]')
+    } else {
+      setHeightFlatList('py-10 min-h-[168px] max-h-[200px]')
+    }
+  }, [viewportHeight])
   return (
-    <Card className='h-full w-full to-muted/20'>
+    <Card className='h-full w-50px to-muted/20'>
       {data?.length > 0 ? (
         <ScrollArea className={cn('h-[220px] max-h-[220px] w-full rounded-md p-3', className)}>
           {data.map((item) => (
@@ -109,7 +125,7 @@ export default function FlatList({ data, onClick, isLoading, className, checkHei
           </motion.span>
         </motion.div>
       ) : (
-        <div className={`flex  flex-col items-center justify-center  ${checkHeightRange ? 'py-4 h-[168px]' : 'py-10 h-[200px]'}`}>
+        <div className={`flex  flex-col items-center justify-center  ${heightFlatList}`}>
           <div className='relative'>
             <Image
               priority
