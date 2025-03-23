@@ -5,6 +5,7 @@ import { KNamespace, KPrefix } from '@/types/i18n'
 import { type ClassValue, clsx } from 'clsx'
 import i18next, { Namespace, TFunction, TOptions } from 'i18next'
 import { twMerge } from 'tailwind-merge'
+import { DateRange } from 'react-day-picker'
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -123,6 +124,18 @@ export const getCurrentWeekRange = () => {
   }
 }
 
+export const getCurrentMonthRange = (): DateRange => {
+  const today = new Date()
+  const year = today.getFullYear()
+  const month = today.getMonth()
+  const from = new Date(year, month, 1)
+  const to = new Date(year, month + 1, 0)
+  return {
+    from,
+    to
+  }
+}
+
 export function translate(Ns: Namespace): TFunction<Namespace, KPrefix>
 export function translate(Ns: Namespace, options?: TOptions<any>): string
 export function translate(Ns: KNamespace, options?: TOptions<any>): string | TFunction<Namespace, KPrefix> {
@@ -146,3 +159,15 @@ export function getTranslatedFormBody(formBody: IBodyFormField[], t: Function): 
     }))
   }))
 }
+
+export const generateMonths = () => {
+  const months = [];
+  const today = new Date();
+  // Start from 6 months ago
+  for (let i = -6; i <= 6; i++) {
+      const month = new Date(today.getFullYear(), today.getMonth() + i, 1);
+      const monthStr = `${month.getMonth() + 1}-${month.getFullYear()}`;
+      months.push(monthStr);
+  }
+  return months;
+};

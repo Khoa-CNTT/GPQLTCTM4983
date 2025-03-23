@@ -20,6 +20,12 @@ export const navItems: NavItem[] = [
     label: 'Expenditure Fund'
   },
   {
+    title: "Planning & Budgeting",
+    href: "/dashboard/spending-plan",
+    icon: "newspaper",
+    label: "Planning & Budgeting",
+  },
+  {
     title: 'Transaction',
     href: '/dashboard/transaction',
     icon: 'shoppingCart',
