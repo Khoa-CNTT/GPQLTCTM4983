@@ -38,15 +38,58 @@ export default function CreateTrackerTransactionForm({
   handleCreate,
   handleCreateTrackerType,
   handleUpdateTrackerType,
-  expenditureFund,
+  expenditureFund
 }: ICreateTrackerTransactionFormProps) {
-  
   const [currentDirection, setCurrentDirection] = useState<ETypeOfTrackerTransactionType>(
     ETypeOfTrackerTransactionType.INCOMING
   )
   const [typeOfEditTrackerType, setTypeOfEditTrackerType] = useState<ETypeOfTrackerTransactionType>(
     ETypeOfTrackerTransactionType.INCOMING
   )
+
+  // Thêm state để lưu trữ trackerTypeId cho mỗi direction
+  const [directionCategoryMap, setDirectionCategoryMap] = useState<Record<ETypeOfTrackerTransactionType, string>>({
+    [ETypeOfTrackerTransactionType.INCOMING]: '',
+    [ETypeOfTrackerTransactionType.EXPENSE]: ''
+  })
+
+  // Handler để cập nhật trackerTypeId khi direction thay đổi
+  const handleDirectionChange = (value: ETypeOfTrackerTransactionType) => {
+    // Lưu lại direction cũ để sau này có thể khôi phục giá trị
+    const oldDirection = currentDirection
+    // Cập nhật direction mới
+    setCurrentDirection(value)
+
+    // Reset form để cập nhật giá trị mặc định cho các trường
+    const currentForm = formCreateRef.current
+    if (currentForm && typeof currentForm.getValues === 'function') {
+      // Lấy dữ liệu hiện tại của form
+      const formValues = currentForm.getValues()
+
+      // Cập nhật directionCategoryMap với category hiện tại
+      if (formValues.trackerTypeId) {
+        setDirectionCategoryMap((prev) => ({
+          ...prev,
+          [oldDirection]: formValues.trackerTypeId
+        }))
+      }
+
+      // Cập nhật form với giá trị category đã lưu cho direction mới (nếu có)
+      setTimeout(() => {
+        if (currentForm && typeof currentForm.setValue === 'function') {
+          currentForm.setValue('trackerTypeId', directionCategoryMap[value] || '')
+        }
+      }, 0)
+    }
+  }
+
+  // Handler để cập nhật trackerTypeId trong state khi người dùng chọn category
+  const handleCategoryChange = (value: string) => {
+    setDirectionCategoryMap((prev) => ({
+      ...prev,
+      [currentDirection]: value
+    }))
+  }
 
   useEffect(() => {
     setTypeOfEditTrackerType(currentDirection)
@@ -60,14 +103,16 @@ export default function CreateTrackerTransactionForm({
         incomeTrackerType,
         expenseTrackerType,
         currentDirection,
-        setCurrentDirection,
+        setCurrentDirection: handleDirectionChange,
         setOpenEditTrackerTxTypeDialog,
         openEditTrackerTxTypeDialog,
         typeOfEditTrackerType,
         setTypeOfEditTrackerType,
         handleCreateTrackerType,
         handleUpdateTrackerType,
-        expenditureFund
+        expenditureFund,
+        directionCategoryMap,
+        onCategoryChange: handleCategoryChange
       })}
       onSubmit={(data: any) => {
         const payload = { ...data, amount: Number(data.amount) }

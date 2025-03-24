@@ -18,6 +18,8 @@ export const defineCreateTrackerTransactionFormBody = ({
   handleCreateTrackerType,
   handleUpdateTrackerType,
   expenditureFund,
+  directionCategoryMap,
+  onCategoryChange,
   isPending
 }: any) => {
   const t = translate(['trackerTransaction'])
@@ -60,6 +62,7 @@ export const defineCreateTrackerTransactionFormBody = ({
       props: {
         autoComplete: 'direction',
         onchange: (value: any) => {
+          const previousDirection = currentDirection
           setCurrentDirection(value as ETypeOfTrackerTransactionType)
         }
       },
@@ -85,6 +88,12 @@ export const defineCreateTrackerTransactionFormBody = ({
         dataArr: modifiedTrackerTypeForComboBox(
           currentDirection === ETypeOfTrackerTransactionType.INCOMING ? incomeTrackerType : expenseTrackerType
         ),
+        onValueChange: (value: string) => {
+          if (onCategoryChange) {
+            onCategoryChange(value)
+          }
+        },
+        value: directionCategoryMap?.[currentDirection] || '',
         dialogEdit: EditTrackerTypeDialog({
           openEditDialog: openEditTrackerTxTypeDialog,
           setOpenEditDialog: setOpenEditTrackerTxTypeDialog,

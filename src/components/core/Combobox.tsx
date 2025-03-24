@@ -39,8 +39,15 @@ export const Combobox = forwardRef<HTMLButtonElement, IComboboxProps>(
   ) => {
     const [open, setOpen] = useState(false)
     const [searchValue, setSearchValue] = useState('')
+    const [internalValue, setInternalValue] = useState(controlledValue || '')
     const { viewportHeight } = useStoreLocal()
     const [scrollMaxHeight, setScrollMaxHeight] = useState('')
+
+    useEffect(() => {
+      if (controlledValue !== undefined) {
+        setInternalValue(controlledValue)
+      }
+    }, [controlledValue])
 
     const filteredDataArr = dataArr?.filter((data) =>
       data.label.toLowerCase().includes(searchValue.trim().toLowerCase())
@@ -48,6 +55,8 @@ export const Combobox = forwardRef<HTMLButtonElement, IComboboxProps>(
 
     const handleSelect = (currentValue: string) => {
       const newValue = currentValue
+
+      setInternalValue(newValue)
 
       if (onChange) {
         onChange(newValue)
@@ -63,7 +72,7 @@ export const Combobox = forwardRef<HTMLButtonElement, IComboboxProps>(
       if (viewportHeight <= 700) {
         setScrollMaxHeight('max-h-[200px] h-[200px]')
       }
-    }, [viewportHeight]);
+    }, [viewportHeight])
 
     return (
       <div className={cn(className)}>
@@ -82,8 +91,8 @@ export const Combobox = forwardRef<HTMLButtonElement, IComboboxProps>(
               ) : (
                 <>
                   <span className='ml-1 text-sm'>
-                    {controlledValue
-                      ? dataArr.find((data) => data.value === controlledValue)?.label
+                    {internalValue && dataArr && dataArr.length > 0
+                      ? dataArr.find((data) => data.value === internalValue)?.label
                       : `Select ${label ?? 'item'}`}
                   </span>
                   <ChevronsUpDown className='mr-1 h-3 w-3 shrink-0 opacity-50' />
@@ -106,7 +115,7 @@ export const Combobox = forwardRef<HTMLButtonElement, IComboboxProps>(
                         <div className='flex w-full justify-between'>
                           {data.label}
                           <Check
-                            className={cn('h-4 w-4', controlledValue === data.value ? 'opacity-100' : 'opacity-0')}
+                            className={cn('h-4 w-4', internalValue === data.value ? 'opacity-100' : 'opacity-0')}
                           />
                         </div>
                       </CommandItem>
