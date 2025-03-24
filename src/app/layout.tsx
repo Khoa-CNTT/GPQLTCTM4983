@@ -80,7 +80,7 @@ export default function RootLayout({
       <body className={cn('min-h-screen font-sans antialiased')}>
         <Toaster
           toastOptions={{
-            duration: 1000,
+            duration: 5000,
             style: {
               border: '1px solid #fff',
               padding: '16px',
