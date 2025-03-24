@@ -392,7 +392,7 @@ export default function SpendingPlanForm() {
                 {/* Category Statistics */}
                 <div className="md:col-span-2">
                     <Card className="shadow-sm hover:shadow-md transition-all duration-300">
-                        <CardHeader className="pb-3">
+                        <CardHeader className="pb-3 border-b border-slate-100 dark:border-slate-700">
                             <div className="flex items-center justify-between">
                                 <div className="flex items-center gap-2">
                                     <CardTitle>Thống kê theo danh mục</CardTitle>
@@ -407,62 +407,118 @@ export default function SpendingPlanForm() {
                                 </Button>
                             </div>
                         </CardHeader>
-                        <CardContent>
+                        <CardContent className="p-4">
                             <ScrollArea className="h-[280px] pr-4">
-                                <div className="space-y-3">
-                                    {mockCategoryStatistics.map((stat) => (
-                                        <div key={stat.category} className="group hover:bg-muted/30 p-2 rounded-md transition-colors">
-                                            <div className="flex items-center justify-between mb-1">
-                                                <div className="flex items-center">
-                                                    <div
-                                                        className={`w-3 h-3 rounded-full mr-2 ${stat.percentage > 100
-                                                            ? "bg-rose-500"
-                                                            : stat.percentage > 90
-                                                                ? "bg-amber-500"
-                                                                : "bg-emerald-500"
+                                <div className="space-y-4">
+                                    {mockCategoryStatistics.map((stat) => {
+                                        // Tìm budget tương ứng với danh mục
+                                        const budget = budgets.find(b => b.category === stat.category);
+                                        
+                                        const handleCategoryClick = () => {
+                                            if (budget) {
+                                                setSelectedBudget(budget);
+                                                setIsDialogOpen(prev => ({ ...prev, isDialogDetailBudgetOpen: true }));
+                                            }
+                                        };
+                                        
+                                        return (
+                                            <div key={stat.category} className="group hover:bg-muted/30 rounded-lg border border-muted p-3 transition-all duration-200">
+                                                {/* Header với tên danh mục và phần trăm */}
+                                                <div className="flex items-center justify-between mb-3">
+                                                    <div className="flex items-center">
+                                                        <div
+                                                            className={`w-3 h-3 rounded-full mr-2 ${
+                                                                stat.percentage > 100
+                                                                    ? "bg-rose-500"
+                                                                    : stat.percentage > 90
+                                                                        ? "bg-amber-500"
+                                                                        : "bg-emerald-500"
                                                             } group-hover:animate-pulse`}
-                                                    ></div>
-                                                    <span className="font-medium">{stat.category}</span>
-                                                </div>
-                                                <div className="text-sm">
-                                                    <span
-                                                        className={`font-medium ${stat.percentage > 100
-                                                            ? "text-rose-500"
-                                                            : stat.percentage > 90
-                                                                ? "text-amber-500"
-                                                                : "text-emerald-500"
+                                                        ></div>
+                                                        <span className="font-medium">{stat.category}</span>
+                                                    </div>
+                                                    <div className="text-sm">
+                                                        <span
+                                                            className={`font-medium px-2 py-0.5 rounded-full ${
+                                                                stat.percentage > 100
+                                                                    ? "bg-rose-100 text-rose-600 dark:bg-rose-900/20 dark:text-rose-400"
+                                                                    : stat.percentage > 90
+                                                                        ? "bg-amber-100 text-amber-600 dark:bg-amber-900/20 dark:text-amber-400"
+                                                                        : "bg-emerald-100 text-emerald-600 dark:bg-emerald-900/20 dark:text-emerald-400"
                                                             }`}
+                                                        >
+                                                            {stat.percentage}%
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                
+                                                {/* Khối chứa thanh tiến trình và các thông tin con số cùng hàng */}
+                                                <div className="flex items-center gap-3">
+                                                {/* Phần thanh tiến trình - thêm khả năng nhấp */}
+                                                    <div 
+                                                        className="w-[40%] relative h-3 rounded-full bg-gray-200 dark:bg-gray-700 overflow-hidden cursor-pointer hover:h-4 transition-all duration-200"
+                                                        onClick={handleCategoryClick}
                                                     >
-                                                        {stat.percentage}%
-                                                    </span>
+                                                        <div
+                                                            className={`absolute left-0 top-0 h-full rounded-full ${
+                                                                stat.percentage > 100
+                                                                    ? "bg-rose-500"
+                                                                    : stat.percentage > 90
+                                                                        ? "bg-amber-500"
+                                                                        : "bg-emerald-500"
+                                                            }`}
+                                                            style={{ width: `${Math.min(stat.percentage, 100)}%` }}
+                                                        ></div>
+                                                    </div>
+                                                    
+                                                    {/* Các khối thông tin đặt trên cùng hàng với thanh tiến trình */}
+                                                    <div className="w-[60%] flex space-x-3">
+                                                        {/* Đã chi */}
+                                                        <div 
+                                                            className="flex-1 flex items-center gap-1 cursor-pointer"
+                                                            onClick={handleCategoryClick}
+                                                        >
+                                                            <div className="h-6 w-6 rounded-full flex items-center justify-center bg-rose-100 dark:bg-rose-900/20">
+                                                                <Banknote className="h-3.5 w-3.5 text-rose-500" />
+                                                            </div>
+                                                            <div className="flex flex-col">
+                                                                <span className="text-[10px] text-muted-foreground">Đã chi</span>
+                                                                <span className="font-medium text-xs">{formatCurrency(stat.totalSpent)}</span>
+                                                            </div>
+                                                        </div>
+                                                        
+                                                        {/* Ngân sách */}
+                                                        <div 
+                                                            className="flex-1 flex items-center gap-1 cursor-pointer"
+                                                            onClick={handleCategoryClick}
+                                                        >
+                                                            <div className="h-6 w-6 rounded-full flex items-center justify-center bg-emerald-100 dark:bg-emerald-900/20">
+                                                                <PiggyBank className="h-3.5 w-3.5 text-emerald-500" />
+                                                            </div>
+                                                            <div className="flex flex-col">
+                                                                <span className="text-[10px] text-muted-foreground">Ngân sách</span>
+                                                                <span className="font-medium text-xs">{formatCurrency(stat.budgetAmount)}</span>
+                                                            </div>
+                                                        </div>
+                                                        
+                                                        {/* Giao dịch */}
+                                                        <div 
+                                                            className="flex-1 flex items-center gap-1 cursor-pointer"
+                                                            onClick={handleCategoryClick}
+                                                        >
+                                                            <div className="h-6 w-6 rounded-full flex items-center justify-center bg-indigo-100 dark:bg-indigo-900/20">
+                                                                <BadgeDollarSign className="h-3.5 w-3.5 text-indigo-500" />
+                                                            </div>
+                                                            <div className="flex flex-col">
+                                                                <span className="text-[10px] text-muted-foreground">Giao dịch</span>
+                                                                <span className="font-medium text-xs">{stat.transactions}</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
-
-                                            <div className="flex items-center justify-between mb-1 text-sm text-muted-foreground">
-                                                <span>{formatCurrency(stat.totalSpent)}</span>
-                                                <span>{formatCurrency(stat.budgetAmount)}</span>
-                                            </div>
-
-                                            <div className="relative h-2 w-full rounded-full bg-gray-200 overflow-hidden">
-                                                <div
-                                                    className={`absolute left-0 top-0 h-full rounded-full ${stat.percentage > 100
-                                                        ? "bg-rose-500"
-                                                        : stat.percentage > 90
-                                                            ? "bg-amber-500"
-                                                            : "bg-emerald-500"
-                                                        }`}
-                                                    style={{ width: `${Math.min(stat.percentage, 100)}%` }}
-                                                ></div>
-                                            </div>
-
-                                            <div className="mt-1 text-xs text-muted-foreground flex justify-end items-center">
-                                                <BadgeDollarSign className="h-3 w-3 mr-1" />
-                                                {stat.transactions} giao dịch
-                                            </div>
-
-                                            <Separator className="my-2" />
-                                        </div>
-                                    ))}
+                                        );
+                                    })}
                                 </div>
                             </ScrollArea>
                         </CardContent>
