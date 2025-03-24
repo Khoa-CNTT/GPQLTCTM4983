@@ -28,7 +28,7 @@ export const updateUserSchema = z
       .enum(['Male', 'Female'], {
         message: 'Gender must be either "Male" or "Female".'
       })
-      .optional(),
+      .nullable(),
 
     workplace: z
       .string()

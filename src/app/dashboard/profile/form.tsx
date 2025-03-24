@@ -124,7 +124,9 @@ export default function ProfileForm() {
                     submitRef={formUpdateRef}
                     formFieldBody={translatedUpdateUserFormBody}
                     formSchema={updateUserSchema}
-                    onSubmit={handleUpdateUser}
+                    onSubmit={(values) => {
+                      handleUpdateUser(Object.fromEntries(Object.entries(values).filter(([_, value]) => value != null)))
+                    }}
                   />
                 </CardContent>
                 <CardFooter className='flex px-0'>
