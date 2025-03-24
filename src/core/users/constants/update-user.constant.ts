@@ -6,27 +6,56 @@ export const updateUserSchema = z
     fullName: z
       .string()
       .trim()
-      .min(5)
-      .max(50)
-      .regex(/^[A-Za-zÀ-ỹ\s]+$/),
-    dateOfBirth: z
+      .transform((val) => (val === '' ? null : val))
+      .nullable()
+      .refine((val) => val === null || (val.length >= 5 && val.length <= 50), {
+        message: 'Full name must be between 5 and 50 characters long.'
+      })
+      .refine((val) => val === null || /^[A-Za-zÀ-ỹ\s]+$/.test(val), {
+        message: 'Full name can only contain letters and spaces.'
+      }),
+
+    dateOfBirth: z.coerce
       .date()
-      .refine((date) => date <= new Date())
-      .refine((date) => {
-        const age = new Date().getFullYear() - date.getFullYear()
-        return age >= 10
-      }, 'Date of birth must be at least 10 years old.'),
-    gender: z.enum(['Male', 'Female'], {
-      message: 'Gender must be either "Male" or "Female".'
-    }),
-    workplace: z.string().min(10).max(100),
+      .refine((date) => date <= new Date(), 'Date of birth cannot be in the future.')
+      .refine(
+        (date) => new Date().getFullYear() - date.getFullYear() >= 10,
+        'Date of birth must be at least 10 years old.'
+      )
+      .nullable(),
+
+    gender: z
+      .enum(['Male', 'Female'], {
+        message: 'Gender must be either "Male" or "Female".'
+      })
+      .optional(),
+
+    workplace: z
+      .string()
+      .trim()
+      .transform((val) => (val === '' ? null : val))
+      .nullable()
+      .refine((val) => val === null || (val.length >= 10 && val.length <= 100), {
+        message: 'Workplace must be between 10 and 100 characters long.'
+      }),
+
     phone_number: z
       .string()
       .trim()
-      .min(10, { message: 'Phone number must be at least 10 characters long.' })
-      .max(15, { message: 'Phone number must be at most 15 characters long.' })
-      .regex(/^(\+?\d{1,3})?\s?\d{9,15}$/, 'Invalid phone number'),
-    address: z.string().min(20).max(100)
+      .transform((val) => (val === '' ? null : val))
+      .nullable()
+      .refine((val) => val === null || /^(\+?\d{1,3})?\s?\d{9,15}$/.test(val), {
+        message: 'Invalid phone number format.'
+      }),
+
+    address: z
+      .string()
+      .trim()
+      .transform((val) => (val === '' ? null : val))
+      .nullable()
+      .refine((val) => val === null || (val.length >= 20 && val.length <= 100), {
+        message: 'Address must be between 20 and 100 characters long.'
+      })
   })
   .strict()
 
