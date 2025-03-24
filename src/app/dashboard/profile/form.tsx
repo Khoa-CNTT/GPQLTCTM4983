@@ -57,6 +57,14 @@ export default function ProfileForm() {
         onSuccess: (res: IBaseResponseData<IUser>) => {
           if (!isUpdating && (res.statusCode === 200 || res.statusCode === 201)) {
             setData(res.data)
+            setIsDefaultUser({
+              fullName: res.data.fullName,
+              dateOfBirth: res.data.dateOfBirth,
+              gender: res.data.gender,
+              workplace: res.data.workplace,
+              phone_number: res.data.phone_number,
+              address: res.data.address
+            })
             setUser(res.data)
             refetchAdvancedExpendingFund()
             refetchGetMeData()
