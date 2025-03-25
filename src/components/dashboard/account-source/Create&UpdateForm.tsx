@@ -30,16 +30,18 @@ export default function CreateAndUpdateAccountSourceForm({
   callBack,
   defaultValue,
   isCreating,
-  isUpdating
+  isUpdating,
+  typeState,
+  setTypeState
 }: {
   callBack: (payload: IAccountSourceBody) => void
   defaultValue?: IAccountSource
   isCreating: boolean
   isUpdating: boolean
+  typeState: EAccountSourceType
+  setTypeState: React.Dispatch<React.SetStateAction<EAccountSourceType>>
 }) {
-  const [typeState, setTypeState] = useState<EAccountSourceType>(EAccountSourceType.WALLET)
   const [defaultValueData, setDefaultValueData] = useState<IAccountSourceFormData>({
-
     accountBank: undefined,
     accountSource: { accountSourceName: '', accountSourceType: EAccountSourceType.WALLET, initAmount: '' }
   })
@@ -87,7 +89,6 @@ export default function CreateAndUpdateAccountSourceForm({
           initAmount: String(defaultValue.initAmount)
         }
       })
-      setTypeState(defaultValue?.type)
     }
   }, [defaultValue])
 

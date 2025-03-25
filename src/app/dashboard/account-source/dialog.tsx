@@ -2,9 +2,14 @@ import { initEmptyAccountSource } from '@/app/dashboard/account-source/constants
 import CreateAndUpdateAccountSourceForm from '@/components/dashboard/account-source/Create&UpdateForm'
 import DetailUpdateAccountSourceForm from '@/components/dashboard/account-source/DetailUpdateForm'
 import CustomDialog from '@/components/dashboard/Dialog'
-import { IAccountSource, IAccountSourceBody, IDialogAccountSource } from '@/core/account-source/models'
+import {
+  EAccountSourceType,
+  IAccountSource,
+  IAccountSourceBody,
+  IDialogAccountSource
+} from '@/core/account-source/models'
 import { IDialogConfig } from '@/types/common.i'
-import React from 'react'
+import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 interface IAccountSourceDialogProps {
@@ -30,6 +35,7 @@ export default function AccountSourceDialog({
   callBack
 }: IAccountSourceDialogProps) {
   const { t } = useTranslation(['accountSource', 'common'])
+  const [typeState, setTypeState] = useState<EAccountSourceType>(EAccountSourceType.WALLET)
 
   const updateConfigDialog: IDialogConfig = {
     content: CreateAndUpdateAccountSourceForm({
@@ -37,6 +43,8 @@ export default function AccountSourceDialog({
       defaultValue: detailAccountSourceDialog.dataDetail,
       isCreating: sharedDialogElements.isCreating,
       isUpdating: sharedDialogElements.isUpdating,
+      typeState,
+      setTypeState
     }),
     description: t('AccountSourceDialog.updateDialog.description'),
     title: t('AccountSourceDialog.updateDialog.title'),
@@ -44,6 +52,7 @@ export default function AccountSourceDialog({
 
     onClose: () => {
       sharedDialogElements.setIsDialogOpen((prev) => ({ ...prev, isDialogUpdateOpen: false }))
+      setTypeState(EAccountSourceType.WALLET)
     }
   }
 
@@ -53,12 +62,15 @@ export default function AccountSourceDialog({
       defaultValue: initEmptyAccountSource,
       isCreating: sharedDialogElements.isCreating,
       isUpdating: sharedDialogElements.isUpdating,
+      typeState,
+      setTypeState
     }),
     description: t('AccountSourceDialog.createDialog.description'),
     title: t('AccountSourceDialog.createDialog.title'),
     isOpen: sharedDialogElements.isDialogOpen.isDialogCreateOpen,
     onClose: () => {
       sharedDialogElements.setIsDialogOpen((prev) => ({ ...prev, isDialogCreateOpen: false }))
+      setTypeState(EAccountSourceType.WALLET)
     }
   }
 
