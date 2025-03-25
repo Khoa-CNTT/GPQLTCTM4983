@@ -2,12 +2,6 @@ import { translate } from '@/libraries/utils'
 import { EFieldType } from '@/types/formZod.interface'
 import { z } from 'zod'
 
-export const createAccountBankSchema = z.object({
-  type: z.enum(['MB_BANK'], { message: 'Bank type must be either "MB_BANK"' }),
-  login_id: z.string().min(5),
-  password: z.string().min(5),
-  accounts: z.array(z.string().min(5)).min(1)
-})
 const t = translate(['accountSource'])
 export const createAccountBankFormBody = [
   {
@@ -37,7 +31,8 @@ export const createAccountBankFormBody = [
     label: 'Password',
     placeHolder: 'Enter your password',
     props: {
-      autoComplete: 'password'
+      autoComplete: 'password',
+      type: 'password'
     }
   },
   {
@@ -50,3 +45,29 @@ export const createAccountBankFormBody = [
     }
   }
 ]
+
+export const createAccountBankSchema = z.object({
+  type: z.enum(['MB_BANK'], {
+    message: 'Bank type must be either "MB_BANK"'
+  }),
+  login_id: z
+    .string()
+    .trim()
+    .min(6, 'Username must be at least 6 characters')
+    .max(50, 'Username cannot exceed 50 characters'),
+  password: z
+    .string()
+    .trim()
+    .min(6, 'Password must be at least 6 characters')
+    .max(50, 'Password cannot exceed 50 characters'),
+  accounts: z
+    .array(
+      z
+        .string()
+        .trim()
+        .min(10, 'Account number must be at least 10 digits')
+        .max(14, 'Account number cannot exceed 14 digits')
+    )
+    .min(1, 'At least one account number is required')
+    .max(5, 'Maximum 5 account numbers allowed')
+})

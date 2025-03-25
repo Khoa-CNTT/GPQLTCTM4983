@@ -6,8 +6,12 @@ import { EAccountSourceType } from '../models'
 export const createAccountSourceSchema = z.object({
   accountSourceName: z
     .string({ message: 'Source Name is required' })
+    .trim()
     .min(5, { message: 'Source Name must be at least 5 characters long' })
-    .max(30, { message: 'Source Name must be at most 30 characters long' }),
+    .max(30, { message: 'Source Name must be at most 30 characters long' })
+    .refine((val) => /^[A-Za-zÀ-ỹ\s]+$/.test(val), {
+      message: 'Source name can only contain letters and spaces.'
+    }),
   accountSourceType: z.nativeEnum(EAccountSourceType, {
     message: 'Account source type must be either "Wallet" or "Banking"'
   }),

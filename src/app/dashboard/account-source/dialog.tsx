@@ -9,7 +9,7 @@ import {
   IDialogAccountSource
 } from '@/core/account-source/models'
 import { IDialogConfig } from '@/types/common.i'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 interface IAccountSourceDialogProps {
@@ -36,6 +36,10 @@ export default function AccountSourceDialog({
 }: IAccountSourceDialogProps) {
   const { t } = useTranslation(['accountSource', 'common'])
   const [typeState, setTypeState] = useState<EAccountSourceType>(EAccountSourceType.WALLET)
+  useEffect(() => {
+    if (sharedDialogElements.isDialogOpen.isDialogUpdateOpen && detailAccountSourceDialog.dataDetail)
+      setTypeState(detailAccountSourceDialog.dataDetail.type)
+  }, [sharedDialogElements.isDialogOpen.isDialogUpdateOpen])
 
   const updateConfigDialog: IDialogConfig = {
     content: CreateAndUpdateAccountSourceForm({
