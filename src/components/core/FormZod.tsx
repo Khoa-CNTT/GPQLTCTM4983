@@ -114,7 +114,11 @@ const FormFieldComponent = React.memo(
           {...field}
           disabled={disabled}
           defaultValue={field.value as string}
+          value={fieldItem.props?.value !== undefined ? fieldItem.props.value : (field.value as string)}
           onValueSelect={(value) => {
+            if (fieldItem.props?.onValueChange) {
+              fieldItem.props.onValueChange(value)
+            }
             field.onChange(value)
           }}
         />
