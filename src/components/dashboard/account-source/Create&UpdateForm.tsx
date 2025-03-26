@@ -39,7 +39,6 @@ export default function CreateAndUpdateAccountSourceForm({
 }) {
   const [typeState, setTypeState] = useState<EAccountSourceType>(EAccountSourceType.WALLET)
   const [defaultValueData, setDefaultValueData] = useState<IAccountSourceFormData>({
-
     accountBank: undefined,
     accountSource: { accountSourceName: '', accountSourceType: EAccountSourceType.WALLET, initAmount: '' }
   })
@@ -54,7 +53,8 @@ export default function CreateAndUpdateAccountSourceForm({
     initAmount?: string
     accountSourceType: EAccountSourceType
   }) => {
-    payload = { ...v, id: defaultValue?.id, initAmount: Number(v.initAmount), name: v.accountSourceName }
+    const cleanAmount = v.initAmount?.replace(/^0+/, '') || '0'
+    payload = { ...v, id: defaultValue?.id, initAmount: Number(cleanAmount), name: v.accountSourceName }
     if (typeState !== EAccountSourceType.BANKING) callBack(payload)
   }
 

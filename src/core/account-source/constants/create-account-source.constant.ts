@@ -11,7 +11,13 @@ export const createAccountSourceSchema = z.object({
   accountSourceType: z.nativeEnum(EAccountSourceType, {
     message: 'Account source type must be either "Wallet" or "Banking"'
   }),
-  initAmount: z.string().min(0, { message: 'Initial Amount is required' })
+  initAmount: z
+    .string()
+    .min(0, { message: 'Initial Amount is required' })
+    .transform((val) => {
+      // Loại bỏ số 0 ở đầu
+      return val.replace(/^0+/, '') || '0'
+    })
 })
 
 export const createAccountSourceFormBody = (setTypeState: any) => {
