@@ -8,6 +8,7 @@ import {
   ITrackerTransactionTypeBody
 } from '@/core/tracker-transaction-type/models/tracker-transaction-type.interface'
 import {
+  IClassiFyFormProps,
   IClassifyTransactionBody,
   IClassifyTransactionFormProps,
   ICreateTrackerTransactionBody,
@@ -150,11 +151,12 @@ export interface IDetailUpdateTrackerTransactionDialog {
 
 export interface ITrackerTransactionDialogProps {
   unclassifiedTxDialog: IUnclassifiedTxDialog
-  classifyTransactionDialog: IClassifyTransactionDialog
+  classifyTransactionDialog: IClassiFyFormProps
   createTrackerTransactionDialog: ICreateTrackerTransactionDialog
   sharedDialogElements: ISharedDialogElements
   createTrackerTransactionTypeDialog: ICreateTrackerTransactionTypeDialog
   detailUpdateTrackerTransactionDialog: IDetailUpdateTrackerTransactionDialog
+  setTransactionIdClassifying: React.Dispatch<React.SetStateAction<string>>
 }
 
 export interface IDetailUpdateTransactionDialogProps {

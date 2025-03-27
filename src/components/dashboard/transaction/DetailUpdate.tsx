@@ -72,11 +72,10 @@ export default function DetailUpdateTransaction({
         const isTrackerValid = updateTrackerTransactionProps?.isEditing
           ? await formUpdateTrackerTransactionRef.current?.trigger()
           : true
+        if (isTransactionValid) submitUpdateTransactionRef.current?.requestSubmit()
 
-        if (isTransactionValid && isTrackerValid) {
-          submitUpdateTransactionRef.current?.requestSubmit()
-          if (updateTrackerTransactionProps?.isEditing) submitUpdateTrackerTransactionRef.current?.requestSubmit()
-        }
+        if (isTrackerValid && updateTrackerTransactionProps?.isEditing)
+          submitUpdateTrackerTransactionRef.current?.requestSubmit()
       }
     }
   }
@@ -359,7 +358,6 @@ export default function DetailUpdateTransaction({
                   ...data,
                   id: updateTrackerTransactionProps.trackerTransaction.id
                 }
-
                 updateTrackerTransactionProps.handleUpdateTrackerTransaction(
                   payload,
                   updateTransactionProps.setIsEditing

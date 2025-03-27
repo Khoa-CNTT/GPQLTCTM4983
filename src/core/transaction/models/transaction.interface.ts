@@ -99,28 +99,30 @@ export interface IUpdateTransactionBody {
 
 export interface IClassiFyFormProps {
   transactionId: string
-  incomeTrackerType: ITrackerTransactionType[]
-  expenseTrackerType: ITrackerTransactionType[]
-  editTrackerTypeDialogProps: Omit<
+  incomeTrackerType?: ITrackerTransactionType[]
+  expenseTrackerType?: ITrackerTransactionType[]
+  editTrackerTypeDialogProps?: Omit<
     IEditTrackerTypeDialogProps,
     'dataArr' | 'type' | 'setType' | 'setOpenEditDialog' | 'openEditDialog'
   >
-  formClassifyRef: React.RefObject<HTMLFormElement>
+  formClassifyRef?: React.RefObject<HTMLFormElement>
   handleClassify: (data: IClassifyTransactionBody) => void
+  isPendingClassifyTransaction?: boolean
 }
 
-// export interface IClassifyTransactionFormProps
-//   extends Omit<IClassiFyFormProps, 'formClassifyRef' | 'handleClassify' | 'transactionId'> {
-//   setTypeOfEditTrackerType: React.Dispatch<React.SetStateAction<ETypeOfTrackerTransactionType>>
-//   typeOfEditTrackerType: ETypeOfTrackerTransactionType
-// }
-
 export interface IClassifyTransactionFormProps
-  extends Omit<IClassiFyFormProps, 'handleClassify' | 'formClassifyRef' | 'transactionId'> {
+  extends Omit<
+    IClassiFyFormProps,
+    'handleClassify' | 'formClassifyRef' | 'transactionId' | 'editTrackerTypeDialogProps'
+  > {
   typeOfEditTrackerType: ETypeOfTrackerTransactionType
   setTypeOfEditTrackerType: React.Dispatch<React.SetStateAction<ETypeOfTrackerTransactionType>>
   setOpenEditDialog: React.Dispatch<React.SetStateAction<boolean>>
   openEditDialog: boolean
+  editTrackerTypeDialogProps: Omit<
+    IEditTrackerTypeDialogProps,
+    'dataArr' | 'type' | 'setType' | 'setOpenEditDialog' | 'openEditDialog'
+  >
 }
 
 export type TTransactionActions =

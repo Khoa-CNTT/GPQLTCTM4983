@@ -16,22 +16,19 @@ export default function TrackerTransactionDialog({
   classifyTransactionDialog,
   createTrackerTransactionDialog,
   sharedDialogElements,
-  detailUpdateTrackerTransactionDialog
+  detailUpdateTrackerTransactionDialog,
+  setTransactionIdClassifying
 }: ITrackerTransactionDialogProps) {
   const formClassifyRef = useRef<HTMLFormElement>(null)
   const formCreateRef = useRef<HTMLFormElement>(null)
   const { t } = useTranslation(['trackerTransaction', 'common'])
   // states
-  const [transactionIdClassifying, setTransactionIdClassifying] = useState<string>()
   const [openEditTrackerTxTypeDialog, setOpenEditTrackerTxTypeDialog] = useState<boolean>(false)
 
   const [isEditing, setIsEditing] = useState<boolean>(false)
-  useEffect(() => {
-    console.log('====>>>>', sharedDialogElements.incomeTrackerType, sharedDialogElements.expenseTrackerType)
-  }, [sharedDialogElements.expenseTrackerType, sharedDialogElements.incomeTrackerType])
   const classifyingTransactionConfigDialog: IDialogConfig = {
     content: ClassifyForm({
-      transactionId: transactionIdClassifying as string,
+      transactionId: classifyTransactionDialog.transactionId,
       incomeTrackerType: sharedDialogElements.incomeTrackerType,
       expenseTrackerType: sharedDialogElements.expenseTrackerType,
       editTrackerTypeDialogProps: {

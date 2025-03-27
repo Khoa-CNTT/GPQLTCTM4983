@@ -71,11 +71,21 @@ export type TUpdateTrackerTransactionSchema = z.infer<typeof updateTrackerTransa
 export const updateTrackerTransactionSchema = z
   .object({
     reasonName: z
-      .string({ message: 'Reason Name is required' })
+      .string({ message: 'Reason name is required' })
       .trim()
-      .min(5, { message: 'Reason Name must be at least 5 characters long' })
-      .max(100, { message: 'Reason Name must be at most 100 characters long' }),
+      .min(5, { message: 'Reason name must be at least 5 characters long' })
+      .max(100, { message: 'Reason name must be at most 100 characters long' })
+      .refine((val) => val === null || /^[A-Za-zÀ-ỹ\s]+$/.test(val), {
+        message: 'Reason name can only contain letters and spaces.'
+      }),
     trackerTypeId: z.string({ message: 'Tracker Type is required' }).uuid(),
-    description: z.any()
+    description: z
+      .string()
+      .trim()
+      .transform((val) => (val === '' ? null : val))
+      .refine((val) => val === null || (val.length >= 5 && val.length <= 256), {
+        message: 'Description must be between 5 and 256 characters long.'
+      })
+      .nullable()
   })
   .strict()
