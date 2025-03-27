@@ -205,12 +205,15 @@ export default function TransactionForm() {
           roleId: user?.roleId ?? '',
           email: user?.email ?? '',
           fullName: user?.fullName ?? '',
-          status: (user?.status as EUserStatus) ?? EUserStatus.ACTIVE
+          status: (user?.status as EUserStatus) ?? EUserStatus.ACTIVE,
+          fundId
         }
+        console.log('userPayload', userPayload)
+
         if (socket) {
           setTimeCountRefetchLimit()
           toast.loading('Sending request... Please wait until it is completed!')
-          socket.emit('refetchTransaction', {
+          socket.emit('refetchStarted', {
             user: userPayload
           })
         }
