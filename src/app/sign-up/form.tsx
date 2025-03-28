@@ -12,12 +12,25 @@ import FormZod from '../../components/core/FormZod'
 import { signUpFormBody, signUpSchema } from '@/core/auth/constants/sign-up.constant'
 import { motion } from 'framer-motion'
 import { Spotlight } from '@/components/homepage/Spotlight'
+import { useGoogleLogin } from '@react-oauth/google'
+import toast from 'react-hot-toast'
 
 export default function SignUpForm() {
-  const { signUp, isSigningUp } = useAuth()
+  const { signUp, isSigningUp, signInGoogle } = useAuth()
   const router = useRouter()
   const isAuthenticated = getAccessTokenFromLocalStorage()
   if (isAuthenticated && isSigningUp) router.push('/dashboard')
+
+  const loginGoogle = useGoogleLogin({
+    onSuccess: (credentialResponse) => {
+      signInGoogle({
+        access_token: credentialResponse.access_token
+      })
+    },
+    onError: () => {
+      toast.error('An error occurred. Please try again later.')
+    }
+  })
 
   return (
     <motion.div
@@ -130,7 +143,13 @@ export default function SignUpForm() {
                   </div>
                 </div>
                 <div className='mt-4 flex flex-col sm:flex-row sm:space-x-2'>
-                  <Button variant='greenPastel1' className='mb-2 me-5 w-full'>
+                  <Button
+                    variant='greenPastel1'
+                    className='mb-2 me-5 w-full'
+                    onClick={() => {
+                      loginGoogle()
+                    }}
+                  >
                     <Icons.google className='mr-2 h-5 w-5' />
                     Sign up with Google
                   </Button>
