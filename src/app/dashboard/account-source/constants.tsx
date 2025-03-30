@@ -108,14 +108,22 @@ export const initAccountSourceTab = (data: IChartDataAccountSource, t: TFunction
               <DonutChart data={data.totalBalanceTypeStats} className='h-[17rem] w-full' types='donut' />
             ) : (
               <div className='mt-10 flex flex-col items-center justify-center'>
-                <Image priority src={NoDataPlaceHolder} alt='No data available' width={150} height={150} />
-                <span className='mt-2 text-sm font-semibold text-foreground'>No data available</span>
+                <Image
+                  priority
+                  src={NoDataPlaceHolder}
+                  alt={t('common:table.noDataText', 'No data available')}
+                  width={150}
+                  height={150}
+                />
+                <span className='mt-2 text-sm font-semibold text-foreground'>
+                  {t('common:table.noDataText', 'No data available')}
+                </span>
               </div>
             )}
           </div>
         ),
-        labels: 'Total Balance',
-        value: 'Total Balance'
+        labels: t('accountSource:AccountSourceCardDetail.totalBlance', 'Total Balance'),
+        value: t('accountSource:AccountSourceCardDetail.totalBlance', 'Total Balance')
       },
       {
         content: (
@@ -124,14 +132,21 @@ export const initAccountSourceTab = (data: IChartDataAccountSource, t: TFunction
               <DonutChart data={data.detailBalanceTypeStats} className='h-[17rem] w-full' types='donut' />
             ) : (
               <div className='mt-10 flex flex-col items-center justify-center'>
-                <Image src={NoDataPlaceHolder} alt='No data available' width={150} height={150} />
-                <span className='mt-2 text-sm font-semibold text-foreground'>No data available</span>
+                <Image
+                  src={NoDataPlaceHolder}
+                  alt={t('common:table.noDataText', 'No data available')}
+                  width={150}
+                  height={150}
+                />
+                <span className='mt-2 text-sm font-semibold text-foreground'>
+                  {t('common:table.noDataText', 'No data available')}
+                </span>
               </div>
             )}
           </div>
         ),
-        labels: 'Detail Balance',
-        value: 'Detail Balance'
+        labels: t('accountSource:AccountSourceCardDetail.item.detail', 'Detail Balance'),
+        value: t('accountSource:AccountSourceCardDetail.item.detail', 'Detail Balance')
       }
     ]
   }

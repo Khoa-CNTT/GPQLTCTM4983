@@ -18,6 +18,15 @@
     "create_project": "Create project",
     "deploy_project": "Deploy your new project in one-click."
   },
+  "breadcrumb": {
+    "home": "Home",
+    "dashboard": "Dashboard",
+    "profile": "Profile",
+    "transaction": "Transaction",
+    "tracker_transaction": "Tracker Transaction",
+    "account_source": "Account Source",
+    "expenditure_fund": "Expenditure Fund"
+  },
   "table": {
     "filterPlaceholder": "Filter",
     "typesLabel": "Types",
@@ -36,5 +45,7 @@
     "description": "Are you sure you want to delete this data?",
     "note": "Note: ",
     "info": "Once deleted, the data cannot be recovered!"
-  }
+  },
+  "loading": "Loading",
+  "noTransactionsAvailable": "No transactions available at the moment"
 }

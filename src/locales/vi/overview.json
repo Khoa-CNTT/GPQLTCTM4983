@@ -1,4 +1,37 @@
 {
   "create_project": "Tạo dự án",
-  "deploy_project": "Triển khai dự án mới chỉ với một lần nhấp chuột."
+  "deploy_project": "Triển khai dự án mới chỉ với một lần nhấp chuột.",
+  "breadcrumb": {
+    "overview": "Tổng quan"
+  },
+  "dashboard": {
+    "balance_chart": {
+      "no_data": "Không có dữ liệu",
+      "title": "Tổng số dư"
+    },
+    "income_card": {
+      "title": "Tổng thu nhập",
+      "trend": "so với tuần trước"
+    },
+    "expenses_card": {
+      "title": "Tổng chi tiêu",
+      "trend": "so với tuần trước"
+    },
+    "cash_flow": {
+      "title": "Phân tích dòng tiền",
+      "description": "Theo dõi các giao dịch thu vào và chi ra",
+      "time_range": {
+        "placeholder": "3 tháng gần nhất",
+        "90d": "3 tháng gần nhất",
+        "30d": "30 ngày gần nhất",
+        "7d": "7 ngày gần nhất"
+      },
+      "no_data": "Không có dữ liệu"
+    },
+    "chart": {
+      "transactions": "Giao dịch",
+      "incoming": "Thu vào",
+      "outgoing": "Chi ra"
+    }
+  }
 }

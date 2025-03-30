@@ -5,6 +5,8 @@
   "notiTotalBalance": "{{percentage}}% so với tháng trước",
   "notiIncoming": "{{percentage}}% so với hôm qua",
   "notiExpense": "{{percentage}}% so với hôm qua",
+  "leftThisMonth": "còn lại trong tháng này",
+  "fromLastWeek": "so với tuần trước",
   "charts": {
     "expenseChart": {
       "label": "Biểu đồ chi tiêu",
@@ -98,6 +100,6 @@
   },
   "unclassifiedForm": {
     "title": "Giao dịch chưa phân loại",
-    "button": "Lấy lại dữ liệu từ ngân hàng"
+    "button": "Dữ liệu từ ngân hàng"
   }
 }

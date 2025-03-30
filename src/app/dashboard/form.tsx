@@ -16,8 +16,10 @@ import { useAccountSource } from '@/core/account-source/hooks'
 import Image from 'next/image'
 import NoDataPlaceHolder from '@/images/2.png'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { useTranslation } from 'react-i18next'
 
 export default function DashboardMainForm() {
+  const { t } = useTranslation(['overview'])
   const { fundId } = useStoreLocal()
   // states
   const [daysToSubtract, setDaysToSubtract] = useState(90)
@@ -79,8 +81,10 @@ export default function DashboardMainForm() {
               <BalanceChart chartConfig={balanceChartConfig} chartData={balanceChartData} />
             ) : (
               <div className='mb-28 mt-28 flex flex-col items-center justify-center'>
-                <Image src={NoDataPlaceHolder} alt='No data available' width={150} height={150} />
-                <span className='mt-2 text-sm font-semibold text-foreground'>No data available</span>
+                <Image src={NoDataPlaceHolder} alt={t('dashboard.balance_chart.no_data')} width={150} height={150} />
+                <span className='mt-2 text-sm font-semibold text-foreground'>
+                  {t('dashboard.balance_chart.no_data')}
+                </span>
               </div>
             )}
           </Card>
@@ -92,7 +96,7 @@ export default function DashboardMainForm() {
             <Card className='overflow-hidden bg-gradient-to-br from-green-50 to-emerald-50 p-4 shadow-sm transition-all hover:shadow-md dark:from-green-900/20 dark:to-emerald-900/10'>
               <div className='flex items-center justify-between'>
                 <div className='space-y-2'>
-                  <p className='text-sm font-medium text-muted-foreground'>Total Income</p>
+                  <p className='text-sm font-medium text-muted-foreground'>{t('dashboard.income_card.title')}</p>
                   <h3 className='text-2xl font-bold tracking-tight'>
                     {formatCurrency(totalIncome.amount ?? 0, 'đ', 'vi-vn')}
                   </h3>
@@ -108,7 +112,10 @@ export default function DashboardMainForm() {
                         <TrendingDown className='h-4 w-4' />
                       )}
                     </motion.div>
-                    {(totalIncome.rate?.[0] === '-' ? '' : '+') + (totalIncome.rate || '0') + '% from last week'}
+                    {(totalIncome.rate?.[0] === '-' ? '' : '+') +
+                      (totalIncome.rate || '0') +
+                      '% ' +
+                      t('dashboard.income_card.trend')}
                   </div>
                 </div>
                 <motion.div
@@ -128,7 +135,7 @@ export default function DashboardMainForm() {
             <Card className='overflow-hidden bg-gradient-to-br from-red-50 to-rose-50 p-4 shadow-sm transition-all hover:shadow-md dark:from-red-900/20 dark:to-rose-900/10'>
               <div className='flex items-center justify-between'>
                 <div className='space-y-2'>
-                  <p className='text-sm font-medium text-muted-foreground'>Total Expenses</p>
+                  <p className='text-sm font-medium text-muted-foreground'>{t('dashboard.expenses_card.title')}</p>
                   <h3 className='text-2xl font-bold tracking-tight'>
                     {formatCurrency(totalExpenses.amount ?? 0, 'đ', 'vi-vn')}
                   </h3>
@@ -144,7 +151,10 @@ export default function DashboardMainForm() {
                         <TrendingDown className='h-4 w-4' />
                       )}
                     </motion.div>
-                    {(totalExpenses.rate?.[0] === '-' ? '' : '+') + (totalExpenses.rate || '0') + '% from last week'}
+                    {(totalExpenses.rate?.[0] === '-' ? '' : '+') +
+                      (totalExpenses.rate || '0') +
+                      '% ' +
+                      t('dashboard.expenses_card.trend')}
                   </div>
                 </div>
                 <motion.div
@@ -164,22 +174,25 @@ export default function DashboardMainForm() {
           <Card>
             <CardHeader className='flex items-center gap-2 space-y-0 border-b py-5 sm:flex-row'>
               <div className='grid flex-1 gap-1 text-center sm:text-left'>
-                <CardTitle>Cash Flow Analysis</CardTitle>
-                <CardDescription>Monitoring incoming and outgoing transactions</CardDescription>
+                <CardTitle>{t('dashboard.cash_flow.title')}</CardTitle>
+                <CardDescription>{t('dashboard.cash_flow.description')}</CardDescription>
               </div>
               <Select value={timeRange} onValueChange={setTimeRange}>
-                <SelectTrigger className='w-[160px] rounded-lg sm:ml-auto' aria-label='Select a value'>
-                  <SelectValue placeholder='Last 3 months' />
+                <SelectTrigger
+                  className='w-[160px] rounded-lg sm:ml-auto'
+                  aria-label={t('dashboard.cash_flow.time_range.placeholder')}
+                >
+                  <SelectValue placeholder={t('dashboard.cash_flow.time_range.placeholder')} />
                 </SelectTrigger>
                 <SelectContent className='rounded-xl'>
                   <SelectItem value='90d' className='rounded-lg'>
-                    Last 3 months
+                    {t('dashboard.cash_flow.time_range.90d')}
                   </SelectItem>
                   <SelectItem value='30d' className='rounded-lg'>
-                    Last 30 days
+                    {t('dashboard.cash_flow.time_range.30d')}
                   </SelectItem>
                   <SelectItem value='7d' className='rounded-lg'>
-                    Last 7 days
+                    {t('dashboard.cash_flow.time_range.7d')}
                   </SelectItem>
                 </SelectContent>
               </Select>
@@ -189,8 +202,8 @@ export default function DashboardMainForm() {
                 <LineChart chartData={cashFlowAnalysisChartData} />
               ) : (
                 <div className='mb-7 mt-7 flex flex-col items-center justify-center'>
-                  <Image src={NoDataPlaceHolder} alt='No data available' width={150} height={150} />
-                  <span className='mt-2 text-sm font-semibold text-foreground'>No data available</span>
+                  <Image src={NoDataPlaceHolder} alt={t('dashboard.cash_flow.no_data')} width={150} height={150} />
+                  <span className='mt-2 text-sm font-semibold text-foreground'>{t('dashboard.cash_flow.no_data')}</span>
                 </div>
               )}
             </CardContent>

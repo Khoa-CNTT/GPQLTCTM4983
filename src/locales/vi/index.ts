@@ -5,6 +5,7 @@ import profile from './profile.json'
 import accountSource from './account-source.json'
 import expenditureFund from './expenditure-fund.json'
 import expenditureFundDetails from './expenditureFundDetails.json'
+import overview from './overview.json'
 
 const vietnameseTranslations = {
   common,
@@ -13,7 +14,8 @@ const vietnameseTranslations = {
   profile,
   accountSource,
   expenditureFund,
-  expenditureFundDetails
+  expenditureFundDetails,
+  overview
 }
 
 export default vietnameseTranslations

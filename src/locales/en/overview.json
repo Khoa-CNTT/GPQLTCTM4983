@@ -1,4 +1,37 @@
 {
-    "create_project": "Create project",
-    "deploy_project": "Deploy your new project in one-click."
+  "create_project": "Create project",
+  "deploy_project": "Deploy your new project in one-click.",
+  "breadcrumb": {
+    "overview": "Overview"
+  },
+  "dashboard": {
+    "balance_chart": {
+      "no_data": "No data available",
+      "title": "Total Balance"
+    },
+    "income_card": {
+      "title": "Total Income",
+      "trend": "from last week"
+    },
+    "expenses_card": {
+      "title": "Total Expenses",
+      "trend": "from last week"
+    },
+    "cash_flow": {
+      "title": "Cash Flow Analysis",
+      "description": "Monitoring incoming and outgoing transactions",
+      "time_range": {
+        "placeholder": "Last 3 months",
+        "90d": "Last 3 months",
+        "30d": "Last 30 days",
+        "7d": "Last 7 days"
+      },
+      "no_data": "No data available"
+    },
+    "chart": {
+      "transactions": "Transactions",
+      "incoming": "Incoming",
+      "outgoing": "Outgoing"
+    }
+  }
 }

@@ -4,6 +4,7 @@ import * as React from 'react'
 import { Label, Pie, PieChart, Tooltip } from 'recharts'
 import { formatCurrency } from '@/libraries/utils'
 import { motion, AnimatePresence } from 'framer-motion'
+import { useTranslation } from 'react-i18next'
 
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart'
@@ -22,6 +23,7 @@ export function BalanceChart({
   chartData: ITotalBalanceChart[]
   chartConfig: ChartConfig
 }) {
+  const { t } = useTranslation(['overview'])
   const [selected, setSelected] = React.useState<Selected | null>(null)
   const chartRef = React.useRef<HTMLDivElement>(null)
 
@@ -43,7 +45,7 @@ export function BalanceChart({
   return (
     <Card className='flex flex-col'>
       <CardHeader className='items-center pb-0'>
-        <CardTitle>Total Balance</CardTitle>
+        <CardTitle>{t('dashboard.balance_chart.title', 'Total Balance')}</CardTitle>
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.2 }}>
           <CardDescription>{selected ? `Selected: ${selected.account}` : 'Số dư các tài khoản'}</CardDescription>
         </motion.div>
@@ -106,7 +108,7 @@ export function BalanceChart({
                               y={viewBox.cy ? viewBox.cy - 12 : 0}
                               className='fill-muted-foreground text-sm'
                             >
-                              {selected ? selected.account : 'Total Balance'}
+                              {selected ? selected.account : t('dashboard.balance_chart.title', 'Total Balance')}
                             </tspan>
                             <tspan
                               x={viewBox.cx}

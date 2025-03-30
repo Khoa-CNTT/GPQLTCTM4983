@@ -7,7 +7,7 @@
     "delete": "Xóa",
     "create": "Tạo mới",
     "classify": "Phân loại",
-    "refetch_in_bank": "Lấy lại dữ liệu trong ngân hàng",
+    "refetch_in_bank": "Dữ liệu trong ngân hàng",
     "reload_data": "Tải lại dữ liệu",
     "view": "Xem",
     "Invite": "Mời",
@@ -17,6 +17,15 @@
   "card_header": {
     "create_project": "Tạo dự án",
     "deploy_project": "Triển khai dự án mới chỉ với một cú nhấp chuột."
+  },
+  "breadcrumb": {
+    "home": "Trang chủ",
+    "dashboard": "Bảng điều khiển",
+    "profile": "Hồ sơ",
+    "transaction": "Giao dịch",
+    "tracker_transaction": "Theo dõi giao dịch",
+    "account_source": "Nguồn tài khoản",
+    "expenditure_fund": "Quỹ chi tiêu"
   },
   "table": {
     "filterPlaceholder": "Lọc",
@@ -36,5 +45,7 @@
     "description": "Bạn có chắc chắn muốn xóa dữ liệu này?",
     "note": "Lưu ý: ",
     "info": "Dữ liệu sau khi xóa sẽ không thể khôi phục được!"
-  }
+  },
+  "loading": "Đang tải",
+  "noTransactionsAvailable": "Hiện không có giao dịch nào"
 }
