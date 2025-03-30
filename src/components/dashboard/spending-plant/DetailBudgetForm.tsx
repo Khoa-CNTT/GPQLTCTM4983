@@ -1,10 +1,10 @@
 "use client"
 import React from "react"
-import { IBudget } from "@/core/spending-plan/models"
 import { formatCurrency, formatDateTimeVN } from "@/libraries/utils"
 import { Progress } from "@/components/ui/progress"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
+import { IBudget } from "@/core/fund-saving-target/models"
 
 interface DetailBudgetFormProps {
     selectedBudget: IBudget | null

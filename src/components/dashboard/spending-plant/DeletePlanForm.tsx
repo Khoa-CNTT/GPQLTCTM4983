@@ -4,8 +4,8 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Trash2 } from "lucide-react"
-import { ISpendingPlan } from "@/core/spending-plan/models"
 import { formatCurrency, formatDateTimeVN } from "@/libraries/utils"
+import { ISpendingPlan } from "@/core/fund-saving-plant/models"
 
 interface DeletePlanFormProps {
     selectedPlan: ISpendingPlan | null

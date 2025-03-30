@@ -3,7 +3,6 @@
 import React from "react";
 import CustomDialog from "@/components/dashboard/Dialog";
 import { IDataTableConfig, IDialogConfig } from "@/types/common.i";
-import { ISpendingPlan, IBudget, IDialogFlags } from "@/core/spending-plan/models";
 import CreatePlanForm from "../../../components/dashboard/spending-plant/CreatePlanForm";
 import EditPlanForm from "../../../components/dashboard/spending-plant/EditPlanForm";
 import DetailPlanForm from "../../../components/dashboard/spending-plant/DetailPlanForm";
@@ -14,6 +13,8 @@ import DetailBudgetForm from "../../../components/dashboard/spending-plant/Detai
 import DeleteBudgetForm from "../../../components/dashboard/spending-plant/DeleteBudgetForm";
 import { DataTable } from "@/components/dashboard/DataTable";
 import { RefreshCw } from "lucide-react";
+import { ISpendingPlan } from "@/core/fund-saving-plant/models";
+import { IBudget, IDialogFlags } from "@/core/fund-saving-target/models";
 
 interface ISpendingPlanDialogProps {
     plansDialog: {

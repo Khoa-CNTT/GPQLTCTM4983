@@ -8,10 +8,10 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Calendar } from "@/components/ui/calendar"
 import { CalendarIcon } from "lucide-react"
 import { cn } from "@/libraries/utils"
-import { IBudget } from "@/core/spending-plan/models"
 import { categories } from "../../../app/dashboard/spending-plan/constants"
 import { format } from "date-fns"
 import { vi } from "date-fns/locale"
+import { IBudget } from "@/core/fund-saving-target/models"
 
 interface CreateBudgetFormProps {
     onCreateBudget: (newBudget: IBudget) => void

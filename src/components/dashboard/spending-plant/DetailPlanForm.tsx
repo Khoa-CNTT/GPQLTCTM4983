@@ -1,9 +1,9 @@
 "use client"
 import React from "react"
-import { ISpendingPlan } from "@/core/spending-plan/models"
 import { formatCurrency, formatDateTimeVN } from "@/libraries/utils"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
+import { ISpendingPlan } from "@/core/fund-saving-plant/models"
 
 interface DetailPlanFormProps {
     selectedPlan: ISpendingPlan | null

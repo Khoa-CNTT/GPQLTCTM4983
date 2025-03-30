@@ -1,16 +1,6 @@
-import {
-    ISpendingPlan,
-    ISpendingPlanTable,
-    IBudget,
-    IBudgetTable,
-    IDialogFlags,
-    ICategoryStatistic,
-    ISpendingPlanDialogProps
-} from "@/core/spending-plan/models"
+import { ISpendingPlan, ISpendingPlanTable } from "@/core/fund-saving-plant/models";
+import { IBudget, IBudgetTable } from "@/core/fund-saving-target/models";
 import { formatCurrency, formatDateTimeVN } from "@/libraries/utils"
-import { Badge } from "@/components/ui/badge"
-import { Progress } from "@/components/ui/progress"
-import React from "react"
 
 /**
  * Transform spending plan data for table display
@@ -18,12 +8,12 @@ import React from "react"
 export const modifySpendingPlanTableData = (payload: ISpendingPlan[]): ISpendingPlanTable[] => {
   return payload.map((plan) => {
     // Convert status to a formatted string
-    const statusText = plan.status === "completed" 
-      ? "Hoàn thành" 
-      : plan.status === "cancelled" 
-      ? "Đã hủy" 
-      : "Chờ xử lý";
-      
+    const statusText = plan.status === "completed"
+      ? "Hoàn thành"
+      : plan.status === "cancelled"
+        ? "Đã hủy"
+        : "Chờ xử lý";
+
     return {
       id: plan.id,
       title: plan.title,
@@ -42,7 +32,7 @@ export const modifyBudgetTableData = (payload: IBudget[]): IBudgetTable[] => {
   return payload.map((budget) => {
     // Convert progress indicator to a simple text
     const progressText = `${Math.round((budget.spentAmount / budget.budgetAmount) * 100)}%`;
-    
+
     return {
       id: budget.id,
       category: budget.category,

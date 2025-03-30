@@ -1,12 +1,5 @@
-import {
-    ISpendingPlan,
-    ISpendingPlanTable,
-    IBudget,
-    IBudgetTable,
-    IDialogFlags,
-    ICategoryStatistic,
-    ISpendingPlanDialogProps
-} from "@/core/spending-plan/models"
+import { ISpendingPlan } from "@/core/fund-saving-plant/models"
+import { IBudget, ICategoryStatistic, IDialogFlags } from "@/core/fund-saving-target/models"
 
 // Mock categories
 export const categories = [

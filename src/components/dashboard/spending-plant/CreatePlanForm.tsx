@@ -9,10 +9,10 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Calendar } from "@/components/ui/calendar"
 import { CalendarIcon } from "lucide-react"
 import { cn } from "@/libraries/utils"
-import { ISpendingPlan } from "@/core/spending-plan/models"
 import { categories, accountSources, notifyOptions } from "../../../app/dashboard/spending-plan/constants"
 import { format } from "date-fns"
 import { vi } from "date-fns/locale"
+import { ISpendingPlan } from "@/core/fund-saving-plant/models"
 
 interface CreatePlanFormProps {
     onCreatePlan: (newPlan: ISpendingPlan) => void
