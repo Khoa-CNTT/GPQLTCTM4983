@@ -1,7 +1,6 @@
 'use client'
 
-import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
 import { Icons } from '@/components/ui/icons'
 import { cn } from '@/libraries/utils'
@@ -18,6 +17,7 @@ interface DashboardNavProps {
 
 export function DashboardNav({ items, setOpen, isMobileNav = false }: DashboardNavProps) {
   const path = usePathname()
+  const router = useRouter()
   const { isMinimized } = useSidebar()
   if (!items?.length) {
     return null
@@ -32,15 +32,17 @@ export function DashboardNav({ items, setOpen, isMobileNav = false }: DashboardN
             item.href && (
               <Tooltip key={index}>
                 <TooltipTrigger asChild>
-                  <Link
-                    href={item.disabled ? '/' : item.href}
+                  <button
                     className={cn(
-                      'flex items-center gap-2 overflow-hidden rounded-md py-2 text-sm font-medium text-foreground hover:bg-primary hover:text-white',
+                      'flex w-full items-center gap-2 overflow-hidden rounded-md py-2 text-sm font-medium text-foreground hover:bg-primary hover:text-white',
                       path === item.href ? 'bg-primary text-white' : 'transparent',
                       item.disabled && 'cursor-not-allowed opacity-80'
                     )}
                     onClick={() => {
                       if (setOpen) setOpen(false)
+                      if (!item.disabled) {
+                        router.push(item.href)
+                      }
                     }}
                   >
                     <Icon className={`ml-3 size-5 flex-none`} src='' alt='' />
@@ -56,7 +58,7 @@ export function DashboardNav({ items, setOpen, isMobileNav = false }: DashboardN
                     ) : (
                       ''
                     )}
-                  </Link>
+                  </button>
                 </TooltipTrigger>
                 <motion.div
                   initial={{ opacity: 0, x: -10 }}
