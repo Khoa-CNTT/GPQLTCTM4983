@@ -1,5 +1,5 @@
 "use client"
-import { useEffect, useMemo, useState } from "react"
+import { Dispatch, SetStateAction, useEffect, useMemo, useState } from "react"
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { DataTable } from "@/components/dashboard/DataTable"
 import { getColumns } from "@/components/dashboard/ColumnsTable"
@@ -23,7 +23,7 @@ import {
     Timer,
 } from "lucide-react"
 import { formatCurrency, formatDateTimeVN, generateMonths } from "@/libraries/utils"
-import type { IDataTableConfig } from "@/types/common.i"
+import { IDataTableConfig } from "@/types/common.i"
 import { initTableConfig } from "@/constants/data-table"
 import { Button } from "@/components/ui/button"
 import { useStoreLocal } from "@/hooks/useStoreLocal"
@@ -31,21 +31,21 @@ import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { DateRangePicker } from "@/components/core/DateRangePicker"
-import type { DateRange } from "react-day-picker"
+import { DateRange } from "react-day-picker"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import SpendingPlanDialog from "./dialog"
-import { Input } from "@/components/ui/input"
-import { Separator } from "@/components/ui/separator"
-import type {
+import {
     ISpendingPlan,
     ISpendingPlanTable,
     IBudget,
     IBudgetTable,
     IDialogFlags,
 } from "@/core/spending-plan/models"
+
 import { modifySpendingPlanTableData, modifyBudgetTableData, calculateBudgetTotals } from "./handlers"
-import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog"
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { mockBudgets, mockCategoryStatistics, mockSpendingPlans } from "./constants"
+import { DialogDescription } from "@radix-ui/react-dialog"
+import SpendingPlanDialog from "./dialog"
 
 // Constants
 const spendingPlanTableHeaders = ["Title", "Amount", "Planned Date", "Category", "Status"]
@@ -56,11 +56,10 @@ const budgetTableHeaders = ["Category", "Budget Amount", "Spent Amount", "Remain
 const months = generateMonths()
 
 export default function SpendingPlanForm() {
-    // States
     const [spendingPlans, setSpendingPlans] = useState<ISpendingPlan[]>([])
-    const [budgets, setBudgets] = useState<IBudget[]>([])
     const [selectedPlan, setSelectedPlan] = useState<ISpendingPlan | null>(null)
     const [selectedBudget, setSelectedBudget] = useState<IBudget | null>(null)
+    const [budgets, setBudgets] = useState<IBudget[]>([])
     const [dateRange, setDateRange] = useState<DateRange | undefined>()
     const [statusFilter, setStatusFilter] = useState("all")
     const [selectedMonth, setSelectedMonth] = useState<string>(new Date().getMonth() + 1 + "-" + new Date().getFullYear())
@@ -86,20 +85,12 @@ export default function SpendingPlanForm() {
     })
     const [isLoading, setIsLoading] = useState(false)
     const [searchQuery, setSearchQuery] = useState("")
-    const [isPlansTableOpen, setIsPlansTableOpen] = useState(false)
-    const [isBudgetsTableOpen, setIsBudgetsTableOpen] = useState(false)
 
-    // Hooks
-    const { viewportHeight } = useStoreLocal()
-
-    // Mock data
     useEffect(() => {
-        // Load mock data or fetch from API
         setSpendingPlans(mockSpendingPlans)
         setBudgets(mockBudgets)
     }, [])
 
-    // Calculate totals
     const totalPlannedAmount = useMemo(() => {
         return spendingPlans.reduce((acc, plan) => acc + plan.amount, 0)
     }, [spendingPlans])
@@ -109,13 +100,9 @@ export default function SpendingPlanForm() {
     }, [budgets])
 
     const upcomingPlans = useMemo(() => {
-        // Get current date
         const now = new Date()
-        // Get date 7 days from now
         const sevenDaysFromNow = new Date(now)
         sevenDaysFromNow.setDate(now.getDate() + 7)
-
-        // Filter for pending plans within the next 7 days
         return spendingPlans
             .filter((plan) => plan.status === "pending")
             .filter((plan) => {
@@ -125,8 +112,6 @@ export default function SpendingPlanForm() {
             .sort((a, b) => new Date(a.plannedDate).getTime() - new Date(b.plannedDate).getTime())
     }, [spendingPlans])
 
-    // Memos for tables using the transaction module pattern
-    // 1. Create transformed table data
     const transformedSpendingPlanData = useMemo(() => {
         return modifySpendingPlanTableData(
             spendingPlans
@@ -136,7 +121,7 @@ export default function SpendingPlanForm() {
                         !searchQuery ||
                         plan.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
                         plan.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                        plan.category.toLowerCase().includes(searchQuery.toLowerCase()),
+                        plan.category.toLowerCase().includes(searchQuery.toLowerCase())
                 )
                 .filter((plan) => {
                     if (!dateRange || !dateRange.from) return true
@@ -145,7 +130,7 @@ export default function SpendingPlanForm() {
                         return planDate >= dateRange.from && planDate <= dateRange.to
                     }
                     return planDate >= dateRange.from
-                }),
+                })
         )
     }, [spendingPlans, statusFilter, searchQuery, dateRange])
 
@@ -153,100 +138,21 @@ export default function SpendingPlanForm() {
         return modifyBudgetTableData(budgets)
     }, [budgets])
 
-    // 2. Create columns using standard pattern
     const planColumns = useMemo(() => {
         if (transformedSpendingPlanData.length === 0) return []
-
         return getColumns<ISpendingPlanTable>({
-            headers: spendingPlanTableHeaders,
+            headers: ["Title", "Amount", "Planned Date", "Category", "Status"],
             isSort: true,
         })
     }, [transformedSpendingPlanData])
 
     const budgetColumns = useMemo(() => {
         if (transformedBudgetData.length === 0) return []
-
         return getColumns<IBudgetTable>({
-            headers: budgetTableHeaders,
+            headers: ["Category", "Budget Amount", "Spent Amount", "Remaining", "Status"],
             isSort: true,
         })
     }, [transformedBudgetData])
-
-    // Handlers
-    const handleCreatePlan = (plan: Omit<ISpendingPlan, "id" | "createdAt" | "updatedAt">) => {
-        setIsLoading(true)
-        setTimeout(() => {
-            const newPlan: ISpendingPlan = {
-                ...plan,
-                id: Math.random().toString(36).substring(2, 9),
-                createdAt: new Date().toISOString(),
-                updatedAt: new Date().toISOString(),
-            }
-            setSpendingPlans((prev) => [...prev, newPlan])
-            setIsDialogOpen((prev) => ({ ...prev, isDialogCreatePlanOpen: false }))
-            setIsLoading(false)
-        }, 1000)
-    }
-
-    const handleUpdatePlan = (updatedPlan: ISpendingPlan) => {
-        setIsLoading(true)
-        setTimeout(() => {
-            setSpendingPlans((prev) => prev.map((plan) => (plan.id === updatedPlan.id ? updatedPlan : plan)))
-            setIsDialogOpen((prev) => ({
-                ...prev,
-                isDialogEditPlanOpen: false,
-                isDialogDetailPlanOpen: false,
-                isDialogDeletePlanOpen: false,
-            }))
-            setIsLoading(false)
-            setSelectedPlan(null)
-        }, 1000)
-    }
-
-    const handleDeletePlan = (id: string) => {
-        setIsLoading(true)
-        setTimeout(() => {
-            setSpendingPlans((prev) => prev.filter((plan) => plan.id !== id))
-            setIsDialogOpen((prev) => ({ ...prev, isDialogDeletePlanOpen: false }))
-            setIsLoading(false)
-            setSelectedPlan(null)
-        }, 1000)
-    }
-
-    const handleCreateBudget = (budget: Omit<IBudget, "id" | "createdAt" | "updatedAt">) => {
-        setIsLoading(true)
-        setTimeout(() => {
-            const newBudget: IBudget = {
-                ...budget,
-                id: Math.random().toString(36).substring(2, 9),
-                createdAt: new Date().toISOString(),
-                updatedAt: new Date().toISOString(),
-            }
-            setBudgets((prev) => [...prev, newBudget])
-            setIsDialogOpen((prev) => ({ ...prev, isDialogCreateBudgetOpen: false }))
-            setIsLoading(false)
-        }, 1000)
-    }
-
-    const handleUpdateBudget = (updatedBudget: IBudget) => {
-        setIsLoading(true)
-        setTimeout(() => {
-            setBudgets((prev) => prev.map((budget) => (budget.id === updatedBudget.id ? updatedBudget : budget)))
-            setIsDialogOpen((prev) => ({ ...prev, isDialogEditBudgetOpen: false, isDialogDetailBudgetOpen: false }))
-            setIsLoading(false)
-            setSelectedBudget(null)
-        }, 1000)
-    }
-
-    const handleDeleteBudget = (id: string) => {
-        setIsLoading(true)
-        setTimeout(() => {
-            setBudgets((prev) => prev.filter((budget) => budget.id !== id))
-            setIsDialogOpen((prev) => ({ ...prev, isDialogDeleteBudgetOpen: false }))
-            setIsLoading(false)
-            setSelectedBudget(null)
-        }, 1000)
-    }
 
     // Handle date range change
     const handleDateRangeChange = (range: DateRange | undefined) => {
@@ -255,17 +161,26 @@ export default function SpendingPlanForm() {
         }
     }
 
+    // Reusable function to handle dialog opening
+    const openDialog = (type: keyof IDialogFlags, data?: any) => {
+        if (type === "isDialogDetailBudgetOpen" && data) {
+            setSelectedBudget(data)
+        } else if (type === "isDialogDetailPlanOpen" && data) {
+            setSelectedPlan(data)
+        }
+        setIsDialogOpen((prev) => ({ ...prev, [type]: true }))
+    }
+
     return (
         <div className="mx-auto">
             {/* Stats Cards */}
             <div className="grid gap-4 md:grid-cols-3 mb-6">
-                <Card className="relative overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 group">
+                <Card className="relative overflow-hidden shadow-sm hover:shadow-md transition-all duration-300">
                     <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-indigo-500 to-blue-500"></div>
-                    <div className="absolute inset-0 bg-gradient-to-br from-indigo-50/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                     <CardHeader className="pb-2">
                         <div className="flex items-center justify-between">
                             <CardTitle className="text-lg">Kế hoạch chi tiêu</CardTitle>
-                            <div className="rounded-full bg-indigo-100 p-2.5 text-indigo-600 dark:bg-indigo-900 dark:text-indigo-300 transform transition-transform group-hover:scale-110 duration-300">
+                            <div className="rounded-full bg-indigo-100 p-2.5 text-indigo-600 dark:bg-indigo-900 dark:text-indigo-300">
                                 <ListChecks className="h-5 w-5" />
                             </div>
                         </div>
@@ -281,21 +196,20 @@ export default function SpendingPlanForm() {
                         <Button
                             variant="ghost"
                             size="sm"
-                            className="px-0 text-indigo-600 dark:text-indigo-400 group-hover:translate-x-1 transition-transform duration-300"
-                            onClick={() => setIsPlansTableOpen(true)}
+                            className=" text-indigo-600 dark:text-indigo-400 group-hover:translate-x-1 transition-transform duration-300"
+                            onClick={() => setIsDialogOpen((prev) => ({ ...prev, isDialogDetailPlanOpen: true }))}
                         >
                             Xem chi tiết <ArrowRightIcon className="ml-1 h-4 w-4" />
                         </Button>
                     </CardFooter>
                 </Card>
 
-                <Card className="relative overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 group">
+                <Card className="relative overflow-hidden shadow-sm hover:shadow-md transition-all duration-300">
                     <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-emerald-500 to-green-500"></div>
-                    <div className="absolute inset-0 bg-gradient-to-br from-emerald-50/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                     <CardHeader className="pb-2">
                         <div className="flex items-center justify-between">
                             <CardTitle className="text-lg">Ngân sách còn lại</CardTitle>
-                            <div className="rounded-full bg-emerald-100 p-2.5 text-emerald-600 dark:bg-emerald-900 dark:text-emerald-300 transform transition-transform group-hover:scale-110 duration-300">
+                            <div className="rounded-full bg-emerald-100 p-2.5 text-emerald-600 dark:bg-emerald-900 dark:text-emerald-300">
                                 <PiggyBank className="h-5 w-5" />
                             </div>
                         </div>
@@ -311,21 +225,20 @@ export default function SpendingPlanForm() {
                         <Button
                             variant="ghost"
                             size="sm"
-                            className="px-0 text-emerald-600 dark:text-emerald-400 group-hover:translate-x-1 transition-transform duration-300"
-                            onClick={() => setIsBudgetsTableOpen(true)}
+                            className=" text-emerald-600 dark:text-emerald-400 group-hover:translate-x-1 transition-transform duration-300"
+                            onClick={() => setIsDialogOpen((prev) => ({ ...prev, isDialogDetailBudgetOpen: true }))}
                         >
                             Xem chi tiết <ArrowRightIcon className="ml-1 h-4 w-4" />
                         </Button>
                     </CardFooter>
                 </Card>
 
-                <Card className="relative overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 group">
+                <Card className="relative overflow-hidden shadow-sm hover:shadow-md transition-all duration-300">
                     <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-rose-500 to-red-500"></div>
-                    <div className="absolute inset-0 bg-gradient-to-br from-rose-50/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                     <CardHeader className="pb-2">
                         <div className="flex items-center justify-between">
                             <CardTitle className="text-lg">Đã chi tiêu</CardTitle>
-                            <div className="rounded-full bg-rose-100 p-2.5 text-rose-600 dark:bg-rose-900 dark:text-rose-300 transform transition-transform group-hover:scale-110 duration-300">
+                            <div className="rounded-full bg-rose-100 p-2.5 text-rose-600 dark:bg-rose-900 dark:text-rose-300">
                                 <Banknote className="h-5 w-5" />
                             </div>
                         </div>
@@ -369,18 +282,18 @@ export default function SpendingPlanForm() {
                 <div className="flex gap-2 w-full md:w-auto">
                     <Button
                         variant="outline"
-                        className="w-full sm:w-auto group relative overflow-hidden"
+                        className="w-full sm:w-auto group"
                         onClick={() => setIsDialogOpen((prev) => ({ ...prev, isDialogCreateBudgetOpen: true }))}
                     >
-                        <div className="absolute inset-0 bg-gradient-to-r from-emerald-50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                         <CircleDollarSign className="mr-2 h-4 w-4 text-emerald-500 group-hover:animate-pulse" />
                         Tạo ngân sách
                     </Button>
+
                     <Button
-                        className="w-full sm:w-auto group relative overflow-hidden"
+                        variant="default"
+                        className="w-full sm:w-auto group"
                         onClick={() => setIsDialogOpen((prev) => ({ ...prev, isDialogCreatePlanOpen: true }))}
                     >
-                        <div className="absolute inset-0 bg-gradient-to-r from-indigo-600 to-indigo-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                         <Sparkles className="mr-2 h-4 w-4 group-hover:animate-pulse" />
                         Tạo kế hoạch
                     </Button>
@@ -401,7 +314,7 @@ export default function SpendingPlanForm() {
                                         {selectedMonth}
                                     </Badge>
                                 </div>
-                                <Button variant="outline" size="sm" onClick={() => setIsBudgetsTableOpen(true)} className="group">
+                                <Button variant="outline" size="sm" onClick={() => openDialog("isDialogDetailBudgetOpen")} className="group">
                                     <LineChart className="h-4 w-4 mr-2 text-muted-foreground group-hover:text-primary transition-colors" />
                                     Quản lý ngân sách
                                 </Button>
@@ -411,70 +324,60 @@ export default function SpendingPlanForm() {
                             <ScrollArea className="h-[280px] pr-4">
                                 <div className="space-y-4">
                                     {mockCategoryStatistics.map((stat) => {
-                                        // Tìm budget tương ứng với danh mục
                                         const budget = budgets.find(b => b.category === stat.category);
-                                        
+
                                         const handleCategoryClick = () => {
                                             if (budget) {
-                                                setSelectedBudget(budget);
-                                                setIsDialogOpen(prev => ({ ...prev, isDialogDetailBudgetOpen: true }));
+                                                openDialog("isDialogEditBudgetOpen", budget);
                                             }
                                         };
-                                        
+
                                         return (
-                                            <div key={stat.category} className="group hover:bg-muted/30 rounded-lg border border-muted p-3 transition-all duration-200">
-                                                {/* Header với tên danh mục và phần trăm */}
+                                            <div key={stat.category} className="group hover:bg-muted/30 rounded-lg border border-muted p-3 transition-all duration-200 cursor-pointer" onClick={handleCategoryClick}>
                                                 <div className="flex items-center justify-between mb-3">
                                                     <div className="flex items-center">
                                                         <div
-                                                            className={`w-3 h-3 rounded-full mr-2 ${
-                                                                stat.percentage > 100
-                                                                    ? "bg-rose-500"
-                                                                    : stat.percentage > 90
-                                                                        ? "bg-amber-500"
-                                                                        : "bg-emerald-500"
-                                                            } group-hover:animate-pulse`}
+                                                            className={`w-3 h-3 rounded-full mr-2 ${stat.percentage > 100
+                                                                ? "bg-rose-500"
+                                                                : stat.percentage > 90
+                                                                    ? "bg-amber-500"
+                                                                    : "bg-emerald-500"
+                                                                } group-hover:animate-pulse`}
                                                         ></div>
                                                         <span className="font-medium">{stat.category}</span>
                                                     </div>
                                                     <div className="text-sm">
                                                         <span
-                                                            className={`font-medium px-2 py-0.5 rounded-full ${
-                                                                stat.percentage > 100
-                                                                    ? "bg-rose-100 text-rose-600 dark:bg-rose-900/20 dark:text-rose-400"
-                                                                    : stat.percentage > 90
-                                                                        ? "bg-amber-100 text-amber-600 dark:bg-amber-900/20 dark:text-amber-400"
-                                                                        : "bg-emerald-100 text-emerald-600 dark:bg-emerald-900/20 dark:text-emerald-400"
-                                                            }`}
+                                                            className={`font-medium px-2 py-0.5 rounded-full ${stat.percentage > 100
+                                                                ? "bg-rose-100 text-rose-600 dark:bg-rose-900/20 dark:text-rose-400"
+                                                                : stat.percentage > 90
+                                                                    ? "bg-amber-100 text-amber-600 dark:bg-amber-900/20 dark:text-amber-400"
+                                                                    : "bg-emerald-100 text-emerald-600 dark:bg-emerald-900/20 dark:text-emerald-400"
+                                                                }`}
                                                         >
                                                             {stat.percentage}%
                                                         </span>
                                                     </div>
                                                 </div>
-                                                
-                                                {/* Khối chứa thanh tiến trình và các thông tin con số cùng hàng */}
+
                                                 <div className="flex items-center gap-3">
-                                                {/* Phần thanh tiến trình - thêm khả năng nhấp */}
-                                                    <div 
+                                                    <div
                                                         className="w-[40%] relative h-3 rounded-full bg-gray-200 dark:bg-gray-700 overflow-hidden cursor-pointer hover:h-4 transition-all duration-200"
                                                         onClick={handleCategoryClick}
                                                     >
                                                         <div
-                                                            className={`absolute left-0 top-0 h-full rounded-full ${
-                                                                stat.percentage > 100
-                                                                    ? "bg-rose-500"
-                                                                    : stat.percentage > 90
-                                                                        ? "bg-amber-500"
-                                                                        : "bg-emerald-500"
-                                                            }`}
+                                                            className={`absolute left-0 top-0 h-full rounded-full ${stat.percentage > 100
+                                                                ? "bg-rose-500"
+                                                                : stat.percentage > 90
+                                                                    ? "bg-amber-500"
+                                                                    : "bg-emerald-500"
+                                                                }`}
                                                             style={{ width: `${Math.min(stat.percentage, 100)}%` }}
                                                         ></div>
                                                     </div>
-                                                    
-                                                    {/* Các khối thông tin đặt trên cùng hàng với thanh tiến trình */}
+
                                                     <div className="w-[60%] flex space-x-3">
-                                                        {/* Đã chi */}
-                                                        <div 
+                                                        <div
                                                             className="flex-1 flex items-center gap-1 cursor-pointer"
                                                             onClick={handleCategoryClick}
                                                         >
@@ -486,9 +389,8 @@ export default function SpendingPlanForm() {
                                                                 <span className="font-medium text-xs">{formatCurrency(stat.totalSpent)}</span>
                                                             </div>
                                                         </div>
-                                                        
-                                                        {/* Ngân sách */}
-                                                        <div 
+
+                                                        <div
                                                             className="flex-1 flex items-center gap-1 cursor-pointer"
                                                             onClick={handleCategoryClick}
                                                         >
@@ -500,9 +402,8 @@ export default function SpendingPlanForm() {
                                                                 <span className="font-medium text-xs">{formatCurrency(stat.budgetAmount)}</span>
                                                             </div>
                                                         </div>
-                                                        
-                                                        {/* Giao dịch */}
-                                                        <div 
+
+                                                        <div
                                                             className="flex-1 flex items-center gap-1 cursor-pointer"
                                                             onClick={handleCategoryClick}
                                                         >
@@ -538,7 +439,9 @@ export default function SpendingPlanForm() {
                                     <Badge variant="outline" className="font-normal flex items-center">
                                         <CalendarDays className="h-3.5 w-3.5 mr-1" />7 ngày tới
                                     </Badge>
-                                    <Button variant="outline" size="sm" onClick={() => setIsPlansTableOpen(true)} className="group">
+                                    <Button variant="outline" size="sm"
+                                        onClick={() => openDialog("isDialogDetailPlanOpen")}
+                                        className="group">
                                         <ListChecks className="h-4 w-4 mr-2 text-muted-foreground group-hover:text-primary transition-colors" />
                                         Xem tất cả
                                     </Button>
@@ -553,10 +456,7 @@ export default function SpendingPlanForm() {
                                             <div
                                                 key={plan.id}
                                                 className="group rounded-lg border p-3 transition-all hover:bg-muted/50 hover:shadow-sm cursor-pointer relative overflow-hidden"
-                                                onClick={() => {
-                                                    setSelectedPlan(plan)
-                                                    setIsDialogOpen((prev) => ({ ...prev, isDialogDetailPlanOpen: true }))
-                                                }}
+                                                onClick={() => openDialog("isDialogEditPlanOpen", plan)}
                                             >
                                                 <div className="absolute top-0 left-0 w-1 h-full bg-indigo-500 opacity-0 group-hover:opacity-100 transition-opacity"></div>
                                                 <div className="flex items-center justify-between mb-1">
@@ -598,8 +498,9 @@ export default function SpendingPlanForm() {
                                                 Bạn chưa có kế hoạch chi tiêu nào sắp tới.
                                             </p>
                                             <Button
+                                                variant="default"
                                                 className="mt-3 group"
-                                                onClick={() => setIsDialogOpen((prev) => ({ ...prev, isDialogCreatePlanOpen: true }))}
+                                                onClick={() => openDialog("isDialogCreatePlanOpen")}
                                             >
                                                 <Sparkles className="mr-2 h-4 w-4 group-hover:animate-pulse" />
                                                 Tạo kế hoạch
@@ -613,140 +514,61 @@ export default function SpendingPlanForm() {
                 </div>
             </div>
 
-            {/* Plans Table Dialog */}
-            <Dialog open={isPlansTableOpen} onOpenChange={setIsPlansTableOpen}>
-                <DialogContent className="max-w-[90vw] w-full h-[80vh] p-0 overflow-hidden">
-                    <div className="h-full flex flex-col">
-                        <div className="p-6 pb-3 border-b">
-                            <div className="flex items-center justify-between flex-wrap gap-4">
-                                <div className="flex items-center gap-2">
-                                    <DialogTitle className="flex items-center">
-                                        <ListChecks className="h-5 w-5 mr-2 text-indigo-500" />
-                                        Kế hoạch chi tiêu
-                                    </DialogTitle>
-                                    <Badge variant="outline" className="ml-2 flex items-center">
-                                        <Sparkles className="h-3 w-3 mr-1" />
-                                        {transformedSpendingPlanData.length} mục
-                                    </Badge>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="flex-1 overflow-hidden">
-                            <DataTable
-                                columns={planColumns}
-                                data={transformedSpendingPlanData}
-                                config={{
-                                    ...dataTableConfig,
-                                    classNameOfScroll: "h-full",
-                                }}
-                                setConfig={setDataTableConfig}
-                                buttons={[
-                                    {
-                                        title: "Làm mới",
-                                        onClick: () => {
-                                            // Refresh data logic here
-                                        },
-                                        variants: "secondary",
-                                        icon: <RefreshCw className="ml-2 h-4 w-4" />,
-                                    },
-                                ]}
-                                onRowClick={(rowData) => {
-                                    const plan = spendingPlans.find((p) => p.id === rowData.id)
-                                    if (plan) {
-                                        setSelectedPlan(plan)
-                                        setIsPlansTableOpen(false)
-                                        setIsDialogOpen((prev) => ({ ...prev, isDialogDetailPlanOpen: true }))
-                                    }
-                                }}
-                                isLoading={isLoading}
-                                onOpenDelete={(id: string) => {
-                                    const plan = spendingPlans.find((p) => p.id === id)
-                                    if (plan) {
-                                        setSelectedPlan(plan)
-                                        setIsPlansTableOpen(false)
-                                        setIsDialogOpen((prev) => ({ ...prev, isDialogDeletePlanOpen: true }))
-                                    }
-                                }}
-                            />
-                        </div>
-                    </div>
-                </DialogContent>
-            </Dialog>
 
-            {/* Budgets Table Dialog */}
-            <Dialog open={isBudgetsTableOpen} onOpenChange={setIsBudgetsTableOpen}>
-                <DialogContent className="max-w-[90vw] w-full h-[80vh] p-0 overflow-hidden">
-                    <div className="h-full flex flex-col">
-                        <div className="p-6 pb-3 border-b">
-                            <div className="flex items-center justify-between flex-wrap gap-4">
-                                <div className="flex items-center gap-2">
-                                    <DialogTitle className="flex items-center">
-                                        <PiggyBank className="h-5 w-5 mr-2 text-emerald-500" />
-                                        Ngân sách chi tiêu
-                                    </DialogTitle>
-                                    <Badge variant="outline" className="ml-2 flex items-center">
-                                        <Coins className="h-3 w-3 mr-1" />
-                                        {transformedBudgetData.length} mục
-                                    </Badge>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="flex-1 overflow-hidden">
-                            <DataTable
-                                columns={budgetColumns}
-                                data={transformedBudgetData}
-                                config={{
-                                    ...budgetTableConfig,
-                                    classNameOfScroll: "h-full",
-                                }}
-                                setConfig={setBudgetTableConfig}
-                                buttons={[
-                                    {
-                                        title: "Làm mới",
-                                        onClick: () => {
-                                            // Refresh data logic here
-                                        },
-                                        variants: "secondary",
-                                        icon: <RefreshCw className="ml-2 h-4 w-4" />,
-                                    },
-                                ]}
-                                onRowClick={(rowData) => {
-                                    const budget = budgets.find((b) => b.id === rowData.id)
-                                    if (budget) {
-                                        setSelectedBudget(budget)
-                                        setIsBudgetsTableOpen(false)
-                                        setIsDialogOpen((prev) => ({ ...prev, isDialogDetailBudgetOpen: true }))
-                                    }
-                                }}
-                                isLoading={isLoading}
-                                onOpenDelete={(id: string) => {
-                                    const budget = budgets.find((b) => b.id === id)
-                                    if (budget) {
-                                        setSelectedBudget(budget)
-                                        setIsBudgetsTableOpen(false)
-                                        setIsDialogOpen((prev) => ({ ...prev, isDialogDeleteBudgetOpen: true }))
-                                    }
-                                }}
-                            />
-                        </div>
-                    </div>
-                </DialogContent>
-            </Dialog>
-
-            {/* SpendingPlanDialog component */}
             <SpendingPlanDialog
-                isDialogOpen={isDialogOpen}
-                setIsDialogOpen={setIsDialogOpen}
-                selectedPlan={selectedPlan}
-                selectedBudget={selectedBudget}
-                onCreatePlan={handleCreatePlan}
-                onUpdatePlan={handleUpdatePlan}
-                onCreateBudget={handleCreateBudget}
-                onUpdateBudget={handleUpdateBudget}
-                isLoading={isLoading}
-                onDeleteBudget={handleDeleteBudget}
+                plansDialog={{
+                    transformedSpendingPlanData,
+                    planColumns,
+                    dataTableConfig,
+                    setDataTableConfig,
+                    spendingPlans,
+                    setSelectedPlan: (updatedPlan: ISpendingPlan) =>
+                        setSpendingPlans((prev) =>
+                            prev.map((plan) => (plan.id === updatedPlan.id ? updatedPlan : plan))
+                        ),
+                    isLoading,
+                }}
+                budgetsDialog={{
+                    transformedBudgetData,
+                    budgetColumns,
+                    budgetTableConfig,
+                    setBudgetTableConfig,
+                    budgets,
+                    setSelectedBudget: (updatedBudget: IBudget) =>
+                        setBudgets((prev) =>
+                            prev.map((budget) => (budget.id === updatedBudget.id ? updatedBudget : budget))
+                        ),
+                    isLoading,
+                }}
+                sharedDialogElements={{
+                    isDialogOpen,
+                    setIsDialogOpen, // Shared for both plan and budget dialogs
+                    selectedPlan,
+                    selectedBudget,
+                }}
+                onCreatePlan={(newPlan: ISpendingPlan) =>
+                    setSpendingPlans((prev) => [...prev, newPlan])
+                }
+                onUpdatePlan={(updatedPlan: ISpendingPlan) =>
+                    setSpendingPlans((prev) =>
+                        prev.map((plan) => (plan.id === updatedPlan.id ? updatedPlan : plan))
+                    )
+                }
+                onCreateBudget={(newBudget: IBudget) =>
+                    setBudgets((prev) => [...prev, newBudget])
+                }
+                onUpdateBudget={(updatedBudget: IBudget) =>
+                    setBudgets((prev) =>
+                        prev.map((budget) => (budget.id === updatedBudget.id ? updatedBudget : budget))
+                    )
+                }
+                onDeleteBudget={(id: string) =>
+                    setBudgets((prev) => prev.filter((budget) => budget.id !== id))
+                }
             />
-        </div>
+
+
+        </div >
     )
 }
 

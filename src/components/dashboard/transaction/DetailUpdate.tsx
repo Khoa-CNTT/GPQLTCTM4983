@@ -384,7 +384,7 @@ export default function DetailUpdateTransaction({
           isLoading={
             updateTrackerTransactionProps
               ? updateTrackerTransactionProps.statusUpdateTrackerTransaction === 'pending' &&
-                updateTransactionProps.statusUpdateTransaction === 'pending'
+              updateTransactionProps.statusUpdateTransaction === 'pending'
               : updateTransactionProps.statusUpdateTransaction === 'pending'
           }
         >

@@ -42,12 +42,6 @@ export function BalanceChart({
 
   return (
     <Card className='flex flex-col'>
-      <CardHeader className='items-center pb-0'>
-        <CardTitle>Total Balance</CardTitle>
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.2 }}>
-          <CardDescription>{selected ? `Selected: ${selected.account}` : 'Số dư các tài khoản'}</CardDescription>
-        </motion.div>
-      </CardHeader>
       <CardContent className='flex-1 pb-0'>
         <ChartContainer config={chartConfig} className='mx-auto aspect-square' ref={chartRef}>
           <PieChart>

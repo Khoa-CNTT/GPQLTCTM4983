@@ -239,6 +239,18 @@ export const mockBudgets: IBudget[] = [
         updatedAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
     },
     {
+        id: "11",
+        category: "Ăn vặt",
+        budgetAmount: 300000,
+        spentAmount: 150000,
+        remainingAmount: 150000,
+        startDate: new Date(new Date().setDate(1)).toISOString(), // First day of current month
+        endDate: new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0).toISOString(), // Last day of current month
+        status: "active",
+        createdAt: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(),
+        updatedAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
+    },
+    {
         id: "2",
         category: "Ăn uống",
         budgetAmount: 2000000,
