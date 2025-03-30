@@ -219,6 +219,28 @@ export const handleUpdateTrackerTxType = ({
   })
 }
 
+export const handleDeleteTrackerTxType = ({
+  id,
+  hookDelete,
+  callBackOnSuccess
+}: {
+  id: string
+  hookDelete: any
+  callBackOnSuccess: (actions: ('getAllTrackerTransactionType' | 'getExpenditureFund')[]) => void
+}) => {
+  hookDelete(
+    { id },
+    {
+      onSuccess: (res: ITrackerTransactionResponse) => {
+        if (res.statusCode === 200 || res.statusCode === 201) {
+          callBackOnSuccess(['getAllTrackerTransactionType', 'getExpenditureFund'])
+          toast.success('Delete tracker transaction type successfully!')
+        }
+      }
+    }
+  )
+}
+
 export const initTrackerTransactionDataTable = (
   isGetAdvancedPending: boolean,
   getAdvancedData: IAdvancedTrackerTransactionResponse | undefined,

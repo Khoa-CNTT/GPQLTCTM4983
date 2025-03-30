@@ -38,6 +38,7 @@ export interface IEditTrackerTypeDialogProps {
     setIsCreating: React.Dispatch<React.SetStateAction<boolean>>
   ) => void
   handleUpdateTrackerType: (data: ITrackerTransactionTypeBody) => void
+  handleDeleteTrackerType: (id: string) => void
   expenditureFund: { label: string; value: string | number }[]
 }
 

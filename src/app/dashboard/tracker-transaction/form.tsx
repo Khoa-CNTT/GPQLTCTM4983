@@ -69,7 +69,8 @@ import {
   modifyFlatListData,
   handleDeleteTrackerTransaction,
   handleDeleteMultipleTrackerTransaction,
-  modifiedTrackerTypeForComboBox
+  modifiedTrackerTypeForComboBox,
+  handleDeleteTrackerTxType
 } from './handlers'
 import {
   GET_ADVANCED_TRANSACTION_KEY,
@@ -157,7 +158,8 @@ export default function TrackerTransactionForm() {
     },
     fundId
   )
-  const { getAllTrackerTransactionType, createTrackerTxType, updateTrackerTxType } = useTrackerTransactionType()
+  const { getAllTrackerTransactionType, createTrackerTxType, updateTrackerTxType, deleteTrackerType } =
+    useTrackerTransactionType()
   const { getUnclassifiedTransactions, updateTransaction, statusUpdate: statusUpdateTransaction } = useTransaction()
   const { dataTrackerTransactionType, refetchTrackerTransactionType } = getAllTrackerTransactionType(fundId)
   const { statisticData } = getStatisticData(dates || {}, fundId)
@@ -702,6 +704,12 @@ export default function TrackerTransactionForm() {
               callBackOnSuccess: callBackRefetchTrackerTransactionPage
             })
           },
+          handleDeleteTrackerType: (id: string) =>
+            handleDeleteTrackerTxType({
+              id,
+              hookDelete: deleteTrackerType,
+              callBackOnSuccess: callBackRefetchTrackerTransactionPage
+            }),
           accountSourceData: getAllAccountSourceData?.data || [],
           typeOfTrackerType,
           setTypeOfTrackerType,

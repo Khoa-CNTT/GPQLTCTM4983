@@ -128,6 +128,7 @@ export interface ISharedDialogElements {
     setIsCreating: React.Dispatch<React.SetStateAction<boolean>>
   ) => void
   handleUpdateTrackerType: (data: ITrackerTransactionTypeBody) => void
+  handleDeleteTrackerType: (id: string) => void
   accountSourceData: IAccountSource[]
   typeOfTrackerType: ETypeOfTrackerTransactionType
   setTypeOfTrackerType: React.Dispatch<React.SetStateAction<ETypeOfTrackerTransactionType>>

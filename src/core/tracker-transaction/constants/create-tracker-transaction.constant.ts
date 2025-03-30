@@ -17,6 +17,7 @@ export const defineCreateTrackerTransactionFormBody = ({
   setTypeOfEditTrackerType,
   handleCreateTrackerType,
   handleUpdateTrackerType,
+  handleDeleteTrackerType,
   expenditureFund,
   directionCategoryMap,
   onCategoryChange,
@@ -105,6 +106,7 @@ export const defineCreateTrackerTransactionFormBody = ({
           setType: setTypeOfEditTrackerType,
           handleCreateTrackerType,
           handleUpdateTrackerType,
+          handleDeleteTrackerType,
           expenditureFund
         }),
         label: 'Tracker Transaction Type'

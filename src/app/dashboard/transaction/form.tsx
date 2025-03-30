@@ -49,7 +49,8 @@ import {
   handleCreateTrackerTxType,
   updateCacheDataTodayTxClassifyFeat,
   modifiedTrackerTypeForComboBox,
-  handleUpdateTrackerTxType
+  handleUpdateTrackerTxType,
+  handleDeleteTrackerTxType
 } from '../tracker-transaction/handlers'
 import {
   ITrackerTransactionType,
@@ -128,7 +129,8 @@ export default function TransactionForm() {
   } = useTransaction()
   const { getAllAccountSource } = useAccountSource()
   const { classifyTransaction } = useTrackerTransaction()
-  const { getAllTrackerTransactionType, createTrackerTxType, updateTrackerTxType } = useTrackerTransactionType()
+  const { getAllTrackerTransactionType, createTrackerTxType, updateTrackerTxType, deleteTrackerType } =
+    useTrackerTransactionType()
   const { user, fundId } = useStoreLocal()
   const { getMe } = useUser()
   const socket = useSocket()
@@ -567,6 +569,12 @@ export default function TransactionForm() {
                 callBackOnSuccess: callBackRefetchTransactionPage
               })
             },
+            handleDeleteTrackerType: (id: string) =>
+              handleDeleteTrackerTxType({
+                id,
+                hookDelete: deleteTrackerType,
+                callBackOnSuccess: callBackRefetchTransactionPage
+              }),
             expenditureFund: modifiedTrackerTypeForComboBox(getAllExpenditureFundData?.data || [])
           }}
           deleteProps={{

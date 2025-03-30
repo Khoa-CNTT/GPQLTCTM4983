@@ -7,7 +7,6 @@ import { PlusIcon, SaveIcon, X } from 'lucide-react'
 import { IEditTrackerTypeDialogProps } from '@/core/tracker-transaction-type/models/tracker-transaction-type.interface'
 import CreateTrackerTypeForm from './CreateTrackerTypeForm'
 import { ETypeOfTrackerTransactionType } from '@/core/tracker-transaction-type/models/tracker-transaction-type.enum'
-import { useTrackerTransactionType } from '@/core/tracker-transaction-type/hooks'
 import AccordionEditTrackerType from './AccordionEditTrackerType'
 import { useTranslation } from 'react-i18next'
 
@@ -20,30 +19,17 @@ export default function EditTrackerTypeDialog({
   setType,
   handleCreateTrackerType,
   handleUpdateTrackerType,
+  handleDeleteTrackerType,
   expenditureFund
 }: IEditTrackerTypeDialogProps) {
-  const { deleteTrackerType } = useTrackerTransactionType()
   const [isCreating, setIsCreating] = useState<boolean>(false)
-  const [isUpdate, setIsUpdate] = useState<boolean>(false)
   const [valueSearch, setValueSearch] = useState<string>('')
   const filteredDataArr = dataArr?.filter((data) => data.label.toLowerCase().includes(valueSearch.trim().toLowerCase()))
-  const handleDeleteTrackerType = (id: string) => {
-    deleteTrackerType({ id })
-    setOpenEditDialog(false)
-  }
-  const onHandleUpdate = () => {
-    if (isUpdate) {
-      formRefEdit.current?.requestSubmit()
-    }
-    setIsUpdate(!isUpdate)
-  }
 
   const formRefCreate = useRef<HTMLFormElement>(null)
-  const formRefEdit = useRef<HTMLFormElement>(null)
   useEffect(() => {
     if (!openEditDialog) {
       setIsCreating(false)
-      setIsUpdate(false)
       setType(typeDefault)
     }
   }, [openEditDialog])

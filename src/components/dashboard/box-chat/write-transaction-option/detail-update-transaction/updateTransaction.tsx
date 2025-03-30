@@ -73,7 +73,8 @@ export const UpdateTransaction = (props: IUpdateTransactionProps) => {
             handleCreateTrackerType: (
               data: ITrackerTransactionTypeBody,
               setIsCreating: React.Dispatch<React.SetStateAction<boolean>>
-            ) => {}
+            ) => {},
+            handleDeleteTrackerType: (id: string) => {}
           }
         })}
         formSchema={updateTransactionSchema}

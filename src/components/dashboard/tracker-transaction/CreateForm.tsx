@@ -24,6 +24,7 @@ interface ICreateTrackerTransactionFormProps {
     setIsCreating: React.Dispatch<React.SetStateAction<boolean>>
   ) => void
   handleUpdateTrackerType: (data: ITrackerTransactionTypeBody) => void
+  handleDeleteTrackerType: (id: string) => void
   formCreateRef: React.RefObject<HTMLFormElement>
   expenditureFund: { label: string; value: string | number }[]
 }
@@ -38,6 +39,7 @@ export default function CreateTrackerTransactionForm({
   handleCreate,
   handleCreateTrackerType,
   handleUpdateTrackerType,
+  handleDeleteTrackerType,
   expenditureFund
 }: ICreateTrackerTransactionFormProps) {
   const [currentDirection, setCurrentDirection] = useState<ETypeOfTrackerTransactionType>(
@@ -110,6 +112,7 @@ export default function CreateTrackerTransactionForm({
         setTypeOfEditTrackerType,
         handleCreateTrackerType,
         handleUpdateTrackerType,
+        handleDeleteTrackerType,
         expenditureFund,
         directionCategoryMap,
         onCategoryChange: handleCategoryChange

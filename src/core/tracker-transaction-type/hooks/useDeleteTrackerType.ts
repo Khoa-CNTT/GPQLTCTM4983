@@ -8,9 +8,6 @@ export const useDeleteTrackerType = (opts?: IUseQueryHookOptions) => {
     pathUrl: trackerTransactionTypesRoutes.delete,
     method: 'delete',
     mutateOption: {
-      onSuccess: () => {
-        toast.success('Delete Tracker type successfully 🚀 ')
-      },
       onError: (error) => {
         const errorMessage =
           (error as any)?.payload?.details[0] || (error as any)?.payload?.message || 'Delete failed, please try again!'

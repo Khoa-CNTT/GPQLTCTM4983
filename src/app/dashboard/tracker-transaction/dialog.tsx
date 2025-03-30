@@ -35,6 +35,7 @@ export default function TrackerTransactionDialog({
         typeDefault: sharedDialogElements.typeOfTrackerType,
         handleCreateTrackerType: sharedDialogElements.handleCreateTrackerType,
         handleUpdateTrackerType: sharedDialogElements.handleUpdateTrackerType,
+        handleDeleteTrackerType: sharedDialogElements.handleDeleteTrackerType,
         expenditureFund: sharedDialogElements.expenditureFund
       },
       formClassifyRef,
@@ -73,6 +74,7 @@ export default function TrackerTransactionDialog({
       formCreateRef,
       handleCreateTrackerType: sharedDialogElements.handleCreateTrackerType,
       handleUpdateTrackerType: sharedDialogElements.handleUpdateTrackerType,
+      handleDeleteTrackerType: sharedDialogElements.handleDeleteTrackerType,
       handleCreate: createTrackerTransactionDialog.handleCreate,
       expenditureFund: sharedDialogElements.expenditureFund
     }),
@@ -133,6 +135,7 @@ export default function TrackerTransactionDialog({
             typeDefault: sharedDialogElements.typeOfTrackerType,
             handleCreateTrackerType: sharedDialogElements.handleCreateTrackerType,
             handleUpdateTrackerType: sharedDialogElements.handleUpdateTrackerType,
+            handleDeleteTrackerType: sharedDialogElements.handleDeleteTrackerType,
             expenditureFund: sharedDialogElements.expenditureFund
           },
           setOpenEditTrackerTxTypeDialog,
