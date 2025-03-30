@@ -27,7 +27,7 @@ export function EmojiPicker({ onChangeValue, className, disabled }: EEmojiPicker
   return (
     <div className={cn(className)}>
       <Popover>
-        <PopoverTrigger disabled={disabled}>
+        <PopoverTrigger asChild>
           <Button variant={'outline'} className='h-10 w-10' type='button' disabled={disabled}>
             {emoji?.native}
           </Button>
