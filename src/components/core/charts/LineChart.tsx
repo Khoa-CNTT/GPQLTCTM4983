@@ -13,22 +13,25 @@ import {
   ChartTooltipContent
 } from '@/components/ui/chart'
 import { ICashFlowAnalysisStatistic } from '@/core/overview/models/overview.interface'
-
-const chartConfig = {
-  transactions: {
-    label: 'Transactions'
-  },
-  incoming: {
-    label: 'Incoming',
-    color: 'hsl(142.1 76.2% 36.3%)' // Green
-  },
-  outgoing: {
-    label: 'Outgoing',
-    color: 'hsl(346.8 77.2% 49.8%)' // Red
-  }
-} satisfies ChartConfig
+import { useTranslation } from 'react-i18next'
 
 export function LineChart({ chartData }: { chartData: ICashFlowAnalysisStatistic[] }) {
+  const { t, i18n } = useTranslation(['overview'])
+
+  const chartConfig = {
+    transactions: {
+      label: t('dashboard.chart.transactions', 'Transactions')
+    },
+    incoming: {
+      label: t('dashboard.chart.incoming', 'Incoming'),
+      color: 'hsl(142.1 76.2% 36.3%)'
+    },
+    outgoing: {
+      label: t('dashboard.chart.outgoing', 'Outgoing'),
+      color: 'hsl(346.8 77.2% 49.8%)'
+    }
+  } satisfies ChartConfig
+
   return (
     <ChartContainer config={chartConfig} className='aspect-auto h-[250px] w-full'>
       <AreaChart data={chartData}>
@@ -51,7 +54,7 @@ export function LineChart({ chartData }: { chartData: ICashFlowAnalysisStatistic
           minTickGap={32}
           tickFormatter={(value) => {
             const date = new Date(value)
-            return date.toLocaleDateString('en-US', {
+            return date.toLocaleDateString(i18n.language === 'vi' ? 'vi-VN' : 'en-US', {
               month: 'short',
               day: 'numeric'
             })
@@ -62,12 +65,12 @@ export function LineChart({ chartData }: { chartData: ICashFlowAnalysisStatistic
           content={
             <ChartTooltipContent
               labelFormatter={(value) => {
-                return new Date(value).toLocaleDateString('en-US', {
+                return new Date(value).toLocaleDateString(i18n.language === 'vi' ? 'vi-VN' : 'en-US', {
                   month: 'short',
                   day: 'numeric'
                 })
               }}
-              formatter={(value) => `$${value.toLocaleString()}`}
+              formatter={(value) => `${value.toLocaleString()}đ`}
               indicator='dot'
             />
           }

@@ -433,7 +433,7 @@ export default function TrackerTransactionForm() {
                         statisticData?.data?.total?.rate && statisticData.data.total.rate !== 'none'
                           ? (statisticData.data.total.rate.startsWith('-') ? '' : '+') + statisticData.data.total.rate
                           : '0'
-                      }% left this month`}
+                      }% ${t('leftThisMonth')}`}
                     </span>
                   </p>
                 </div>
@@ -468,7 +468,7 @@ export default function TrackerTransactionForm() {
                     )}
                     {(statisticData?.data?.income?.rate?.[0] === '-' ? '' : '+') +
                       (statisticData?.data?.income.rate || '0') +
-                      '% from last week'}
+                      `% ${t('fromLastWeek')}`}
                   </p>
                 </div>
               </div>
@@ -503,7 +503,7 @@ export default function TrackerTransactionForm() {
                     {/* <span>{t('notiExpense', { percentage: 15 })}</span> */}
                     {(statisticData?.data?.expense?.rate?.[0] === '-' ? '' : '+') +
                       (statisticData?.data?.expense.rate || '0') +
-                      '% from last week'}
+                      `% ${t('fromLastWeek')}`}
                   </p>
                 </div>
               </div>

@@ -13,6 +13,7 @@ import {
 } from '@/components/ui/breadcrumb'
 import { navItems } from '@/constants/routes'
 import { NavItem } from '@/types/core.i'
+import { useTranslation } from 'react-i18next'
 
 function findNavItem(path: string, items = navItems): NavItem | undefined {
   for (const item of items) {
@@ -31,6 +32,30 @@ function findNavItem(path: string, items = navItems): NavItem | undefined {
 
 export default function BreadcrumbHeader() {
   const path = usePathname()
+  const { t } = useTranslation(['overview', 'common'])
+
+  const translateBreadcrumbTitle = (title: string, path: string): string => {
+    // Chuyển đổi title dựa vào path
+    if (path === '/dashboard') {
+      return t('breadcrumb.overview', 'Overview')
+    }
+
+    // Mapping các path khác với các key trong file dịch
+    const pathTranslationMap: Record<string, string> = {
+      '/dashboard/profile': 'common:breadcrumb.profile',
+      '/dashboard/transaction': 'common:breadcrumb.transaction',
+      '/dashboard/tracker-transaction': 'common:breadcrumb.tracker_transaction',
+      '/dashboard/account-source': 'common:breadcrumb.account_source',
+      '/dashboard/expenditure-fund': 'common:breadcrumb.expenditure_fund'
+    }
+
+    // Nếu path được định nghĩa trong map, trả về bản dịch tương ứng
+    if (pathTranslationMap[path]) {
+      return t(pathTranslationMap[path], title)
+    }
+
+    return title
+  }
 
   const breadcrumbItems = useMemo(() => {
     const segments = path.split('/').filter((seg) => seg)
@@ -38,13 +63,14 @@ export default function BreadcrumbHeader() {
 
     return paths.map((path, index) => {
       const navItem = findNavItem(path)
+      const title = navItem?.title || 'Dashboard'
       return {
-        title: navItem?.title || 'Dashboard',
+        title: translateBreadcrumbTitle(title, path),
         href: path,
         isLast: index === paths.length - 1
       }
     })
-  }, [path])
+  }, [path, t])
 
   return (
     <div className='select-none'>
@@ -52,7 +78,7 @@ export default function BreadcrumbHeader() {
         <BreadcrumbList>
           <BreadcrumbItem>
             <BreadcrumbLink asChild className='font-semibold text-foreground hover:text-foreground'>
-              <Link href='/'>Home</Link>
+              <Link href='/'>{t('common:breadcrumb.home', 'Home')}</Link>
             </BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbSeparator />

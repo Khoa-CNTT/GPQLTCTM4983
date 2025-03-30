@@ -5,6 +5,8 @@
   "notiTotalBalance": "{{percentage}}% from last month",
   "notiIncoming": "{{percentage}}% from yesterday",
   "notiExpense": "{{percentage}}% from yesterday",
+  "leftThisMonth": "left this month",
+  "fromLastWeek": "from last week",
   "charts": {
     "expenseChart": {
       "label": "Expense Chart",

@@ -121,7 +121,12 @@ export const defineContentCreateTrackerTxTypeDialog = ({
   )
 }
 
-export const initTrackerTransactionTab = (data: IChartData | undefined, t: TFunction<any>, heightDonut?: string, checkHeightRange?: boolean): ITabConfig => {
+export const initTrackerTransactionTab = (
+  data: IChartData | undefined,
+  t: TFunction<any>,
+  heightDonut?: string,
+  checkHeightRange?: boolean
+): ITabConfig => {
   return {
     default: 'expenseChart',
     tabContents: [
@@ -134,11 +139,13 @@ export const initTrackerTransactionTab = (data: IChartData | undefined, t: TFunc
               <div className='mt-10 flex flex-col items-center justify-center'>
                 <Image
                   src={NoDataPlaceHolder}
-                  alt="No data available"
+                  alt={t('common:table.noDataText', 'No data available')}
                   width={checkHeightRange ? 110 : 150}
                   height={checkHeightRange ? 110 : 150}
                 />
-                <span className='mt-2 text-sm font-semibold text-foreground'>No data available</span>
+                <span className='mt-2 text-sm font-semibold text-foreground'>
+                  {t('common:table.noDataText', 'No data available')}
+                </span>
               </div>
             )}
           </div>
@@ -150,16 +157,22 @@ export const initTrackerTransactionTab = (data: IChartData | undefined, t: TFunc
         content: (
           <div className='flex w-full items-center justify-center'>
             {data && data.incomingTransactionTypeStats?.length > 0 ? (
-              <DonutChart data={data.incomingTransactionTypeStats} className={`w-full ${checkHeightRange ? 'h-[14rem]' : 'h-[17rem]'}`} types='donut' />
+              <DonutChart
+                data={data.incomingTransactionTypeStats}
+                className={`w-full ${checkHeightRange ? 'h-[14rem]' : 'h-[17rem]'}`}
+                types='donut'
+              />
             ) : (
               <div className='mt-10 flex flex-col items-center justify-center'>
                 <Image
                   src={NoDataPlaceHolder}
-                  alt="No data available"
+                  alt={t('common:table.noDataText', 'No data available')}
                   width={checkHeightRange ? 110 : 150}
                   height={checkHeightRange ? 110 : 150}
                 />
-                <span className='mt-2 text-sm font-semibold text-foreground'>No data available</span>
+                <span className='mt-2 text-sm font-semibold text-foreground'>
+                  {t('common:table.noDataText', 'No data available')}
+                </span>
               </div>
             )}
           </div>
@@ -254,4 +267,3 @@ export enum EPaymentEvents {
   REFETCH_FAILED = 'refetchFailed',
   REFETCH_STARTED = 'refetchStarted'
 }
-

@@ -13,7 +13,8 @@ import { cn, formatDateTimeVN } from '@/libraries/utils'
 import { Atom } from 'react-loading-indicators'
 import { emptyStateItemVariants, emptyStateVariants } from '../dashboard/DataTable'
 import EmptyBox from '@/images/empty-box.png'
-import { t } from 'i18next'
+import { useTranslation } from 'react-i18next'
+
 export interface IFlatListData {
   id: string
   amount: string
@@ -31,6 +32,8 @@ interface IFlatListProps {
 
 export default function FlatList({ data, onClick, isLoading, className, viewportHeight }: IFlatListProps) {
   const [heightFlatList, setHeightFlatList] = useState('')
+  const { t } = useTranslation(['common'])
+
   useEffect(() => {
     if (viewportHeight && viewportHeight >= 600 && viewportHeight <= 771) {
       setHeightFlatList('py-4 min-h-[166px] max-h-[200px]')
@@ -47,7 +50,7 @@ export default function FlatList({ data, onClick, isLoading, className, viewport
     }
   }, [viewportHeight])
   return (
-    <Card className='h-full w-50px to-muted/20'>
+    <Card className='w-50px h-full to-muted/20'>
       {data?.length > 0 ? (
         <ScrollArea className={cn('h-[220px] max-h-[220px] w-full rounded-md p-3', className)}>
           {data.map((item) => (
@@ -72,10 +75,11 @@ export default function FlatList({ data, onClick, isLoading, className, viewport
                   <div className='flex items-center justify-between'>
                     <div className='flex items-center gap-2'>
                       <div
-                        className={`${item.direction === ETypeOfTrackerTransactionType.EXPENSE
-                          ? 'text-destructive'
-                          : 'text-secondary'
-                          }`}
+                        className={`${
+                          item.direction === ETypeOfTrackerTransactionType.EXPENSE
+                            ? 'text-destructive'
+                            : 'text-secondary'
+                        }`}
                       >
                         {item.direction === ETypeOfTrackerTransactionType.EXPENSE ? '↓' : '↑'}
                       </div>
@@ -121,11 +125,11 @@ export default function FlatList({ data, onClick, isLoading, className, viewport
             <Atom color='#be123c' size='small' textColor='#be123c' />
           </motion.div>
           <motion.span variants={emptyStateItemVariants} className='font-semibold'>
-            Loading
+            {t('loading')}
           </motion.span>
         </motion.div>
       ) : (
-        <div className={`flex  flex-col items-center justify-center  ${heightFlatList}`}>
+        <div className={`flex flex-col items-center justify-center ${heightFlatList}`}>
           <div className='relative'>
             <Image
               priority
@@ -136,7 +140,7 @@ export default function FlatList({ data, onClick, isLoading, className, viewport
               className='opacity-80'
             />
           </div>
-          <p className='text-xs text-muted-foreground'>No transactions available at the moment</p>
+          <p className='text-xs text-muted-foreground'>{t('noTransactionsAvailable')}</p>
         </div>
       )}
     </Card>

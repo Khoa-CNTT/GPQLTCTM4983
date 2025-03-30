@@ -29,6 +29,7 @@ import {
   startOfDay,
   endOfDay
 } from 'date-fns'
+import { vi, Locale } from 'date-fns/locale'
 import { CheckIcon, ChevronDownIcon, ChevronLeftIcon, ChevronRightIcon, ChevronUpIcon, Clock } from 'lucide-react'
 import { DayPicker, Matcher, TZDate } from 'react-day-picker'
 
@@ -36,6 +37,7 @@ import { cn } from '@/libraries/utils'
 import { Button, buttonVariants } from '@/components/ui/button'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { ScrollArea } from '@/components/ui/scroll-area'
+import { useTranslation } from 'react-i18next'
 
 export type CalendarProps = Omit<React.ComponentProps<typeof DayPicker>, 'mode'>
 
@@ -80,6 +82,9 @@ export const DateTimePicker = React.forwardRef<HTMLDivElement, DateTimePickerPro
     },
     ref
   ) => {
+    const { i18n, t } = useTranslation()
+    const locale = i18n.language === 'vi' ? vi : undefined
+
     const [open, setOpen] = useState(false)
     const [monthYearPicker, setMonthYearPicker] = useState<'month' | 'year' | false>(false)
     const initDate = useMemo(() => new TZDate(value || new Date(), timezone), [value, timezone])
@@ -104,7 +109,7 @@ export const DateTimePicker = React.forwardRef<HTMLDivElement, DateTimePickerPro
         }
         setDate(d)
       },
-      [setDate, setMonth]
+      [date, setDate, min, max]
     )
     const onSubmit = useCallback(() => {
       onChange(new Date(date))
@@ -142,13 +147,24 @@ export const DateTimePicker = React.forwardRef<HTMLDivElement, DateTimePickerPro
       return open ? date : initDate
     }, [date, value, open])
 
+    const getPickDateText = () => {
+      return i18n.language === 'vi' ? 'Chọn ngày' : 'Pick a date'
+    }
+
     const displayFormat = useMemo(() => {
-      if (!displayValue) return 'Pick a date'
-      return format(
-        displayValue,
-        `${showTime ? 'MMM' : 'MMMM'} d, yyyy${showTime ? (use12HourFormat ? ', hh:mm:ss a' : ', HH:mm:ss') : ''}`
-      )
-    }, [displayValue, showTime, use12HourFormat])
+      if (!displayValue) return getPickDateText()
+      const formatOptions = { locale }
+
+      if (showTime) {
+        if (use12HourFormat) {
+          return format(displayValue, 'MMM d, yyyy, hh:mm:ss a', { locale })
+        } else {
+          return format(displayValue, 'MMM d, yyyy, HH:mm:ss', { locale })
+        }
+      } else {
+        return format(displayValue, 'MMMM d, yyyy', { locale })
+      }
+    }, [displayValue, showTime, use12HourFormat, locale])
 
     return (
       <div ref={ref} className={className}>
@@ -181,7 +197,7 @@ export const DateTimePicker = React.forwardRef<HTMLDivElement, DateTimePickerPro
                   size='icon'
                   onClick={() => setMonthYearPicker(monthYearPicker === 'month' ? false : 'month')}
                 >
-                  <span className=''>{format(month, 'MMMM')}</span>{' '}
+                  <span className=''>{format(month, 'MMMM', { locale })}</span>{' '}
                 </Button>
                 <Button
                   className='w-full p-2'
@@ -189,7 +205,7 @@ export const DateTimePicker = React.forwardRef<HTMLDivElement, DateTimePickerPro
                   size='icon'
                   onClick={() => setMonthYearPicker(monthYearPicker ? false : 'year')}
                 >
-                  <span className=''>{format(month, 'yyyy')}</span>{' '}
+                  <span className=''>{format(month, 'yyyy', { locale })}</span>{' '}
                 </Button>
               </div>
               <div className={cn('flex space-x-2', monthYearPicker ? 'hidden' : '')}>
@@ -207,6 +223,7 @@ export const DateTimePicker = React.forwardRef<HTMLDivElement, DateTimePickerPro
                 endMonth={endMonth}
                 disabled={[max ? { after: max } : null, min ? { before: min } : null].filter(Boolean) as Matcher[]}
                 onMonthChange={setMonth}
+                locale={locale}
                 classNames={{
                   dropdowns: 'flex w-full gap-2',
                   months: 'flex w-full h-fit',
@@ -244,6 +261,7 @@ export const DateTimePicker = React.forwardRef<HTMLDivElement, DateTimePickerPro
                 onChange={onMonthYearChanged}
                 minDate={minDate}
                 maxDate={maxDate}
+                locale={locale}
                 className={cn('absolute bottom-0 left-0 right-0 top-0', monthYearPicker ? '' : 'hidden')}
               />
             </div>
@@ -254,10 +272,11 @@ export const DateTimePicker = React.forwardRef<HTMLDivElement, DateTimePickerPro
                 use12HourFormat={use12HourFormat}
                 min={minDate}
                 max={maxDate}
+                locale={locale}
               />
             )}
             <Button className='mt-4 w-full' onClick={onSubmit}>
-              Done
+              {i18n.language === 'vi' ? 'Xong' : 'Done'}
             </Button>
           </PopoverContent>
         </Popover>
@@ -274,6 +293,7 @@ function MonthYearPicker({
   maxDate,
   mode = 'month',
   onChange,
+  locale,
   className
 }: {
   value: Date
@@ -281,6 +301,7 @@ function MonthYearPicker({
   minDate?: Date
   maxDate?: Date
   onChange: (value: Date, mode: 'month' | 'year') => void
+  locale?: Locale
   className?: string
 }) {
   const yearRef = useRef<HTMLDivElement>(null)
@@ -295,7 +316,7 @@ function MonthYearPicker({
       years.push({ value: i, label: i.toString(), disabled })
     }
     return years
-  }, [value])
+  }, [value, minDate, maxDate])
   const months = useMemo(() => {
     const months: TimeOption[] = []
     for (let i = 0; i < 12; i++) {
@@ -304,10 +325,10 @@ function MonthYearPicker({
       const endM = endOfMonth(setMonthFns(value, i))
       if (minDate && endM < minDate) disabled = true
       if (maxDate && startM > maxDate) disabled = true
-      months.push({ value: i, label: format(new Date(0, i), 'MMM'), disabled })
+      months.push({ value: i, label: format(new Date(0, i), 'MMM', { locale }), disabled })
     }
     return months
-  }, [value])
+  }, [value, minDate, maxDate, locale])
 
   const onYearChange = useCallback(
     (v: TimeOption) => {
@@ -379,14 +400,17 @@ function TimePicker({
   onChange,
   use12HourFormat,
   min,
-  max
+  max,
+  locale
 }: {
   use12HourFormat?: boolean
   value: Date
   onChange: (date: Date) => void
   min?: Date
   max?: Date
+  locale?: Locale
 }) {
+  const { i18n, t } = useTranslation()
   const formatStr = useMemo(
     () => (use12HourFormat ? 'yyyy-MM-dd hh:mm:ss.SSS a xxxx' : 'yyyy-MM-dd HH:mm:ss.SSS xxxx'),
     [use12HourFormat]
@@ -398,11 +422,11 @@ function TimePicker({
 
   useEffect(() => {
     onChange(buildTime({ use12HourFormat, value, formatStr, hour, minute, second, ampm }))
-  }, [hour, minute, second, ampm, formatStr, use12HourFormat])
+  }, [hour, minute, second, ampm, formatStr, use12HourFormat, onChange, value])
 
   const _hourIn24h = useMemo(() => {
     return use12HourFormat ? (hour % 12) + ampm * 12 : hour
-  }, [value, use12HourFormat, ampm])
+  }, [use12HourFormat, hour, ampm])
 
   const hours: TimeOption[] = useMemo(
     () =>
@@ -458,8 +482,8 @@ function TimePicker({
     const startD = startOfDay(value)
     const endD = endOfDay(value)
     return [
-      { value: AM_VALUE, label: 'AM' },
-      { value: PM_VALUE, label: 'PM' }
+      { value: AM_VALUE, label: i18n.language === 'vi' ? 'SÁNG' : 'AM' },
+      { value: PM_VALUE, label: i18n.language === 'vi' ? 'CHIỀU' : 'PM' }
     ].map((v) => {
       let disabled = false
       const start = addHours(startD, v.value * 12)
@@ -468,7 +492,7 @@ function TimePicker({
       if (max && start > max) disabled = true
       return { ...v, disabled }
     })
-  }, [value, min, max])
+  }, [value, min, max, i18n.language])
 
   const [open, setOpen] = useState(false)
 
@@ -506,26 +530,26 @@ function TimePicker({
       }
       setHour(v.value)
     },
-    [setHour, use12HourFormat, value, formatStr, minute, second, ampm]
+    [min, max, setHour, use12HourFormat, value, formatStr, minute, second, ampm]
   )
 
   const onMinuteChange = useCallback(
     (v: TimeOption) => {
       if (min) {
-        let newTime = buildTime({ use12HourFormat, value, formatStr, hour: v.value, minute, second, ampm })
+        let newTime = buildTime({ use12HourFormat, value, formatStr, hour, minute: v.value, second, ampm })
         if (newTime < min) {
           setSecond(min.getSeconds())
         }
       }
       if (max) {
-        let newTime = buildTime({ use12HourFormat, value, formatStr, hour: v.value, minute, second, ampm })
+        let newTime = buildTime({ use12HourFormat, value, formatStr, hour, minute: v.value, second, ampm })
         if (newTime > max) {
           setSecond(newTime.getSeconds())
         }
       }
       setMinute(v.value)
     },
-    [setMinute, use12HourFormat, value, formatStr, hour, second, ampm]
+    [min, max, setMinute, use12HourFormat, value, formatStr, hour, second, ampm]
   )
 
   const onAmpmChange = useCallback(
@@ -550,12 +574,12 @@ function TimePicker({
       }
       setAmPm(v.value)
     },
-    [setAmPm, use12HourFormat, value, formatStr, hour, minute, second, min, max]
+    [min, max, setAmPm, use12HourFormat, value, formatStr, hour, minute, second]
   )
 
   const display = useMemo(() => {
-    return format(value, use12HourFormat ? `hh:mm:ss a` : `HH:mm:ss`)
-  }, [value, use12HourFormat])
+    return format(value, use12HourFormat ? `hh:mm:ss a` : `HH:mm:ss`, { locale })
+  }, [value, use12HourFormat, locale])
 
   return (
     <div className='w-full'>
