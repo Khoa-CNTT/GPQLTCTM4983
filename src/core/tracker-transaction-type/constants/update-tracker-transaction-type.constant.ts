@@ -46,6 +46,13 @@ export const editTrackerTypeSchema = z
   .object({
     name: z.string().trim().min(2).max(256),
     type: z.nativeEnum(ETypeOfTrackerTransactionType),
-    description: z.string().min(10).max(256).nullable()
+    description: z
+      .string()
+      .trim()
+      .transform((val) => (val === '' ? null : val))
+      .refine((val) => val === null || (val.length >= 5 && val.length <= 256), {
+        message: 'Description must be between 5 and 256 characters long.'
+      })
+      .nullable()
   })
   .strict()
