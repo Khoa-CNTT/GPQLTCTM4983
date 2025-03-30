@@ -33,19 +33,13 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 import { DateRangePicker } from "@/components/core/DateRangePicker"
 import { DateRange } from "react-day-picker"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import {
-    ISpendingPlan,
-    ISpendingPlanTable,
-    IBudget,
-    IBudgetTable,
-    IDialogFlags,
-} from "@/core/spending-plan/models"
-
 import { modifySpendingPlanTableData, modifyBudgetTableData, calculateBudgetTotals } from "./handlers"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { mockBudgets, mockCategoryStatistics, mockSpendingPlans } from "./constants"
 import { DialogDescription } from "@radix-ui/react-dialog"
 import SpendingPlanDialog from "./dialog"
+import { ISpendingPlan, ISpendingPlanTable } from "@/core/fund-saving-plant/models"
+import { IBudget, IBudgetTable, IDialogFlags } from "@/core/fund-saving-target/models"
 
 // Constants
 const spendingPlanTableHeaders = ["Title", "Amount", "Planned Date", "Category", "Status"]

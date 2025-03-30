@@ -1,29 +1,3 @@
-// Spending Plan models
-export interface ISpendingPlan {
-    id: string
-    title: string
-    description: string
-    amount: number
-    plannedDate: string
-    category: string
-    status: "pending" | "completed" | "cancelled"
-    notifyBefore: number
-    accountSourceId?: string
-    accountSourceName?: string
-    createdAt: string
-    updatedAt: string
-}
-
-// Table data interface for SpendingPlan
-export interface ISpendingPlanTable {
-    id: string
-    title: string
-    amount: string | React.ReactNode
-    plannedDate: string | React.ReactNode
-    category: string
-    status: React.ReactNode
-}
-
 // Budget models
 export interface IBudget {
     id: string
@@ -60,20 +34,6 @@ export interface IDialogFlags {
     isDialogDeleteBudgetOpen: boolean
 }
 
-// Main dialog props interface
-export interface ISpendingPlanDialogProps {
-    isDialogOpen: IDialogFlags
-    setIsDialogOpen: React.Dispatch<React.SetStateAction<IDialogFlags>>
-    selectedPlan: ISpendingPlan | null
-    selectedBudget: IBudget | null
-    onCreatePlan: (plan: Omit<ISpendingPlan, "id" | "createdAt" | "updatedAt">) => void
-    onUpdatePlan: (plan: ISpendingPlan) => void
-    onCreateBudget: (budget: Omit<IBudget, "id" | "createdAt" | "updatedAt">) => void
-    onUpdateBudget: (budget: IBudget) => void
-    isLoading: boolean
-    onDeleteBudget: (id: string) => void
-}
-
 // GetColumns props interface
 export interface GetColumnsProps<T> {
     headers: string[]
@@ -83,6 +43,31 @@ export interface GetColumnsProps<T> {
     }
 }
 
+// Fund Saving Target Request interface
+export interface ICreateFundSavingTargetRequest {
+    name: string
+    description: string
+    targetAmount: number
+    fundId: string
+    trackerTypeId: string
+    startDate: string
+    endDate: string
+}
+
+// Fund Saving Target Response interface
+export interface IFundSavingTargetResponse {
+    id: string
+    name: string
+    description: string
+    targetAmount: number
+    fundId: string
+    trackerTypeId: string
+    startDate: string
+    endDate: string
+    createdAt: string
+    updatedAt: string
+}
+
 // Category statistics interface
 export interface ICategoryStatistic {
     category: string
@@ -90,4 +75,19 @@ export interface ICategoryStatistic {
     budgetAmount: number
     percentage: number
     transactions: number
+}
+
+export interface IGetFundSavingTargettByIdParams {
+    targetId: string
+    enable?: boolean
+    condition?: string | null
+}
+
+export interface IUpdateFundSavingTargetParams {
+    targetId: string;
+    name?: string;
+    description?: string;
+    targetAmount?: number;
+    startDate?: string;
+    endDate?: string;
 }
