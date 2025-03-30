@@ -75,12 +75,16 @@ export default function CreateAndUpdateAccountSourceForm({
     setFormValues((prev) => ({ ...prev, accountSourceName: v.accountSourceName }))
     console.log('Source form submitted with name:', v.accountSourceName)
 
-    const newPayload = {
+    const newPayload: IAccountSourceBody = {
       ...v,
-      id: defaultValue?.id,
-      initAmount: Number(v.initAmount),
       name: v.accountSourceName,
-      accountSourceType: typeState
+      accountSourceType: typeState,
+      initAmount: Number(v.initAmount || 0)
+    }
+
+    // Chỉ thêm id khi đang update (không phải create mới)
+    if (defaultValue !== initEmptyAccountSource && defaultValue?.id) {
+      newPayload.id = defaultValue.id
     }
 
     if (typeState !== EAccountSourceType.BANKING) callBack(newPayload)
@@ -90,11 +94,27 @@ export default function CreateAndUpdateAccountSourceForm({
     // Use the form values for reliability
     console.log('Bank form submitted with latest name:', formValues.accountSourceName)
 
-    const bankPayload = {
+    const bankPayload: IAccountSourceBody = {
       ...v,
-      id: defaultValue?.id,
       name: formValues.accountSourceName, // Use formValues instead of latestName
       accountSourceType: typeState
+    }
+
+    // Lấy giá trị initAmount từ form source
+    if (formSourceControlRef.current) {
+      try {
+        const sourceValues = formSourceControlRef.current.getValues()
+        if (sourceValues.initAmount) {
+          bankPayload.initAmount = Number(sourceValues.initAmount || 0)
+        }
+      } catch (error) {
+        console.error('Error getting initAmount:', error)
+      }
+    }
+
+    // Chỉ thêm id khi đang update (không phải create mới)
+    if (defaultValue !== initEmptyAccountSource && defaultValue?.id) {
+      bankPayload.id = defaultValue.id
     }
 
     console.log('Final bank payload:', bankPayload)
