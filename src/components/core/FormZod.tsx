@@ -189,9 +189,13 @@ export default function FormZod<T extends z.ZodRawShape>({
     reValidateMode: 'onSubmit'
   })
 
-  const handleFormSubmit = form.handleSubmit((data) => {
-    onSubmit(data)
-  })
+  const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    e.stopPropagation()
+    form.handleSubmit((data) => {
+      onSubmit(data)
+    })()
+  }
 
   const memoizedFormFieldBody = useMemo(() => formFieldBody, [formFieldBody])
 

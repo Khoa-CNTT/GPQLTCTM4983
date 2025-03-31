@@ -74,7 +74,17 @@ export default function CreateTrackerTypeForm({
   }
   return (
     <Form {...form}>
-      <form ref={formRef} onSubmit={form.handleSubmit(onSubmit)} className='space-y-1'>
+      <form
+        ref={formRef}
+        onSubmit={(e: React.FormEvent<HTMLFormElement>) => {
+          e.preventDefault()
+          e.stopPropagation()
+          form.handleSubmit((data) => {
+            onSubmit(data)
+          })()
+        }}
+        className='space-y-1'
+      >
         <FormField
           control={form.control}
           name='name'
@@ -129,13 +139,11 @@ export default function CreateTrackerTypeForm({
                       <SelectValue placeholder='Select expenditure fund' />
                     </SelectTrigger>
                     <SelectContent>
-                      {expenditureFund.map((fund) => {
-                        return (
-                          <>
-                            <SelectItem value={fund.value as string}>{fund.label}</SelectItem>
-                          </>
-                        )
-                      })}
+                      {expenditureFund.map((fund, index) => (
+                        <SelectItem key={index.toString()} value={fund.value as string}>
+                          {fund.label}
+                        </SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                 </div>
