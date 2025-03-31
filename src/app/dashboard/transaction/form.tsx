@@ -79,6 +79,7 @@ import DeleteDialog from '@/components/dashboard/DeleteDialog'
 import { useExpenditureFund } from '@/core/expenditure-fund/hooks'
 import { useQueryClient } from '@tanstack/react-query'
 import { useOverviewPage } from '@/core/overview/hooks'
+import { GET_ADVANCED_EXPENDITURE_FUND_KEY } from '@/core/expenditure-fund/constants'
 
 export default function TransactionForm() {
   // states
@@ -154,8 +155,6 @@ export default function TransactionForm() {
   const { dataTodayTxs } = getTodayTransactions({ query: todayTableQueryOptions, fundId })
   const { isGetMeUserPending } = getMe(true)
   const { getAllExpenditureFundData, refetchAllExpendingFund } = getAllExpenditureFund()
-  const { refetchAdvancedExpendingFund } = getAdvancedExpenditureFund({})
-  const { refetchAllData: refetchAllAccountSourceData } = getAllAccountSource(fundId)
 
   // custom hooks
   const { resetData: resetCacheTransaction } = useUpdateModel<IGetTransactionResponse>(
@@ -167,6 +166,7 @@ export default function TransactionForm() {
     [GET_UNCLASSIFIED_TRANSACTION_KEY, mergeQueryParams(uncTableQueryOptions)],
     updateCacheDataClassifyFeat
   )
+  const { resetData: resetCacheExpenditureFund } = useUpdateModel([GET_ADVANCED_EXPENDITURE_FUND_KEY], () => {})
   const { resetData: resetCacheStatistic } = useUpdateModel([STATISTIC_TRACKER_TRANSACTION_KEY], () => {})
   const { resetData: resetCacheAccountSource } = useUpdateModel([GET_ADVANCED_ACCOUNT_SOURCE_KEY], () => {})
   const { resetData: resetCacheDataTrackerTx } = useUpdateModel([GET_ADVANCED_TRACKER_TRANSACTION_KEY], () => {})
@@ -184,7 +184,7 @@ export default function TransactionForm() {
     getAllTrackerTransactionType: resetCacheTrackerTxType,
     getTrackerTransaction: resetCacheDataTrackerTx,
     getAllExpenditureFund: refetchAllExpendingFund,
-    getExpenditureFund: refetchAdvancedExpendingFund,
+    getExpenditureFund: resetCacheExpenditureFund,
     getStatisticOverview: refetchGetStatisticOverviewPageData
   }
 
