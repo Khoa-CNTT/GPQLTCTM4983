@@ -98,7 +98,7 @@ export default function SignInForm() {
               className='flex items-center justify-center p-4'
             >
               <Link href='/'>
-                <div className='flex items-center justify-center'>
+                <div className='flex items-center justify-center' style={{ userSelect: 'none' }}>
                   <Image
                     src={Logo2}
                     alt='Logo'
@@ -112,16 +112,21 @@ export default function SignInForm() {
               </Link>
             </motion.div>
 
-            <CardContent className=''>
+            <CardContent>
               <motion.div
                 initial={{ y: 20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ duration: 0.2, delay: 0.6 }}
               >
-                <h2 className='text-center text-2xl font-bold tracking-tight text-muted-foreground sm:text-3xl'>
+                <h2
+                  className='text-center text-2xl font-bold tracking-tight text-muted-foreground sm:text-3xl'
+                  style={{ userSelect: 'none' }}
+                >
                   Sign in to your account
                 </h2>
-                <p className='mt-2 text-center text-sm text-muted-foreground'>Open up your own world!</p>
+                <p className='mt-2 text-center text-sm text-muted-foreground' style={{ userSelect: 'none' }}>
+                  Open up your own world!
+                </p>
 
                 <FormZod
                   classNameForm='mt-5'
@@ -157,7 +162,7 @@ export default function SignInForm() {
                 >
                   Sign in
                 </Button>
-                <div className='relative mt-4'>
+                <div className='relative mt-4' style={{ userSelect: 'none' }}>
                   <div className='absolute flex items-center'>
                     <span className='w-full border-t border-muted-foreground/30' />
                   </div>
@@ -172,7 +177,7 @@ export default function SignInForm() {
                     </Button>
                   </Link>
                 </div>
-                <div className='relative mt-6'>
+                <div className='relative mt-6' style={{ userSelect: 'none' }}>
                   <div className='absolute flex items-center'>
                     <span className='w-full border-t border-muted-foreground/30' />
                   </div>
@@ -194,10 +199,10 @@ export default function SignInForm() {
                   <div className='absolute flex items-center'>
                     <span className='w-full border-t border-muted-foreground/30' />
                   </div>
-                  <div className='relative flex justify-center text-xs uppercase'>
+                  <div className='relative flex justify-center text-xs uppercase hover:font-bold hover:text-white hover:underline'>
                     <span
                       className='mb-2 px-2 text-muted-foreground'
-                      style={{ userSelect: 'none' }}
+                      style={{ userSelect: 'none', cursor: 'pointer' }}
                       onClick={() => setIsDialogResendEmailOpen(true)}
                     >
                       resend email verify account
