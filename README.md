@@ -1,142 +1,205 @@
 <div align="center">
 
-# 🌟 UNIKO - Financial Management 🌟
+# 🌟 UNIKO - Quản lý Tài chính 🌟
 
-### Your Ultimate Personal Finance Revolution! 💫
+### Cuộc cách mạng Tài chính Cá nhân Tối ưu! 💫
 
 [![Next.js](https://img.shields.io/badge/Next.js-black?style=for-the-badge&logo=next.js&logoColor=white)](https://nextjs.org/)
-[![Yarn](https://img.shields.io/badge/Yarn-2C8EBB?style=for-the-badge&logo=yarn&logoColor=white)](https://yarnpkg.com/)
+[![Flutter](https://img.shields.io/badge/Flutter-02569B?style=for-the-badge&logo=flutter&logoColor=white)](https://flutter.dev/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![Nest.js](https://img.shields.io/badge/NestJS-E0234E?style=for-the-badge&logo=nestjs&logoColor=white)](https://nestjs.com/)
 [![License](https://img.shields.io/badge/License-MIT-green.svg?style=for-the-badge)](LICENSE)
 
 </div>
 
 ---
 
-## 🎯 Welcome to UNIKO: Where Financial Dreams Take Flight! ✨
+## 🎯 Chào mừng đến với UNIKO: Nơi Ước mơ Tài chính Cất Cánh! ✨
 
-Tired of complicated finance apps that make your head spin? Say hello to UNIKO - your magical companion in the journey to financial freedom! 🚀 We're not just another finance app; we're your personal money whisperer, turning those confusing numbers into beautiful, actionable insights.
+Bạn đã mệt mỏi với những ứng dụng tài chính phức tạp làm đau đầu? Hãy chào đón UNIKO - người bạn đồng hành kỳ diệu trên hành trình đến với tự do tài chính! 🚀 Chúng tôi không chỉ là một ứng dụng tài chính thông thường; chúng tôi là người thì thầm tài chính của riêng bạn, biến những con số khó hiểu thành những thông tin hữu ích và trực quan.
 
-### 🌈 The UNIKO Experience
+### 📚 Repositories của Dự án
 
-Imagine having a financial best friend who's always there to help you make smart money decisions. That's UNIKO! We transform the traditionally boring world of personal finance into an exciting adventure where every saved penny feels like a victory, and every budget goal achieved is a reason to celebrate! 🎉
+| Thành phần | Repository URL | Mô tả |
+|------------|----------------|-------|
+| **Frontend Web** | [github.com/auroraphtgrp01/fe-uniko](https://github.com/auroraphtgrp01/fe-uniko) | Ứng dụng web sử dụng Next.js, ShadCN UI, TypeScript |
+| **Mobile App** | [github.com/auroraphtgrp01/mobile-uniko](https://github.com/auroraphtgrp01/mobile-uniko) | Ứng dụng di động cho Android & iOS sử dụng Flutter |
+| **Backend API** | [github.com/auroraphtgrp01/be-uniko](https://github.com/auroraphtgrp01/be-uniko) | API backend sử dụng NestJS, Prisma, PostgreSQL |
+| **AI Agents** | [github.com/auroraphtgrp01/ai-uniko](https://github.com/auroraphtgrp01/ai-uniko) | Agent thông minh sử dụng Playwright, LangChain, Gemini |
 
-### 💫 Why UNIKO Will Change Your Life
+### 🌈 Trải nghiệm UNIKO
 
-- 🎨 **Visually Stunning Interface**: We believe managing money should be as beautiful as it is functional. Our interface is a work of art, making every interaction a delight!
-- 🔮 **Intelligent Insights**: Like having a financial advisor in your pocket, but cooler! Our smart algorithms learn your habits and offer personalized tips.
-- 🎯 **Goal Achievement System**: Transform your dreams into reality with our gamified goal-setting features. Watch your progress unfold like a story!
-- 🌈 **Customization Paradise**: Make UNIKO truly yours with themes, custom categories, and personalized dashboards.
+Hãy tưởng tượng bạn có một người bạn thân về tài chính luôn sẵn sàng giúp bạn đưa ra quyết định tài chính thông minh. Đó chính là UNIKO! Chúng tôi biến thế giới tài chính cá nhân vốn nhàm chán thành một cuộc phiêu lưu thú vị, nơi mỗi đồng tiết kiệm là một chiến thắng, và mỗi mục tiêu ngân sách đạt được là lý do để ăn mừng! 🎉
 
-## ✨ Features That'll Make You Go WOW!
+### 💫 Tại sao UNIKO sẽ thay đổi cuộc sống của bạn
 
-### 💰 Money Management Reimagined
-- **Smart Expense Tracking**: Like having a personal accountant who never sleeps! Track every transaction with stunning visual representations.
-- **Income Celebrations**: We turn every incoming payment into a celebration! Watch your wealth grow with satisfying animations and progress indicators.
-- **Budget Mastery**: Create beautiful budget plans that adapt to your lifestyle. Our intelligent system learns from your habits to suggest realistic targets.
+- 🎨 **Giao diện tuyệt đẹp**: Chúng tôi tin rằng quản lý tiền nên đẹp mắt và chức năng. Giao diện của chúng tôi là một tác phẩm nghệ thuật, khiến mọi tương tác trở nên thú vị!
+- 🔮 **Phân tích thông minh**: Như có một cố vấn tài chính trong túi, nhưng tuyệt vời hơn! Thuật toán thông minh học thói quen của bạn và đưa ra lời khuyên cá nhân hóa.
+- 🎯 **Hệ thống đạt mục tiêu**: Biến ước mơ thành hiện thực với tính năng đặt mục tiêu gamification. Theo dõi tiến trình của bạn như một câu chuyện!
+- 🌈 **Tùy chỉnh tối đa**: Làm cho UNIKO thực sự là của bạn với các chủ đề, danh mục tùy chỉnh và bảng điều khiển cá nhân hóa.
 
-### 📊 Analytics That Tell Your Money Story
-- **Visual Money Journey**: Watch your financial story unfold through stunning charts and graphs that actually make sense!
-- **AI-Powered Insights**: Our smart algorithms analyze your spending patterns and offer personalized advice like a wise friend.
-- **Trend Discovery**: Uncover hidden patterns in your spending with our beautiful visualization tools.
+## 🌐 UNIKO - Giải pháp Đa nền tảng
 
-### 🏦 Digital Money Jars - Your Modern Piggy Bank
-- **Smart Categorization**: Create unlimited money jars for different goals - from that dream vacation to your emergency fund!
-- **Progress Tracking**: Watch your savings grow with beautiful progress bars and milestone celebrations.
-- **Flexible Transfers**: Move money between jars as easily as dragging and dropping, with real-time balance updates.
+### 💻 Web - Trải nghiệm Mượt mà và Đa chức năng
+- **Nền tảng**: Next.js, TypeScript, ShadCN UI
+- **Trải nghiệm người dùng**: Giao diện đẹp mắt, phản hồi nhanh
+- **Tính năng nổi bật**: Chatbot tích hợp AI hỗ trợ phân tích chi tiêu và thu nhập
 
-### 🎮 Gamified Finance
-- **Achievement System**: Unlock badges and rewards for hitting financial goals
-- **Monthly Challenges**: Join community challenges to boost your saving habits
-- **Progress Quests**: Turn boring financial tasks into exciting missions
+### 📱 Di động - Quản lý Tài chính trong Tầm tay
+- **Nền tảng**: Flutter cho cả Android và iOS
+- **Trải nghiệm người dùng**: Giao diện nhất quán trên mọi thiết bị
+- **Tính năng nổi bật**: Ghi chép giao dịch tự động, nhắc nhở thông minh
 
-## 🛠️ Built with Love and Modern Tech
+## ✨ Tính năng làm bạn phải thốt lên WOW!
 
-### Frontend Magic ✨
-- **Next.js + TypeScript**: For a blazing-fast, type-safe application
-- **Redux Toolkit**: Managing state like a boss
-- **Tailwind CSS + SCSS**: Creating that pixel-perfect beauty
-- **Framer Motion**: Adding life to our UI with smooth animations
+### 💰 Quản lý Tiền Tái cấu trúc
+- **Theo dõi chi phí thông minh**: Như có một kế toán cá nhân không bao giờ ngủ! Theo dõi mọi giao dịch với biểu diễn trực quan tuyệt đẹp.
+- **Mừng thu nhập**: Chúng tôi biến mỗi khoản thanh toán thành một lễ kỷ niệm! Xem tài sản của bạn tăng trưởng với hoạt ảnh và chỉ số tiến triển thỏa mãn.
+- **Làm chủ ngân sách**: Tạo kế hoạch ngân sách đẹp mắt thích ứng với lối sống của bạn. Hệ thống thông minh học từ thói quen của bạn để đề xuất mục tiêu thực tế.
 
-### Development Excellence 🔧
-- **Yarn**: Lightning-fast dependency management
-- **ESLint + Prettier**: Keeping our code beautiful
-- **Husky**: Guarding our code quality
-- **Jest + React Testing Library**: Ensuring everything works perfectly
+### 📊 Phân tích kể câu chuyện tiền của bạn
+- **Hành trình tiền trực quan**: Xem câu chuyện tài chính của bạn qua các biểu đồ và đồ thị tuyệt đẹp có ý nghĩa!
+- **Phân tích được hỗ trợ bởi AI**: Thuật toán thông minh phân tích mô hình chi tiêu và đưa ra lời khuyên cá nhân hóa như một người bạn khôn ngoan.
+- **Khám phá xu hướng**: Khám phá các mẫu ẩn trong chi tiêu của bạn với công cụ trực quan hóa tuyệt đẹp.
 
-## 👥 Our Amazing Team
+### 🤖 Chatbot và Agent AI Thông minh
+- **Trợ lý tài chính cá nhân**: Chatbot của chúng tôi không chỉ trả lời câu hỏi mà còn chủ động đưa ra lời khuyên tài chính.
+- **Ghi chép tự động**: Agent AI tự động ghi lại giao dịch từ thông báo ngân hàng, biên lai, và nhiều nguồn khác.
+- **Phân tích chi tiêu thông minh**: Hiểu mô hình chi tiêu của bạn và đưa ra gợi ý để tiết kiệm hiệu quả hơn.
 
-### 🎮 Visionary Lead
-- **Le Minh Tuan** ([@auroraphtgrp01](https://github.com/auroraphtgrp01))
-  > *"Transforming financial management into an art form!"*
+### 🏦 Hũ Tiền Kỹ thuật số - Heo đất Hiện đại
+- **Phân loại thông minh**: Tạo không giới hạn hũ tiền cho các mục tiêu khác nhau - từ kỳ nghỉ mơ ước đến quỹ khẩn cấp!
+- **Theo dõi tiến trình**: Xem tiết kiệm của bạn tăng lên với thanh tiến trình đẹp mắt và lễ kỷ niệm cột mốc.
+- **Chuyển khoản linh hoạt**: Di chuyển tiền giữa các hũ dễ dàng như kéo và thả, với cập nhật số dư thời gian thực.
 
-### ⭐ Brilliant Contributors
-- **Tran Nguyen Duy Khanh** ([@AugustusDngQt](https://github.com/AugustusDngQt))
-  > Frontend Architect & UI/UX Maestro
-- **Ho Thi Thanh Thanh** ([@ThanhkThanh](https://github.com/ThanhkThanh))
-  > Backend Sorceress & API Enchanter
-- **Nguyen Quang Huy** ([@kwanghy2303](https://github.com/kwanghy2303))
-  > Quality Assurance Wizard & Bug Hunter
-- **Doan Vo Van Trong** ([@vantrong2405](https://github.com/vantrong2405))
-  > Frontend Developer & UI/UX Enthusiast
+### 🎮 Tài chính Gamification
+- **Hệ thống thành tựu**: Mở khóa huy hiệu và phần thưởng khi đạt mục tiêu tài chính
+- **Thử thách hàng tháng**: Tham gia thử thách cộng đồng để thúc đẩy thói quen tiết kiệm
+- **Nhiệm vụ tiến trình**: Biến các công việc tài chính nhàm chán thành các nhiệm vụ thú vị
 
-## 🚀 Join the Financial Revolution
+## 🛠️ Công nghệ hiện đại
 
-### Prerequisites
+### 💻 Web Frontend ✨
+- **Next.js + TypeScript**: Ứng dụng nhanh và an toàn
+- **ShadCN UI + TailwindCSS**: Tạo giao diện hoàn hảo
+- **TanStack Query**: Quản lý trạng thái dữ liệu hiệu quả
+- **WebSocket**: Cập nhật dữ liệu thời gian thực
+
+### 📱 Mobile App ✨
+- **Flutter**: Phát triển ứng dụng đa nền tảng cho Android và iOS
+- **Bloc Pattern**: Quản lý trạng thái hiệu quả
+- **Material Design & Cupertino**: Giao diện tối ưu cho từng nền tảng
+
+### 🖥️ Backend & Infrastructure ✨
+- **NestJS**: Framework backend mạnh mẽ
+- **Prisma**: ORM hiện đại cho cơ sở dữ liệu
+- **PostgreSQL**: Cơ sở dữ liệu quan hệ tin cậy
+- **Redis**: Bộ nhớ đệm hiệu suất cao
+- **Docker & Portainer**: Ảo hóa và quản lý container
+- **BullMQ**: Xử lý hàng đợi và tác vụ nền
+
+### 🤖 AI & Agent ✨
+- **Playwright**: Tự động hóa trải nghiệm web
+- **LangChain**: Framework xây dựng ứng dụng AI
+- **Gemini Flash 2.0**: Mô hình ngôn ngữ tiên tiến
+- **AI Agents**: Tự động hóa ghi chép và phân tích giao dịch
+
+## 👥 Đội ngũ tuyệt vời của chúng tôi
+
+### 🎮 Người dẫn đầu tầm nhìn
+- **Lê Minh Tuấn** ([@auroraphtgrp01](https://github.com/auroraphtgrp01))
+  > *"Biến quản lý tài chính thành một hình thức nghệ thuật!"*
+
+### ⭐ Những người đóng góp tài năng
+- **Trần Nguyễn Duy Khánh** ([@AugustusDngQt](https://github.com/AugustusDngQt))
+  > Kiến trúc sư Frontend & Bậc thầy UI/UX
+- **Hồ Thị Thanh Thanh** ([@ThanhkThanh](https://github.com/ThanhkThanh))
+  > Phù thủy Backend & Người vẽ bùa API
+- **Nguyễn Quang Huy** ([@kwanghy2303](https://github.com/kwanghy2303))
+  > Pháp sư Đảm bảo Chất lượng & Thợ săn Lỗi
+- **Đoàn Võ Văn Trọng** ([@vantrong2405](https://github.com/vantrong2405))
+  > Nhà phát triển Frontend & Người đam mê UI/UX
+
+## 🚀 Tham gia cuộc cách mạng Tài chính
+
+### Yêu cầu tiên quyết
 ```bash
 node >= 16.0.0
 yarn >= 1.22.0
+flutter >= 3.0.0
 ```
 
-### Begin Your Journey
-1. **Summon the repository**
+### Bắt đầu hành trình của bạn
+1. **Tải xuống repository**
 ```bash
-git clone https://github.com/auroraphtgrp01/fe-uniko.git
-cd fe-uniko
+git clone https://github.com/auroraphtgrp01/uniko.git
+cd uniko
 ```
 
-2. **Cast the installation spell**
+2. **Cài đặt Web Frontend**
 ```bash
+cd web
 yarn install
-```
-
-3. **Configure your magic**
-```bash
 cp .env.example .env.local
-# Customize your enchantments in .env.local
-```
-
-4. **Activate the development portal**
-```bash
+# Tùy chỉnh cấu hình trong .env.local
 yarn dev
 ```
 
-5. **Prepare for production**
+3. **Cài đặt Mobile App**
 ```bash
-yarn build
-yarn start
+cd mobile
+flutter pub get
+# Tạo file .env theo mẫu
+flutter run
 ```
 
-## 🤝 Join Our Creative Circle
+4. **Cài đặt Backend**
+```bash
+cd backend
+yarn install
+cp .env.example .env
+# Tùy chỉnh cấu hình trong .env
+yarn start:dev
+```
 
-Want to be part of something revolutionary? We love new ideas and fresh perspectives! Here's how you can contribute:
+5. **Chuẩn bị cho production**
+```bash
+# Web
+cd web
+yarn build
+yarn start
 
-1. 🍴 Fork the Project
-2. 🌱 Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
-3. 💫 Commit your Changes (`git commit -m '✨ Add some AmazingFeature'`)
-4. 🚀 Push to the Branch (`git push origin feature/AmazingFeature`)
-5. 🎉 Open a Pull Request
+# Mobile
+cd mobile
+flutter build apk --release
+flutter build ios --release
 
-## 📄 License & Magic Rules
+# Backend
+cd backend
+yarn build
+yarn start:prod
+```
 
-This project is protected under the MIT License - see the [LICENSE](LICENSE) file for the full spellbook.
+## 🤝 Tham gia cùng chúng tôi
+
+Muốn là một phần của điều gì đó mang tính cách mạng? Chúng tôi yêu thích những ý tưởng mới và góc nhìn tươi mới! Đây là cách bạn có thể đóng góp:
+
+1. 🍴 Fork dự án
+2. 🌱 Tạo nhánh tính năng của bạn (`git checkout -b feature/TinhNangTuyetVoi`)
+3. 💫 Commit thay đổi của bạn (`git commit -m '✨ Thêm TinhNangTuyetVoi'`)
+4. 🚀 Push lên nhánh (`git push origin feature/TinhNangTuyetVoi`)
+5. 🎉 Mở Pull Request
+
+## 📄 Giấy phép & Quy tắc
+
+Dự án này được bảo vệ dưới Giấy phép MIT - xem file [LICENSE](LICENSE) để biết đầy đủ thông tin.
 
 ---
 
 <div align="center">
 
-### ✨ Crafted with 💖 by the UNIKO Dream Team ✨
+### ✨ Được tạo ra với 💖 bởi UNIKO Dream Team ✨
 
-[Begin Your Journey](https://uniko.finance) • [Learn the Magic](https://docs.uniko.finance) • [Report a Glitch](https://github.com/auroraphtgrp01/fe-uniko/issues)
+[Bắt đầu hành trình](https://uniko.finance) • [Tìm hiểu thêm](https://docs.uniko.finance) • [Báo cáo lỗi](https://github.com/auroraphtgrp01/uniko/issues)
 
 </div>
