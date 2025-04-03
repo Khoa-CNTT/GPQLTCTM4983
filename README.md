@@ -2,7 +2,7 @@
 
 # 🌟 UNIKO - Quản lý Tài chính 🌟
 
-### Cuộc cách mạng Tài chính Cá nhân Tối ưu! 💫
+### Giải pháp quản lý tài chính thông minh đa nền tảng 💫
 
 [![Next.js](https://img.shields.io/badge/Next.js-black?style=for-the-badge&logo=next.js&logoColor=white)](https://nextjs.org/)
 [![Flutter](https://img.shields.io/badge/Flutter-02569B?style=for-the-badge&logo=flutter&logoColor=white)](https://flutter.dev/)
@@ -71,11 +71,6 @@ Hãy tưởng tượng bạn có một người bạn thân về tài chính lu�
 - **Phân loại thông minh**: Tạo không giới hạn hũ tiền cho các mục tiêu khác nhau - từ kỳ nghỉ mơ ước đến quỹ khẩn cấp!
 - **Theo dõi tiến trình**: Xem tiết kiệm của bạn tăng lên với thanh tiến trình đẹp mắt và lễ kỷ niệm cột mốc.
 - **Chuyển khoản linh hoạt**: Di chuyển tiền giữa các hũ dễ dàng như kéo và thả, với cập nhật số dư thời gian thực.
-
-### 🎮 Tài chính Gamification
-- **Hệ thống thành tựu**: Mở khóa huy hiệu và phần thưởng khi đạt mục tiêu tài chính
-- **Thử thách hàng tháng**: Tham gia thử thách cộng đồng để thúc đẩy thói quen tiết kiệm
-- **Nhiệm vụ tiến trình**: Biến các công việc tài chính nhàm chán thành các nhiệm vụ thú vị
 
 ## 🛠️ Công nghệ hiện đại
 
