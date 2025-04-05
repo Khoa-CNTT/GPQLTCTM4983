@@ -118,8 +118,8 @@ export default function DetailUpdateTransaction({
             }}
           >
             {updateTransactionProps.transaction.direction === ETypeOfTrackerTransactionType.INCOMING
-              ? 'Incoming'
-              : 'Expense'}
+              ? t('IUpdateTransactionFormBody.direction.options.incoming')
+              : t('IUpdateTransactionFormBody.direction.options.expense')}
           </Badge>
         </div>
         <div className='flex items-center gap-2'>

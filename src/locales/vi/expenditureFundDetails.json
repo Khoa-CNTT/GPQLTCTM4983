@@ -15,8 +15,12 @@
   "categories": {
     "placeholder": "Tìm kiếm loại giao dịch được theo dõi"
   },
-  "transactions": {},
-  "statistics": {},
+  "transactions": {
+    "unclassified": "Chưa phân loại"
+  },
+  "statistics": {
+    "noDataAvailable": "Không có dữ liệu"
+  },
   "update": {
     "title": "Cập nhật Quỹ Chi Tiêu",
     "description": "Cập nhật quỹ chi tiêu mới",
@@ -40,10 +44,30 @@
     "placeHolder": "Nhập địa chỉ email hoặc số điện thoại"
   },
   "categoryTabsContent": {
-    "input": "Tìm kiếm loại giao dịch theo dõi"
+    "incoming": "THU VÀO",
+    "expense": "CHI TIÊU",
+    "input": "Tìm kiếm danh mục",
+    "selectType": "Chọn loại"
   },
   "createTrackerTypeDialog": {
     "title": "Tạo loại giao dịch theo dõi",
     "description": "Tạo một loại giao dịch theo dõi mới"
+  },
+  "participantTabsContent": {
+    "owner": "Chủ sở hữu",
+    "admin": "Quản trị viên",
+    "member": "Thành viên",
+    "invite": "Mời",
+    "accepted": "Đã chấp nhận",
+    "pending": "Đang chờ",
+    "remove": "Xóa",
+    "profile": "Hồ sơ",
+    "userProfileTitle": "Thông tin người tham gia",
+    "close": "Đóng"
+  },
+  "status": {
+    "ACTIVE": "ĐANG HOẠT ĐỘNG",
+    "CLOSED": "ĐÃ ĐÓNG",
+    "PENDING": "ĐANG CHỜ"
   }
 }

@@ -80,6 +80,8 @@ import { useExpenditureFund } from '@/core/expenditure-fund/hooks'
 import { useQueryClient } from '@tanstack/react-query'
 import { useOverviewPage } from '@/core/overview/hooks'
 import { GET_ADVANCED_EXPENDITURE_FUND_KEY } from '@/core/expenditure-fund/constants'
+import { Checkbox } from '@/components/ui/checkbox'
+import { ArrowUpDown } from 'lucide-react'
 
 export default function TransactionForm() {
   // states
@@ -118,7 +120,7 @@ export default function TransactionForm() {
   // hooks
   // declare hooks
   const queryClient = useQueryClient()
-  const { t } = useTranslation(['transaction'])
+  const { t, i18n } = useTranslation(['transaction', 'trackerTransaction'])
   const {
     getTransactions,
     getUnclassifiedTransactions,
@@ -250,6 +252,20 @@ export default function TransactionForm() {
     }
   }, [dataUnclassifiedTxs])
 
+  // Khi ngôn ngữ thay đổi, lấy lại dữ liệu từ server
+  useEffect(() => {
+    const refetchData = async () => {
+      try {
+        await resetCacheTransaction()
+      } catch (error) {
+        console.error('Failed to refetch data:', error)
+      }
+    }
+
+    console.log('Language changed, refetching data...')
+    refetchData()
+  }, [i18n.language])
+
   useEffect(() => {
     if (dataTodayTxs) {
       setTransactionSummary((prev) => ({
@@ -319,6 +335,26 @@ export default function TransactionForm() {
   useEffect(() => {
     setQueryOptions((prev) => ({ ...prev, page: dataTableConfig.currentPage, limit: dataTableConfig.limit }))
   }, [dataTableConfig])
+
+  // Cập nhật dataTable khi dữ liệu thay đổi
+  useEffect(() => {
+    if (dataTransaction && dataTransaction.data) {
+      try {
+        const formattedData = modifyTransactionHandler(dataTransaction.data)
+        console.log('Current language:', i18n.language)
+        console.log('Data keys:', formattedData.length > 0 ? Object.keys(formattedData[0]) : [])
+
+        setDataTable(formattedData)
+        setDataTableConfig((prev) => ({
+          ...prev,
+          totalPage: Number(dataTransaction.pagination?.totalPage)
+        }))
+      } catch (error) {
+        console.error('Error formatting transaction data:', error)
+      }
+    }
+  }, [dataTransaction, i18n.language])
+
   useEffect(() => {
     setUncTableQueryOptions((prev) => ({
       ...prev,
@@ -360,16 +396,116 @@ export default function TransactionForm() {
 
   const columns = useMemo(() => {
     if (dataTable.length === 0) return []
-    return getColumns<IDataTransactionTable>({
-      headers: transactionHeaders,
-      isSort: true
-    })
-  }, [dataTable])
+
+    // Tạo cột selection (checkbox)
+    const selectionColumn = {
+      id: 'select',
+      header: ({ table }: any) => (
+        <Checkbox
+          checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && 'indeterminate')}
+          onCheckedChange={(value: any) => table.toggleAllPageRowsSelected(!!value)}
+          aria-label='Select all'
+        />
+      ),
+      cell: ({ row }: any) => (
+        <Checkbox
+          checked={row.getIsSelected()}
+          onCheckedChange={(value: any) => row.toggleSelected(!!value)}
+          aria-label='Select row'
+        />
+      ),
+      enableSorting: false,
+      enableHiding: false
+    }
+
+    // Tạo các cột dữ liệu
+    const dataColumns = [
+      {
+        accessorKey: 'amount',
+        header: ({ column }: any) => (
+          <div className='flex' onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
+            {t('TransactionType.detailsConfigDialog.amount')}
+            <ArrowUpDown className='ml-2 mt-1 h-3 w-3' />
+          </div>
+        ),
+        cell: ({ row }: any) => <div>{row.getValue('amount')}</div>
+      },
+      {
+        accessorKey: 'direction',
+        header: ({ column }: any) => (
+          <div className='flex' onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
+            {t('TransactionType.detailsConfigDialog.direction')}
+            <ArrowUpDown className='ml-2 mt-1 h-3 w-3' />
+          </div>
+        ),
+        cell: ({ row }: any) => {
+          const directionValue = row.getValue('direction')
+          // Chuyển đổi sang tiếng Việt
+          let translatedDirection = ''
+
+          if (directionValue === 'INCOMING') {
+            translatedDirection = t('incoming', { ns: 'trackerTransaction' })
+          } else if (directionValue === 'EXPENSE') {
+            translatedDirection = t('expense', { ns: 'trackerTransaction' })
+          } else {
+            translatedDirection = directionValue
+          }
+
+          return (
+            <span
+              className={`rounded-full px-2 py-1 text-xs font-semibold ${directionValue === 'INCOMING' ? 'bg-green-200 text-green-800' : 'bg-rose-200 text-rose-800'}`}
+            >
+              {translatedDirection}
+            </span>
+          )
+        }
+      },
+      {
+        accessorKey: 'accountSource',
+        header: ({ column }: any) => (
+          <div className='flex' onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
+            {t('TransactionType.detailsConfigDialog.accountBank')}
+            <ArrowUpDown className='ml-2 mt-1 h-3 w-3' />
+          </div>
+        ),
+        cell: ({ row }: any) => <div>{row.getValue('accountSource')}</div>
+      },
+      {
+        accessorKey: 'accountNo',
+        header: ({ column }: any) => (
+          <div className='flex' onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
+            {t('TransactionType.detailsConfigDialog.accountNo')}
+            <ArrowUpDown className='ml-2 mt-1 h-3 w-3' />
+          </div>
+        ),
+        cell: ({ row }: any) => <div>{row.getValue('accountNo')}</div>
+      },
+      {
+        accessorKey: 'date',
+        header: ({ column }: any) => (
+          <div className='flex' onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
+            {t('transactionDetails.classificationTime')}
+            <ArrowUpDown className='ml-2 mt-1 h-3 w-3' />
+          </div>
+        ),
+        cell: ({ row }: any) => <div>{row.getValue('date')}</div>
+      }
+    ]
+
+    return [selectionColumn, ...dataColumns]
+  }, [dataTable, t])
+
   const dataTableButtons = initButtonInDataTableHeader({
     refetchTransactionBySocket,
     isPendingRefetch,
     reloadDataFunction
   })
+
+  // Tạo một key duy nhất cho DataTable để đảm bảo re-render khi ngôn ngữ thay đổi
+  const tableKey = useMemo(() => {
+    console.log('Generating new table key for language:', i18n.language)
+    return `transaction-table-${i18n.language}-${Math.random()}`
+  }, [i18n.language])
 
   const deleteAnTransactionProps = {
     isDialogOpen: isDialogOpen.isDialogDeleteOpen,
@@ -470,7 +606,7 @@ export default function TransactionForm() {
         <CardContent>
           <div>
             <DataTable
-              key={'transactionTable'}
+              key={tableKey}
               columns={columns}
               data={dataTable}
               config={dataTableConfig}

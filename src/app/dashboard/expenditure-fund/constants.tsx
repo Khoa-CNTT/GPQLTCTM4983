@@ -8,10 +8,11 @@ import {
   IInitButtonInHeaderProps,
   IUpdateExpenditureFundBody
 } from '@/core/expenditure-fund/models/expenditure-fund.interface'
-import { formatCurrency, translate } from '@/libraries/utils'
+import { formatCurrency } from '@/libraries/utils'
 import { IButtonInDataTableHeader } from '@/types/core.i'
 import { PlusIcon } from 'lucide-react'
 import React from 'react'
+import { useTranslation } from 'react-i18next'
 
 export const initEmptyExpenditureFundDialogOpen = {
   isDialogCreateOpen: false,
@@ -24,10 +25,9 @@ export const initEmptyExpenditureFundDialogOpen = {
 }
 
 export const initButtonInHeaders = ({ setIsDialogOpen }: IInitButtonInHeaderProps): IButtonInDataTableHeader[] => {
-  const t = translate(['expenditureFund', 'common'])
   return [
     {
-      title: t('button.create'),
+      title: 'Create',
       icon: <PlusIcon className='h-4 w-4' />,
       onClick: () => {
         setIsDialogOpen((prev) => ({ ...prev, isDialogCreateOpen: true }))
@@ -39,11 +39,14 @@ export const initButtonInHeaders = ({ setIsDialogOpen }: IInitButtonInHeaderProp
 
 export const formatExpenditureFundData = (data: IExpenditureFund): IExpenditureFundDataFormat => {
   const { id, currentAmount, description, name, owner, status } = data
+
+  // Trả về status và style, nhưng không có nội dung
+  // Nội dung sẽ được xử lý ở component render
   return {
     id,
     name,
     description,
-    status: <span className='rounded-full bg-green-200 px-2 py-1 text-xs font-semibold text-green-800'>{status}</span>,
+    status, // Trả về status nguyên bản để component cột có thể dịch
     currentAmount: `${formatCurrency(currentAmount || 0, 'đ')}`,
     owner: owner?.fullName
   }

@@ -62,8 +62,12 @@
       "placeholder": "Chọn nguồn tài khoản"
     },
     "direction": {
-      "label": "Hướng giao dịch",
-      "placeholder": "Chọn hướng giao dịch"
+      "label": "Loại giao dịch",
+      "placeholder": "Chọn loại giao dịch",
+      "options": {
+        "incoming": "THU VÀO",
+        "expense": "CHI TIÊU"
+      }
     }
   },
   "transactionDetails": {
