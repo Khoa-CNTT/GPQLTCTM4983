@@ -1,26 +1,38 @@
 import { translate } from '@/libraries/utils'
 import { EFieldType } from '@/types/formZod.interface'
 import { z } from 'zod'
+import i18next from 'i18next'
 
-const t = translate(['accountSource'])
+// Hàm lấy nội dung dựa trên ngôn ngữ hiện tại
+const getTranslation = (enText: string, viText: string) => {
+  // Kiểm tra ngôn ngữ hiện tại, nếu là 'vi' thì trả về tiếng Việt, ngược lại trả về tiếng Anh
+  try {
+    const lang = i18next.language || localStorage.getItem('i18nextLng') || 'en'
+    return lang.startsWith('vi') ? viText : enText
+  } catch (e) {
+    // Fallback nếu có lỗi khi đọc ngôn ngữ
+    return viText
+  }
+}
+
 export const createAccountBankFormBody = [
   {
     name: 'type',
     type: EFieldType.Select,
-    label: t('form.createAccountSourceFormBody.bankType.label'),
+    label: getTranslation('Bank Type', 'Loại ngân hàng'),
     dataSelector: [
       {
         value: 'MB_BANK',
         label: 'MB BANK'
       }
     ],
-    placeHolder: t('form.createAccountSourceFormBody.bankType.placeholder')
+    placeHolder: getTranslation('Select Bank Type', 'Chọn loại ngân hàng')
   },
   {
     name: 'login_id',
     type: EFieldType.Input,
-    label: t('form.createAccountSourceFormBody.loginId.label'),
-    placeHolder: t('form.createAccountSourceFormBody.loginId.placeholder'),
+    label: getTranslation('Login Id', 'ID đăng nhập'),
+    placeHolder: getTranslation('Enter your login id', 'Nhập ID đăng nhập của bạn'),
     props: {
       autoComplete: 'login_id'
     }
@@ -28,8 +40,8 @@ export const createAccountBankFormBody = [
   {
     name: 'password',
     type: EFieldType.Input,
-    label: 'Password',
-    placeHolder: 'Enter your password',
+    label: getTranslation('Password', 'Mật khẩu'),
+    placeHolder: getTranslation('Enter your password', 'Nhập mật khẩu của bạn'),
     props: {
       autoComplete: 'password',
       type: 'password'
@@ -38,36 +50,36 @@ export const createAccountBankFormBody = [
   {
     name: 'accounts',
     type: EFieldType.MultiInput,
-    label: t('form.createAccountSourceFormBody.accounts.label'),
-    placeHolder: t('form.createAccountSourceFormBody.accounts.placeholder'),
+    label: getTranslation('Accounts', 'Tài khoản'),
+    placeHolder: getTranslation('Enter your accounts', 'Nhập tài khoản của bạn'),
     props: {
-      placeholder: t('form.createAccountSourceFormBody.accounts.placeholder')
+      placeholder: getTranslation('Enter your accounts', 'Nhập tài khoản của bạn')
     }
   }
 ]
 
 export const createAccountBankSchema = z.object({
   type: z.enum(['MB_BANK'], {
-    message: 'Bank type must be either "MB_BANK"'
+    message: getTranslation('Bank type must be "MB_BANK"', 'Loại ngân hàng phải là "MB_BANK"')
   }),
   login_id: z
     .string()
     .trim()
-    .min(6, 'Username must be at least 6 characters')
-    .max(50, 'Username cannot exceed 50 characters'),
+    .min(6, getTranslation('Username must be at least 6 characters', 'Tên đăng nhập phải có ít nhất 6 ký tự'))
+    .max(50, getTranslation('Username cannot exceed 50 characters', 'Tên đăng nhập không được quá 50 ký tự')),
   password: z
     .string()
     .trim()
-    .min(6, 'Password must be at least 6 characters')
-    .max(50, 'Password cannot exceed 50 characters'),
+    .min(6, getTranslation('Password must be at least 6 characters', 'Mật khẩu phải có ít nhất 6 ký tự'))
+    .max(50, getTranslation('Password cannot exceed 50 characters', 'Mật khẩu không được quá 50 ký tự')),
   accounts: z
     .array(
       z
         .string()
         .trim()
-        .min(10, 'Account number must be at least 10 digits')
-        .max(14, 'Account number cannot exceed 14 digits')
+        .min(10, getTranslation('Account number must be at least 10 digits', 'Số tài khoản phải có ít nhất 10 chữ số'))
+        .max(14, getTranslation('Account number cannot exceed 14 digits', 'Số tài khoản không được quá 14 chữ số'))
     )
-    .min(1, 'At least one account number is required')
-    .max(5, 'Maximum 5 account numbers allowed')
+    .min(1, getTranslation('At least one account number is required', 'Phải có ít nhất một số tài khoản'))
+    .max(5, getTranslation('Maximum 5 account numbers allowed', 'Tối đa 5 số tài khoản được phép'))
 })

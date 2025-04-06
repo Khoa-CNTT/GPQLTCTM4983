@@ -113,7 +113,7 @@ export interface IExpenditureFundDataFormat {
   id: string
   name: string
   description: string
-  status: JSX.Element
+  status: EFundStatus | JSX.Element
   currentAmount: string
   // currency: string
   owner: string

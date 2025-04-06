@@ -13,6 +13,7 @@ import {
 } from '@/core/tracker-transaction-type/models/tracker-transaction-type.enum'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { useStoreLocal } from '@/hooks/useStoreLocal'
+import { useTranslation } from 'react-i18next'
 
 interface ICreateTrackerTypeFormProps {
   typeOfTrackerType: ETypeOfTrackerTransactionType
@@ -37,6 +38,7 @@ export default function CreateTrackerTypeForm({
   defaultFundId
 }: ICreateTrackerTypeFormProps) {
   const { fundId } = useStoreLocal()
+  const { t } = useTranslation()
 
   const [currentTrackerType, setCurrentTrackerType] = React.useState<ETrackerTypeOfTrackerTransactionType>(
     ETrackerTypeOfTrackerTransactionType.CUSTOM
@@ -173,8 +175,12 @@ export default function CreateTrackerTypeForm({
                         <SelectValue placeholder='Select type' />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value='INCOMING'>INCOMING</SelectItem>
-                        <SelectItem value='EXPENSE'>EXPENSE</SelectItem>
+                        <SelectItem value='INCOMING'>
+                          {t('form.defineCreateTrackerTransactionFormBody.direction.options.incoming', 'INCOMING')}
+                        </SelectItem>
+                        <SelectItem value='EXPENSE'>
+                          {t('form.defineCreateTrackerTransactionFormBody.direction.options.expense', 'EXPENSE')}
+                        </SelectItem>
                       </SelectContent>
                     </Select>
                   </div>

@@ -29,6 +29,7 @@ export interface IDataTableConfig {
   isPaginate: boolean
   isVisibleSortType: boolean
   classNameOfScroll?: string
+  translationNamespace?: string
 }
 
 export interface IDialogConfig {

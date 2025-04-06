@@ -12,9 +12,16 @@ import {
   HandCoins,
   HardDriveDownload,
   PcCase,
-  Layers2Icon
+  Layers2Icon,
+  ArrowUpDown
 } from 'lucide-react'
-import { formatCurrency, formatDateTimeVN, getCurrentWeekRange, mergeQueryParams } from '@/libraries/utils'
+import {
+  formatCurrency,
+  formatDateTimeVN,
+  getCurrentWeekRange,
+  mergeQueryParams,
+  convertToCamelCase
+} from '@/libraries/utils'
 import { IDataTableConfig } from '@/types/common.i'
 import { IQueryOptions } from '@/types/query.interface'
 import {
@@ -101,6 +108,7 @@ import {
   GET_STATISTIC_EXPENDITURE_FUND_KEY
 } from '@/core/expenditure-fund/constants'
 import { useOverviewPage } from '@/core/overview/hooks'
+import { Checkbox } from '@/components/ui/checkbox'
 
 export default function TrackerTransactionForm() {
   // states
@@ -112,7 +120,8 @@ export default function TrackerTransactionForm() {
   const [formDataCreateTrackerTxType, setFormDataCreateTrackerTxType] =
     useState<ITrackerTransactionTypeBody>(initTrackerTypeForm)
   const [dataTableConfig, setDataTableConfig] = useState<IDataTableConfig>({
-    ...initTableConfig
+    ...initTableConfig,
+    translationNamespace: 'trackerTransaction'
   })
   const [dataTableUnclassifiedConfig, setDataTableUnclassifiedConfig] = useState<IDataTableConfig>({
     ...initTableConfig,
@@ -136,7 +145,7 @@ export default function TrackerTransactionForm() {
   const socket = useSocket()
   const { user, fundId, checkHeightRange, viewportHeight } = useStoreLocal()
   const { getMe } = useUser()
-  const { t } = useTranslation(['trackerTransaction', 'common'])
+  const { t, i18n } = useTranslation(['trackerTransaction', 'common'])
   const { isGetMeUserPending } = getMe(true)
   const { getAllAccountSource } = useAccountSource()
   const {
@@ -227,18 +236,83 @@ export default function TrackerTransactionForm() {
     })
   }
 
-  const titles = ['Reason Name', 'Category', 'Amount', 'Transaction Date', 'Account Source']
+  // Define original English headers to maintain correct accessorKey
+  const headerKeys = ['Reason Name', 'Category', 'Amount', 'Transaction Date', 'Account Source']
+
+  // Use i18n for display only
+  const getDisplayHeaders = () => {
+    return [
+      t('table.reasonName'),
+      t('table.category'),
+      t('table.amount'),
+      t('table.transactionDate'),
+      t('table.accountSource')
+    ]
+  }
+
   // memos
   const columns = useMemo(() => {
     if (tableData.length === 0) return []
-    return getColumns<ICustomTrackerTransaction>({
-      headers: titles,
-      isSort: true
+
+    // Create columns with original keys but translated display text
+    const columnsFromHeaders = headerKeys.map((header, index) => {
+      const accessorKey = header === 'Category' ? 'trackerType' : convertToCamelCase(header)
+      const displayText = getDisplayHeaders()[index]
+
+      return {
+        accessorKey,
+        header: ({ column }: { column: any }) =>
+          header === 'Id' || header === 'Check Type' ? (
+            ''
+          ) : true && column.toggleSorting ? (
+            <div
+              className='flex'
+              onClick={() => {
+                column.toggleSorting(column.getIsSorted() === 'asc')
+              }}
+            >
+              {displayText}
+              <ArrowUpDown className='ml-2 mt-1 h-3 w-3' />
+            </div>
+          ) : (
+            <div>{displayText}</div>
+          ),
+        cell: ({ row }: { row: any }) => {
+          return header === 'Id' || header === 'Check Type' ? '' : <div>{row.getValue(accessorKey)}</div>
+        }
+      }
     })
-  }, [tableData])
+
+    const defaultColumn = [
+      {
+        accessorKey: 'inProgress',
+        header: ({ table }: { table: any }) => {
+          return (
+            <Checkbox
+              checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && 'indeterminate')}
+              onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+              aria-label='Select all'
+            />
+          )
+        },
+        cell: ({ row }: { row: any }) => (
+          <Checkbox
+            checked={row.getIsSelected()}
+            onCheckedChange={(value) => row.toggleSelected(!!value)}
+            aria-label='Select row'
+          />
+        ),
+        enableSorting: false,
+        enableHiding: false
+      }
+    ]
+
+    return [...defaultColumn, ...columnsFromHeaders]
+  }, [tableData, t])
+
   const columnUnclassifiedTxTables = useMemo(() => {
     if (unclassifiedTxTableData.length === 0) return []
-    return getColumns<IDataTransactionTable>({ headers: transactionHeaders, isSort: true })
+    return getColumns<IDataTransactionTable>({ headers: transactionHeaders(), isSort: true })
   }, [unclassifiedTxTableData])
 
   // effects

@@ -63,7 +63,11 @@
     },
     "direction": {
       "label": "Direction",
-      "placeholder": "Select direction"
+      "placeholder": "Select direction",
+      "options": {
+        "incoming": "INCOMING",
+        "expense": "EXPENSE"
+      }
     }
   },
   "transactionDetails": {

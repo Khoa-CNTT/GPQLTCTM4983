@@ -47,11 +47,11 @@ export const defineUpdateTransactionFormBody = ({
       dataSelector: [
         {
           value: 'INCOMING',
-          label: 'INCOMING'
+          label: t('IUpdateTransactionFormBody.direction.options.incoming', 'INCOMING')
         },
         {
           value: 'EXPENSE',
-          label: 'EXPENSE'
+          label: t('IUpdateTransactionFormBody.direction.options.expense', 'EXPENSE')
         }
       ]
     }

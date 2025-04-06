@@ -32,7 +32,7 @@ interface IFlatListProps {
 
 export default function FlatList({ data, onClick, isLoading, className, viewportHeight }: IFlatListProps) {
   const [heightFlatList, setHeightFlatList] = useState('')
-  const { t } = useTranslation(['common'])
+  const { t } = useTranslation(['common', 'trackerTransaction'])
 
   useEffect(() => {
     if (viewportHeight && viewportHeight >= 600 && viewportHeight <= 771) {
@@ -100,7 +100,9 @@ export default function FlatList({ data, onClick, isLoading, className, viewport
                           variant={item.direction === ETypeOfTrackerTransactionType.EXPENSE ? 'default' : 'secondary'}
                           className='font-sm'
                         >
-                          {item.direction}
+                          {item.direction === ETypeOfTrackerTransactionType.EXPENSE
+                            ? t('expense', { ns: 'trackerTransaction' })
+                            : t('incoming', { ns: 'trackerTransaction' })}
                         </Badge>
                       </div>
                       <div className='flex items-center gap-1 text-[11px] text-muted-foreground max-sm:hidden'>

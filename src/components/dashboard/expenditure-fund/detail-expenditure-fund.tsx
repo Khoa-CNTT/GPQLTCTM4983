@@ -10,6 +10,7 @@ import StatisticTabsContent from './detail-expenditure-fund-tabs-content/statist
 import ParticipantTabsContent from './detail-expenditure-fund-tabs-content/participant-tabs-content'
 import CategoryTabsContent from './detail-expenditure-fund-tabs-content/category-tabs-content'
 import { ChevronDown, ChevronUp, LayoutDashboard, Users, Tags, Receipt, BarChart3 } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 
 // Add variants for stagger animation
 const menuVariants = {
@@ -70,7 +71,6 @@ const menuItems = [
     icon: BarChart3
   }
 ]
-import { useTranslation } from 'react-i18next'
 
 export function DetailExpenditureFund({
   detailData,
@@ -111,9 +111,42 @@ export function DetailExpenditureFund({
   }
   const { t } = useTranslation(['expenditureFundDetails', 'common'])
 
+  // Tạo danh sách menu items với i18n
+  const translatedMenuItems = [
+    {
+      value: 'overview',
+      title: t('tabs.overview'),
+      icon: LayoutDashboard
+    },
+    {
+      value: 'participants',
+      title: t('tabs.participants'),
+      icon: Users
+    },
+    {
+      value: 'categories',
+      title: t('tabs.categories'),
+      icon: Tags
+    },
+    {
+      value: 'transactions',
+      title: t('tabs.transactions'),
+      icon: Receipt
+    },
+    {
+      value: 'statistics',
+      title: t('tabs.statistics'),
+      icon: BarChart3
+    }
+  ]
+
   const handleMenuOpen = (event: React.MouseEvent, { title, status }: { title: string; status: boolean }) => {
     event.preventDefault()
     setTitleMenu(title)
+  }
+
+  const getTranslatedStatus = (status: EFundStatus) => {
+    return t(`status.${status}`)
   }
 
   return (
@@ -124,7 +157,7 @@ export function DetailExpenditureFund({
           style={{ userSelect: 'none', pointerEvents: 'none', cursor: 'none' }}
           className={getStatusColor(detailData.status)}
         >
-          {detailData.status}
+          {getTranslatedStatus(detailData.status)}
         </Badge>
       </div>
 
@@ -150,7 +183,7 @@ export function DetailExpenditureFund({
                   animate='open'
                   exit='closed'
                 >
-                  {menuItems.map((item) => (
+                  {translatedMenuItems.map((item) => (
                     <motion.div key={item.value} variants={itemVariants}>
                       <TabsTrigger
                         value={item.value}
@@ -203,11 +236,11 @@ export function DetailExpenditureFund({
 
       <Tabs defaultValue='overview' className='hidden h-[23rem] w-full sm:grid'>
         <TabsList className='md:text-md grid w-full grid-cols-5 pb-10 text-xs sm:text-sm'>
-          <TabsTrigger value='overview'>Overview</TabsTrigger>
-          <TabsTrigger value='participants'>Participants</TabsTrigger>
-          <TabsTrigger value='categories'>Categories</TabsTrigger>
-          <TabsTrigger value='transactions'>Transactions</TabsTrigger>
-          <TabsTrigger value='statistics'>Statistics</TabsTrigger>
+          <TabsTrigger value='overview'>{t('tabs.overview')}</TabsTrigger>
+          <TabsTrigger value='participants'>{t('tabs.participants')}</TabsTrigger>
+          <TabsTrigger value='categories'>{t('tabs.categories')}</TabsTrigger>
+          <TabsTrigger value='transactions'>{t('tabs.transactions')}</TabsTrigger>
+          <TabsTrigger value='statistics'>{t('tabs.statistics')}</TabsTrigger>
         </TabsList>
         <TabsContent value='overview' className='h-[23rem] space-y-4'>
           <OverviewTabsContent detailData={detailData} setIsDialogOpen={setIsDialogOpen} />

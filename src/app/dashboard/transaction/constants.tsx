@@ -4,7 +4,16 @@ import { IButtonInDataTableHeader } from '@/types/core.i'
 import { ArrowDownToLineIcon, RotateCcwIcon } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 
-export const transactionHeaders = ['Amount', 'Direction', 'Account Source', 'Account No', 'Date']
+export const transactionHeaders = () => {
+  const t = translate(['transaction', 'common'])
+  return [
+    t('table.amount', 'Amount'),
+    t('table.direction', 'Direction'),
+    t('table.accountSource', 'Account Source'),
+    t('table.accountNo', 'Account No'),
+    t('table.date', 'Date')
+  ]
+}
 
 export const initButtonInDataTableHeader = ({
   reloadDataFunction,

@@ -52,14 +52,14 @@ export default function EditTrackerTypeDialog({
             <div className='mt-2 flex w-full flex-col gap-2 sm:flex-row'>
               <Select onValueChange={(value: ETypeOfTrackerTransactionType) => setType(value)} value={type}>
                 <SelectTrigger style={{ userSelect: 'none' }}>
-                  <SelectValue placeholder='Select type for category' />
+                  <SelectValue placeholder={t('editCategory.form.selectType')} />
                 </SelectTrigger>
                 <SelectContent style={{ userSelect: 'none' }}>
                   <SelectItem key={'INCOMING'} value={'INCOMING'}>
-                    Incoming
+                    {t('form.defineCreateTrackerTransactionFormBody.direction.options.incoming')}
                   </SelectItem>
                   <SelectItem key={'EXPENSE'} value={'EXPENSE'}>
-                    Expense
+                    {t('form.defineCreateTrackerTransactionFormBody.direction.options.expense')}
                   </SelectItem>
                 </SelectContent>
               </Select>

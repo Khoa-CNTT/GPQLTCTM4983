@@ -20,7 +20,7 @@ import { IUser } from '@/types/user.i'
 import { Fragment, useState } from 'react'
 import { initEmptyUser } from '@/app/dashboard/profile/constants'
 import CustomDialog from '../../Dialog'
-import { translate } from '@/libraries/utils'
+import { useTranslation } from 'react-i18next'
 
 export default function ParticipantTabsContent({
   detailData,
@@ -31,6 +31,8 @@ export default function ParticipantTabsContent({
   const [isOpenUserProfileDialog, setIsOpenUserProfileDialog] = useState(false)
   const isOwner = detailData.owner.id === user?.id
   const [userProfileData, setUserProfileData] = useState<IUser>(initEmptyUser)
+  const { t } = useTranslation(['expenditureFundDetails', 'common'])
+
   const getRoleBadge = (role: IExpenditureFundParticipant['role']) => {
     switch (role) {
       case 'OWNER':
@@ -39,7 +41,7 @@ export default function ParticipantTabsContent({
             style={{ userSelect: 'none', pointerEvents: 'none', cursor: 'none' }}
             className='bg-yellow-500 text-yellow-900'
           >
-            Owner
+            {t('participantTabsContent.owner')}
           </Badge>
         )
       case 'ADMIN':
@@ -48,7 +50,7 @@ export default function ParticipantTabsContent({
             style={{ userSelect: 'none', pointerEvents: 'none', cursor: 'none' }}
             className='bg-blue-500 text-blue-900'
           >
-            Admin
+            {t('participantTabsContent.admin')}
           </Badge>
         )
       case 'MEMBER':
@@ -57,7 +59,7 @@ export default function ParticipantTabsContent({
             style={{ userSelect: 'none', pointerEvents: 'none', cursor: 'none' }}
             className='bg-gray-500 text-gray-900'
           >
-            Member
+            {t('participantTabsContent.member')}
           </Badge>
         )
     }
@@ -68,12 +70,12 @@ export default function ParticipantTabsContent({
     onClose: () => {
       setIsOpenUserProfileDialog(false)
     },
-    title: 'Thông tin người tham gia',
+    title: t('participantTabsContent.userProfileTitle'),
     content: <UserProfile user={userProfileData} />,
     className: 'max-w-[90%] ',
-    footer: <Button onClick={() => setIsOpenUserProfileDialog(false)}>Đóng</Button>
+    footer: <Button onClick={() => setIsOpenUserProfileDialog(false)}>{t('participantTabsContent.close')}</Button>
   }
-  const t = translate(['common'])
+
   return (
     <TooltipProvider>
       {isOwner && (
@@ -88,7 +90,7 @@ export default function ParticipantTabsContent({
               className='flex h-full w-full items-center justify-center gap-2'
             >
               <UserPlus className='inline-block h-4 w-4' />
-              <span>Invite</span>
+              <span>{t('participantTabsContent.invite')}</span>
             </Button>
           </div>
         </div>
@@ -128,7 +130,11 @@ export default function ParticipantTabsContent({
                       )}
                     </TooltipTrigger>
                     <TooltipContent>
-                      <p>{participant.status === 'ACCEPTED' ? 'Accepted' : 'Pending'}</p>
+                      <p>
+                        {participant.status === 'ACCEPTED'
+                          ? t('participantTabsContent.accepted')
+                          : t('participantTabsContent.pending')}
+                      </p>
                     </TooltipContent>
                   </Tooltip>
 
@@ -153,7 +159,7 @@ export default function ParticipantTabsContent({
                           onClick={() => participantProps.handleDelete(participant.id)}
                         >
                           <Trash2Icon className='mr-2 h-4 w-4' />
-                          Remove
+                          {t('participantTabsContent.remove')}
                         </DropdownMenuItem>
                       )}
                       <DropdownMenuItem
@@ -164,7 +170,7 @@ export default function ParticipantTabsContent({
                         }}
                       >
                         <UserCheck2Icon className='mr-2 h-4 w-4' />
-                        Profile
+                        {t('participantTabsContent.profile')}
                       </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>

@@ -8,8 +8,11 @@ import { ArrowDownIcon, ArrowUpIcon } from 'lucide-react'
 import Image from 'next/image'
 import EmptyBox from '@/images/empty-box.png'
 import { ITransactionTabsContentProps } from '@/core/expenditure-fund/models/expenditure-fund.interface'
+import { useTranslation } from 'react-i18next'
 
 export default function TransactionTabsContent({ detailData }: ITransactionTabsContentProps) {
+  const { t } = useTranslation(['expenditureFundDetails', 'common'])
+
   return (
     <ScrollArea className='h-[345px] p-2'>
       <div className='space-y-2'>
@@ -53,7 +56,9 @@ export default function TransactionTabsContent({ detailData }: ITransactionTabsC
                   className='whitespace-nowrap'
                   variant={transaction.TrackerTransaction !== undefined ? 'outline' : 'greenPastel1'}
                 >
-                  {transaction.TrackerTransaction ? transaction.TrackerTransaction.TrackerType.name : 'Unclassified'}
+                  {transaction.TrackerTransaction
+                    ? transaction.TrackerTransaction.TrackerType.name
+                    : t('transactions.unclassified')}
                 </Badge>
               </div>
 
@@ -69,7 +74,7 @@ export default function TransactionTabsContent({ detailData }: ITransactionTabsC
           <div className='flex items-center justify-center p-4'>
             <div className='text-center'>
               <Image priority src={EmptyBox} alt='' height={60} width={60} className='mx-auto' />
-              <span className='mt-2 block text-sm font-semibold text-foreground'>No data available</span>
+              <span className='mt-2 block text-sm font-semibold text-foreground'>{t('common:noDataText')}</span>
             </div>
           </div>
         )}

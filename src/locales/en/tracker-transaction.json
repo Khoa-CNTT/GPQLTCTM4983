@@ -74,7 +74,8 @@
     "form": {
       "name": "Name",
       "type": "Type",
-      "description": "Description"
+      "description": "Description",
+      "selectType": "Select type for category"
     }
   },
   "defineContentCreateTracker": {
@@ -101,5 +102,12 @@
   "unclassifiedForm": {
     "title": "Unclassified",
     "button": "Refetch in bank"
+  },
+  "table": {
+    "reasonName": "Reason Name",
+    "category": "Category",
+    "amount": "Amount",
+    "transactionDate": "Transaction Date",
+    "accountSource": "Account Source"
   }
 }

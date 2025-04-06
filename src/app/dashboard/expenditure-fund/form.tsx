@@ -16,7 +16,12 @@ import {
   IUpdateExpenditureFundBody,
   TExpenditureFundActions
 } from '@/core/expenditure-fund/models/expenditure-fund.interface'
-import { initButtonInHeaders, initEmptyDetailExpenditureFund, initEmptyExpenditureFundDialogOpen } from './constants'
+import {
+  formatExpenditureFundData,
+  initButtonInHeaders,
+  initEmptyDetailExpenditureFund,
+  initEmptyExpenditureFundDialogOpen
+} from './constants'
 import ExpenditureFundDialog from './dialog'
 import { useExpenditureFund } from '@/core/expenditure-fund/hooks'
 import {
@@ -48,6 +53,8 @@ import { IFundOfUser } from '@/core/tracker-transaction/models/tracker-transacti
 import { IDataTableConfig } from '@/types/common.i'
 import { useTranslation } from 'react-i18next'
 import DeleteDialog from '@/components/dashboard/DeleteDialog'
+import { Checkbox } from '@/components/ui/checkbox'
+import { ArrowUpDown } from 'lucide-react'
 
 export default function ExpenditureFundForm() {
   // states
@@ -66,16 +73,99 @@ export default function ExpenditureFundForm() {
   const [dateRange, setDateRange] = useState<string>('1-week')
 
   // memos
+  const { t } = useTranslation(['expenditureFund', 'common'])
 
-  const titles = ['Name', 'Status', 'Current Amount', 'Owner']
-
+  // Tạo columns thủ công thay vì sử dụng getColumns
   const columns = useMemo(() => {
     if (dataTable.length === 0) return []
-    return getColumns<IExpenditureFundDataFormat>({
-      headers: titles,
-      isSort: true
-    })
-  }, [dataTable])
+
+    // Tạo cột selection (checkbox)
+    const selectionColumn = {
+      id: 'select',
+      header: ({ table }: any) => (
+        <Checkbox
+          checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && 'indeterminate')}
+          onCheckedChange={(value: any) => table.toggleAllPageRowsSelected(!!value)}
+          aria-label='Select all'
+        />
+      ),
+      cell: ({ row }: any) => (
+        <Checkbox
+          checked={row.getIsSelected()}
+          onCheckedChange={(value: any) => row.toggleSelected(!!value)}
+          aria-label='Select row'
+        />
+      ),
+      enableSorting: false,
+      enableHiding: false
+    }
+
+    // Tạo các cột dữ liệu
+    const dataColumns = [
+      {
+        accessorKey: 'name',
+        header: ({ column }: any) => (
+          <div className='flex' onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
+            {t('tableExpenditureFundFormBody.name')}
+            <ArrowUpDown className='ml-2 mt-1 h-3 w-3' />
+          </div>
+        ),
+        cell: ({ row }: any) => <div>{row.getValue('name')}</div>
+      },
+      {
+        accessorKey: 'status',
+        header: ({ column }: any) => (
+          <div className='flex' onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
+            {t('tableExpenditureFundFormBody.status')}
+            <ArrowUpDown className='ml-2 mt-1 h-3 w-3' />
+          </div>
+        ),
+        cell: ({ row }: any) => {
+          const statusValue = row.getValue('status')
+          // Chuyển đổi trạng thái sang tiếng Việt
+          let translatedStatus = ''
+
+          if (statusValue === 'ACTIVE') {
+            translatedStatus = t('active')
+          } else if (statusValue === 'INACTIVE') {
+            translatedStatus = t('inactive')
+          } else if (statusValue === 'PENDING') {
+            translatedStatus = t('pending')
+          } else {
+            translatedStatus = statusValue
+          }
+
+          return (
+            <span className='rounded-full bg-green-200 px-2 py-1 text-xs font-semibold text-green-800'>
+              {translatedStatus}
+            </span>
+          )
+        }
+      },
+      {
+        accessorKey: 'currentAmount',
+        header: ({ column }: any) => (
+          <div className='flex' onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
+            {t('tableExpenditureFundFormBody.currentAmount')}
+            <ArrowUpDown className='ml-2 mt-1 h-3 w-3' />
+          </div>
+        ),
+        cell: ({ row }: any) => <div>{row.getValue('currentAmount')}</div>
+      },
+      {
+        accessorKey: 'owner',
+        header: ({ column }: any) => (
+          <div className='flex' onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
+            {t('tableExpenditureFundFormBody.owner')}
+            <ArrowUpDown className='ml-2 mt-1 h-3 w-3' />
+          </div>
+        ),
+        cell: ({ row }: any) => <div>{row.getValue('owner')}</div>
+      }
+    ]
+
+    return [selectionColumn, ...dataColumns]
+  }, [dataTable, t])
 
   // hooks
   const { fundId, checkHeightRange, viewportHeight, setFundArr } = useStoreLocal()
@@ -123,7 +213,7 @@ export default function ExpenditureFundForm() {
     }
   }, [getAllExpenditureFundData])
 
-  const { resetData: resetCacheTrackerTxType } = useUpdateModel([GET_ADVANCED_TRACKER_TRANSACTION_KEY], () => { })
+  const { resetData: resetCacheTrackerTxType } = useUpdateModel([GET_ADVANCED_TRACKER_TRANSACTION_KEY], () => {})
 
   const actionMap: Record<TExpenditureFundActions, () => void> = {
     getExpenditureFund: refetchAdvancedExpendingFund,
@@ -140,7 +230,6 @@ export default function ExpenditureFundForm() {
       }
     })
   }
-  const { t } = useTranslation(['expenditureFund', 'common'])
 
   // effects
   useEffect(() => {
@@ -165,32 +254,80 @@ export default function ExpenditureFundForm() {
     }
   }, [getStatisticExpenditureFundData])
 
+  // Force update data when language changes
+  const { i18n } = useTranslation()
   useEffect(() => {
-    if (advancedExpenditureFundData)
-      initExpenditureFundDataTable(isGetAdvancedPending, advancedExpenditureFundData, setDataTableConfig, setDataTable)
-    if (detailData !== initEmptyDetailExpenditureFund) {
-      setDetailData(
-        advancedExpenditureFundData?.data.find((item) => item.id === detailData.id) || initEmptyDetailExpenditureFund
-      )
+    if (advancedExpenditureFundData) {
+      try {
+        // Sử dụng formatExpenditureFundData có sẵn để đảm bảo kiểu dữ liệu đúng
+        const formattedData = advancedExpenditureFundData.data.map((item) => formatExpenditureFundData(item))
+
+        console.log('Current language:', i18n.language)
+        console.log('Data keys:', formattedData.length > 0 ? Object.keys(formattedData[0]) : [])
+
+        setDataTableConfig((prev) => ({
+          ...prev,
+          totalPage: Number(advancedExpenditureFundData.pagination?.totalPage)
+        }))
+
+        // Set dữ liệu mới
+        setDataTable(formattedData)
+
+        // Cập nhật chi tiết nếu cần
+        if (detailData !== initEmptyDetailExpenditureFund) {
+          setDetailData(
+            advancedExpenditureFundData?.data.find((item) => item.id === detailData.id) ||
+              initEmptyDetailExpenditureFund
+          )
+        }
+      } catch (error) {
+        console.error('Error formatting data:', error)
+      }
     }
-  }, [advancedExpenditureFundData])
+  }, [i18n.language, advancedExpenditureFundData, detailData.id])
+
+  // Khi ngôn ngữ thay đổi, lấy lại dữ liệu từ server
+  useEffect(() => {
+    const refetchData = async () => {
+      try {
+        await refetchAdvancedExpendingFund()
+      } catch (error) {
+        console.error('Failed to refetch data:', error)
+      }
+    }
+
+    refetchData()
+  }, [i18n.language])
+
   useEffect(() => {
     setQueryOptions((prev) => ({ ...prev, page: dataTableConfig.currentPage, limit: dataTableConfig.limit }))
   }, [dataTableConfig])
 
   useEffect(() => {
     if (viewportHeight > 600 && viewportHeight <= 700) {
-      setHeightDonut("h-[15rem]")
+      setHeightDonut('h-[15rem]')
     } else if (viewportHeight > 700 && viewportHeight <= 800) {
-      setHeightDonut("h-[20rem]")
+      setHeightDonut('h-[20rem]')
     } else if (viewportHeight > 800 && viewportHeight <= 900) {
-      setHeightDonut("h-[19rem]")
+      setHeightDonut('h-[19rem]')
     } else {
-      setHeightDonut("h-[20rem]")
+      setHeightDonut('h-[20rem]')
     }
   }, [viewportHeight])
 
-  const buttons = initButtonInHeaders({ setIsDialogOpen })
+  const baseButtons = initButtonInHeaders({ setIsDialogOpen })
+  // Translate button titles
+  const buttons = baseButtons.map((button) => ({
+    ...button,
+    title: t('common:button.create')
+  }))
+
+  // Tạo một key duy nhất cho DataTable - thêm thời gian hiện tại để đảm bảo key thay đổi mỗi khi re-render
+  const tableKey = useMemo(() => {
+    console.log('Generating new table key for language:', i18n.language)
+    return `data-table-${i18n.language}-${Math.random()}` // Math.random() đảm bảo key luôn thay đổi
+  }, [i18n.language])
+
   return (
     <div className='grid h-full w-full grid-cols-1 gap-4'>
       <div className='grid h-full grid-cols-1 gap-4 md:col-span-2 md:w-full md:flex-1 md:flex-col lg:grid-cols-3'>
@@ -214,7 +351,7 @@ export default function ExpenditureFundForm() {
             </CardHeader>
             <CardContent>
               <div className='flex h-auto w-full justify-center'>
-                <DonutChart data={chartData} className={` w-full max-w-[50rem] ${heightDonut}`} types='donut' />
+                <DonutChart data={chartData} className={`w-full max-w-[50rem] ${heightDonut}`} types='donut' />
               </div>
             </CardContent>
           </Card>
@@ -294,6 +431,7 @@ export default function ExpenditureFundForm() {
             <Card className='h-full w-full'>
               <CardContent className='h-full'>
                 <DataTable
+                  key={tableKey}
                   buttons={buttons}
                   columns={columns}
                   data={dataTable}

@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button'
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { useStoreLocal } from '@/hooks/useStoreLocal'
+import { useTranslation } from 'react-i18next'
 
 export interface IComboboxProps {
   className?: string
@@ -42,6 +43,7 @@ export const Combobox = forwardRef<HTMLButtonElement, IComboboxProps>(
     const [internalValue, setInternalValue] = useState(controlledValue || '')
     const { viewportHeight } = useStoreLocal()
     const [scrollMaxHeight, setScrollMaxHeight] = useState('')
+    const { t } = useTranslation(['common'])
 
     useEffect(() => {
       if (controlledValue !== undefined) {
@@ -93,7 +95,7 @@ export const Combobox = forwardRef<HTMLButtonElement, IComboboxProps>(
                   <span className='ml-1 text-sm'>
                     {internalValue && dataArr && dataArr.length > 0
                       ? dataArr.find((data) => data.value === internalValue)?.label
-                      : `Select ${label ?? 'item'}`}
+                      : `${t('combobox.select')} ${label ?? t('combobox.item')}`}
                   </span>
                   <ChevronsUpDown className='mr-1 h-3 w-3 shrink-0 opacity-50' />
                 </>
@@ -105,7 +107,7 @@ export const Combobox = forwardRef<HTMLButtonElement, IComboboxProps>(
               <CommandInput
                 value={searchValue}
                 onValueChange={setSearchValue}
-                placeholder={`Search ${label ?? 'item'}`}
+                placeholder={`${t('combobox.select')} ${label ?? t('combobox.item')}`}
               />
               <CommandList className={scrollMaxHeight}>
                 {filteredDataArr?.length > 0 ? (
@@ -122,13 +124,13 @@ export const Combobox = forwardRef<HTMLButtonElement, IComboboxProps>(
                     ))}
                   </CommandGroup>
                 ) : (
-                  <CommandEmpty>No items found</CommandEmpty>
+                  <CommandEmpty>{t('combobox.noItemsFound')}</CommandEmpty>
                 )}
               </CommandList>
             </Command>
             {setOpenEditDialog && (
               <Button className='mt-4 w-full' variant='outline' onClick={() => setOpenEditDialog(true)}>
-                Edit {label ?? 'item'}
+                {t('button.edit')} {label ?? t('combobox.item')}
               </Button>
             )}
           </PopoverContent>
