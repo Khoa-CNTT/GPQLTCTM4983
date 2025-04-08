@@ -62,6 +62,7 @@ export const GlareCard = ({ children, className }: { children: React.ReactNode; 
     <div
       style={containerStyle}
       className='duration-[var(--duration)] ease-[var(--easing)] delay-[var(--delay)] relative isolate h-fit min-w-[280px] transition-transform will-change-transform [contain:layout_style] [perspective:600px]'
+
       ref={refElement}
       onPointerMove={(event) => {
         const rotateFactor = 0.4

@@ -3,7 +3,7 @@ import { NavItem } from '@/types/core.i'
 export const navItems: NavItem[] = [
   {
     title: 'Overview',
-    href: '/dashboard/',
+    href: '/dashboard',
     icon: 'dashboard',
     label: 'Overview'
   },
@@ -18,6 +18,12 @@ export const navItems: NavItem[] = [
     href: '/dashboard/expenditure-fund',
     icon: 'chartCandlestick',
     label: 'Expenditure Fund'
+  },
+  {
+    title: "Planning & Budgeting",
+    href: "/dashboard/spending-plan",
+    icon: "newspaper",
+    label: "Planning & Budgeting",
   },
   {
     title: 'Transaction',

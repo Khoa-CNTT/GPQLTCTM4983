@@ -8,6 +8,8 @@ import { trackerTransactionRoutes } from './tracker-transaction'
 import { expenditureFundRoutes } from './expenditure-fund'
 import { participantRoutes } from './participant'
 import { overviewRoutes } from './overview'
+import { fundSavingTargetRoutes } from './fund-saving-target'
+import { fundSavingPlanRoutes } from './fund-saving-plant'
 
 export const apiService = {
   authentication: authenticationRoutes,
@@ -19,5 +21,7 @@ export const apiService = {
   trackerTransaction: trackerTransactionRoutes,
   expenditureFund: expenditureFundRoutes,
   participant: participantRoutes,
-  overview: overviewRoutes
+  overview: overviewRoutes,
+  fundSavingPlant: fundSavingPlanRoutes,
+  fundSavingTarget: fundSavingTargetRoutes
 }

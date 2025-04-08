@@ -31,6 +31,10 @@ export const formatCurrency = (amount: number, currency = 'USD', locale = 'en-US
 }
 
 export const formatDateTimeVN = (date: string, hasTime: boolean) => {
+  if (isNaN(new Date(date).getTime())) {
+    return date
+  }
+
   const formattedDate = new Intl.DateTimeFormat('vi-VN', {
     day: '2-digit',
     month: '2-digit',
@@ -47,6 +51,7 @@ export const formatDateTimeVN = (date: string, hasTime: boolean) => {
 
   return formattedDate
 }
+
 const getPropertyByPath = (data: any, propertyPath: string): any => {
   const properties = propertyPath.split('.')
   return properties.reduce((prev, curr) => prev && prev[curr], data)
