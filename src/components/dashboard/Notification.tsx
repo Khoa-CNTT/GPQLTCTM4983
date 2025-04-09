@@ -1,4 +1,6 @@
-import { useState } from 'react'
+'use client'
+
+import { useEffect, useRef, useState } from 'react'
 import { Bell } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
@@ -9,52 +11,42 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu'
-
-type Notification = {
-  id: number
-  title: string
-  description: string
-  timestamp: Date
-  read: boolean
-}
+import { useNotification } from '@/core/notifications/hooks'
+import { INotification, ENotificationStatus } from '@/core/notifications/models'
 
 export default function NotificationDropdown() {
-  const [notifications, setNotifications] = useState<Notification[]>([
-    {
-      id: 1,
-      title: 'New message from John Doe',
-      description: "Hey, how's it going?",
-      timestamp: new Date(Date.now() - 300000),
-      read: false
-    },
-    {
-      id: 2,
-      title: 'You have a new follower',
-      description: 'Jane Smith started following you',
-      timestamp: new Date(Date.now() - 3600000),
-      read: false
-    },
-    {
-      id: 3,
-      title: 'Your post was liked',
-      description: 'Your recent post received 50 likes',
-      timestamp: new Date(Date.now() - 86400000),
-      read: true
+  // states
+  const [notifications, setNotifications] = useState<INotification[]>([])
+  const [unreadCount, setUnreadCount] = useState<number>(0)
+
+  // hooks
+  const { getAdvancedNotifications } = useNotification()
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, status } = getAdvancedNotifications()
+
+  // effects
+  useEffect(() => {
+    console.log('>>>>>', notifications)
+    if (notifications.length > 0) {
+      const unread = notifications.filter((n) => n.status === ENotificationStatus.UNREAD).length
+      setUnreadCount(unread)
     }
-  ])
+  }, [notifications])
 
-  const unreadCount = notifications.filter((n) => !n.read).length
+  useEffect(() => {
+    if (data) setNotifications((prev) => [...prev, ...data.pages[0].data])
+  }, [data])
 
+  // functions
   const formatTimestamp = (date: Date) => {
     const now = new Date()
-    const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000)
+    const diffInSeconds = Math.floor((now.getTime() - new Date(date).getTime()) / 1000)
     if (diffInSeconds < 60) return `${diffInSeconds}s ago`
     if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)}m ago`
     if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)}h ago`
     return `${Math.floor(diffInSeconds / 86400)}d ago`
   }
 
-  const markAsRead = (id: number) => {
+  const markAsRead = (id: string) => {
     setNotifications(notifications.map((n) => (n.id === id ? { ...n, read: true } : n)))
   }
 
@@ -71,24 +63,59 @@ export default function NotificationDropdown() {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align='end' className='w-60 md:w-80'>
-        <DropdownMenuLabel>Notifications</DropdownMenuLabel>
+        <DropdownMenuLabel style={{ userSelect: 'none' }}>Notifications</DropdownMenuLabel>
         <DropdownMenuSeparator />
-        {notifications.map((notification) => (
-          <DropdownMenuItem
-            key={notification.id}
-            className='flex cursor-pointer items-start space-x-3 p-3'
-            onClick={() => markAsRead(notification.id)}
-          >
-            <div className={`mt-1.5 h-2 w-2 rounded-full ${notification.read ? 'bg-gray-300' : 'bg-blue-500'}`} />
-            <div className='flex-1 space-y-1'>
-              <p className={`text-sm font-medium ${notification.read ? 'text-muted-foreground' : ''}`}>
-                {notification.title}
-              </p>
-              <p className='text-xs text-muted-foreground'>{notification.description}</p>
-              <p className='text-xs text-muted-foreground'>{formatTimestamp(notification.timestamp)}</p>
-            </div>
-          </DropdownMenuItem>
-        ))}
+        <div
+          className='max-h-[400px] overflow-y-auto'
+          onScroll={(e) => {
+            const target = e.target as HTMLDivElement
+            if (
+              target.scrollHeight - target.scrollTop <= target.clientHeight + 50 &&
+              hasNextPage &&
+              !isFetchingNextPage
+            ) {
+              fetchNextPage()
+            }
+          }}
+        >
+          {status === 'pending' ? (
+            <div className='p-3 text-center text-sm text-muted-foreground'>Loading notifications...</div>
+          ) : status === 'error' ? (
+            <div className='p-3 text-center text-sm text-red-500'>Error loading notifications</div>
+          ) : notifications.length === 0 ? (
+            <div className='p-3 text-center text-sm text-muted-foreground'>No notifications</div>
+          ) : (
+            <>
+              {notifications.map((notification) => (
+                <DropdownMenuItem
+                  key={notification.id}
+                  className='flex cursor-pointer items-start space-x-3 p-3'
+                  onClick={() => markAsRead(notification.id)}
+                >
+                  <div
+                    className={`mt-1.5 h-2 w-2 rounded-full ${notification.status === ENotificationStatus.READ ? 'bg-gray-300' : 'bg-blue-500'}`}
+                  />
+                  <div className='flex-1 space-y-1'>
+                    <p
+                      className={`text-sm font-medium ${notification.status === ENotificationStatus.READ ? 'text-muted-foreground' : ''}`}
+                    >
+                      {notification.title}
+                    </p>
+                    <p className='text-xs text-muted-foreground'>
+                      {notification.content.length > 80
+                        ? `${notification.content.slice(0, 80)}...`
+                        : notification.content}
+                    </p>
+                    <p className='text-xs text-muted-foreground'>{formatTimestamp(notification.timestamp)}</p>
+                  </div>
+                </DropdownMenuItem>
+              ))}
+              {isFetchingNextPage && (
+                <div className='p-3 text-center text-sm text-muted-foreground'>Loading more...</div>
+              )}
+            </>
+          )}
+        </div>
         <DropdownMenuSeparator />
         <DropdownMenuItem className='cursor-pointer text-center font-medium'>View all notifications</DropdownMenuItem>
       </DropdownMenuContent>
