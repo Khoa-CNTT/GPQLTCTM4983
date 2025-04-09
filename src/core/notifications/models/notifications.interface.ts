@@ -1,8 +1,7 @@
-import { IAccountBank } from '@/core/account-bank/models'
 import { IBaseResponseData } from '@/types/common.i'
 
 export type INotificationsResponse = IBaseResponseData<INotification>
-export type IAdvancedNotificationsResponse = IBaseResponseData<INotification[]>
+export type IAdvancedNotificationsResponse = IBaseResponseData<{ data: INotification[]; unreadCount: number }>
 
 export interface INotification {
   id: string

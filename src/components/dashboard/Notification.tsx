@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Bell } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
@@ -25,15 +25,10 @@ export default function NotificationDropdown() {
 
   // effects
   useEffect(() => {
-    console.log('>>>>>', notifications)
-    if (notifications.length > 0) {
-      const unread = notifications.filter((n) => n.status === ENotificationStatus.UNREAD).length
-      setUnreadCount(unread)
+    if (data) {
+      setNotifications((prev) => [...prev, ...data.pages[0].data.data])
+      setUnreadCount(data.pages[0].data.unreadCount)
     }
-  }, [notifications])
-
-  useEffect(() => {
-    if (data) setNotifications((prev) => [...prev, ...data.pages[0].data])
   }, [data])
 
   // functions
@@ -56,10 +51,14 @@ export default function NotificationDropdown() {
         <Button
           variant='ghost'
           size='icon'
-          className='mt-0.5 h-7 select-none rounded-full !border-0 p-0 outline-none hover:bg-transparent focus:outline-none focus-visible:ring-0 focus-visible:ring-transparent focus-visible:ring-offset-0'
+          className='relative mt-0.5 h-7 select-none rounded-full !border-0 p-0 outline-none hover:bg-transparent focus:outline-none focus-visible:ring-0 focus-visible:ring-transparent focus-visible:ring-offset-0'
         >
-          <Bell className='h-4 w-4' />
-          {unreadCount > 0 && <span className='absolute right-0 top-0 me-[5px] mt-[5px] h-2 w-2 rounded-full' />}
+          <Bell className={`h-4 w-4 ${unreadCount > 0 ? 'text-red-500' : ''}`} />
+          {unreadCount > 0 && (
+            <span className='absolute -right-0.5 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[10px] font-medium text-white'>
+              {unreadCount}
+            </span>
+          )}
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align='end' className='w-60 md:w-80'>
