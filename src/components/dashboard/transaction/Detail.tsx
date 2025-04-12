@@ -5,7 +5,7 @@ import {
   ITrackerTransaction
 } from '@/core/tracker-transaction/models/tracker-transaction.interface'
 import { ITransaction } from '@/core/transaction/models'
-import { formatDateTimeVN } from '@/libraries/utils'
+import { formatDateTimeVN, translate } from '@/libraries/utils'
 import { IDialogConfig } from '@/types/common.i'
 import { BookUserIcon, CalendarIcon, CreditCard, WalletCardsIcon } from 'lucide-react'
 import CustomDialog from '../Dialog'
@@ -53,7 +53,9 @@ export function DetailTransactionDialog({
                       : '#a94442'
               }}
             >
-              {detailData.direction === ETypeOfTrackerTransactionType.INCOMING ? 'Incoming' : 'Expense'}
+              {detailData.direction === ETypeOfTrackerTransactionType.INCOMING
+                ? t('IUpdateTransactionFormBody.direction.options.incoming')
+                : t('IUpdateTransactionFormBody.direction.options.expense')}
             </Badge>
           </div>
           <p className='text-sm text-muted-foreground'>{'Chuyển khoản'}</p>

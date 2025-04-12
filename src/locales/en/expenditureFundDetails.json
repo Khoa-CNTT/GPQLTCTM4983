@@ -15,8 +15,12 @@
   "categories": {
     "placeholder": "Search Tracker Transaction Type"
   },
-  "transactions": {},
-  "statistics": {},
+  "transactions": {
+    "unclassified": "Unclassified"
+  },
+  "statistics": {
+    "noDataAvailable": "No data available"
+  },
   "update": {
     "title": "Update Expenditure Fund",
     "description": "Update a new expenditure fund",
@@ -40,10 +44,25 @@
     "placeHolder": "Enter email addresses or phone numbers"
   },
   "categoryTabsContent": {
-    "input": "Search Tracker Transaction Type"
+    "input": "Search Tracker Transaction Type",
+    "selectType": "Select type",
+    "incoming": "Incoming",
+    "expense": "Expense"
   },
   "createTrackerTypeDialog": {
     "title": "Create Tracker Transaction Type",
     "description": "Create a new tracker transaction type"
+  },
+  "participantTabsContent": {
+    "owner": "Owner",
+    "admin": "Admin",
+    "member": "Member",
+    "invite": "Invite",
+    "accepted": "Accepted",
+    "pending": "Pending",
+    "remove": "Remove",
+    "profile": "Profile",
+    "userProfileTitle": "Participant Information",
+    "close": "Close"
   }
 }

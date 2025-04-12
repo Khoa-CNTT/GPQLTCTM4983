@@ -8,6 +8,7 @@ import { NavItem } from '@/types/core.i'
 import { Dispatch, SetStateAction } from 'react'
 import { useSidebar } from '@/hooks/useSidebar'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/common/tooltip'
+import { useTranslation } from 'react-i18next'
 
 interface DashboardNavProps {
   items: NavItem[]
@@ -19,6 +20,23 @@ export function DashboardNav({ items, setOpen, isMobileNav = false }: DashboardN
   const path = usePathname()
   const router = useRouter()
   const { isMinimized } = useSidebar()
+  const { t } = useTranslation(['common'])
+
+  // Map menu titles to translation keys
+  const getTitleTranslationKey = (title: string): string => {
+    const titleMap: Record<string, string> = {
+      Overview: 'sidebar.overview',
+      'Tracker Transaction': 'sidebar.tracker_transaction',
+      'Expenditure Fund': 'sidebar.expenditure_fund',
+      Transaction: 'sidebar.transaction',
+      'Account Source': 'sidebar.account_source',
+      Profile: 'sidebar.profile',
+      Detail: 'sidebar.detail',
+      'Account Detail': 'sidebar.account_detail'
+    }
+    return titleMap[title] || title
+  }
+
   if (!items?.length) {
     return null
   }
@@ -28,6 +46,8 @@ export function DashboardNav({ items, setOpen, isMobileNav = false }: DashboardN
       <TooltipProvider>
         {items.map((item, index) => {
           const Icon = Icons[item.icon || 'arrowRight']
+          const translatedTitle = t(getTitleTranslationKey(item.title), item.title)
+
           return (
             item.href && (
               <Tooltip key={index}>
@@ -53,7 +73,7 @@ export function DashboardNav({ items, setOpen, isMobileNav = false }: DashboardN
                         transition={{ duration: 0.2, delay: 0.1 }}
                         className='mr-2 truncate'
                       >
-                        <span className='te'>{item.title}</span>
+                        <span className='te'>{translatedTitle}</span>
                       </motion.span>
                     ) : (
                       ''
@@ -72,7 +92,7 @@ export function DashboardNav({ items, setOpen, isMobileNav = false }: DashboardN
                     sideOffset={8}
                     className={`${!isMinimized ? 'hidden' : 'inline-block'} text-white`}
                   >
-                    {item.title}
+                    {translatedTitle}
                   </TooltipContent>
                 </motion.div>
               </Tooltip>

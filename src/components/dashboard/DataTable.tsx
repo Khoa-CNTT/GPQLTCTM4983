@@ -117,9 +117,18 @@ export function DataTable<TData, TValue>({
   deleteProps,
   extendsJSX
 }: DataTableProps<TData, TValue>) {
-  const { t } = useTranslation(['common'])
-  const { currentPage, limit, totalPage, selectedTypes, types, isPaginate, isVisibleSortType, classNameOfScroll } =
-    config
+  const { t } = useTranslation(['common', 'accountSource', 'trackerTransaction'])
+  const {
+    currentPage,
+    limit,
+    totalPage,
+    selectedTypes,
+    types,
+    isPaginate,
+    isVisibleSortType,
+    classNameOfScroll,
+    translationNamespace
+  } = config
   const [sorting, setSorting] = React.useState<SortingState>([])
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({})
@@ -161,6 +170,22 @@ export function DataTable<TData, TValue>({
     }
   }
 
+  const getTranslatedType = (type: string) => {
+    // Dịch dựa trên namespace được cung cấp trong config hoặc mặc định là accountSource
+    const namespace = translationNamespace || 'accountSource'
+
+    // Trường hợp đặc biệt cho INCOMING và EXPENSE trong trackerTransaction
+    if (type === 'INCOMING' && namespace === 'trackerTransaction') {
+      return t('trackerTransaction:incoming')
+    }
+    if (type === 'EXPENSE' && namespace === 'trackerTransaction') {
+      return t('trackerTransaction:expense')
+    }
+
+    // Mặc định dịch theo pattern type.XXX từ namespace tương ứng
+    return t(`${namespace}:type.${type}`, type)
+  }
+
   return (
     <div className='flex h-full flex-col overflow-hidden p-1'>
       <div className='flex flex-col items-center justify-between gap-4 py-4 md:flex-row'>
@@ -192,7 +217,7 @@ export function DataTable<TData, TValue>({
                       checked={selectedTypes ? selectedTypes.includes(type) : false}
                       onCheckedChange={() => toggleType(type)}
                     >
-                      {type}
+                      {getTranslatedType(type)}
                     </DropdownMenuCheckboxItem>
                   ))
                 ) : (
@@ -245,29 +270,29 @@ export function DataTable<TData, TValue>({
                 .getAllColumns()
                 .filter((column) => column.getCanHide() && column.id !== 'id' && column.id !== 'checkType').length ===
                 0 && (
-                  <div className='flex items-center justify-center p-4'>
-                    <div className='text-center'>
-                      <Image priority src={EmptyBox} alt='' height={30} width={30} className='mx-auto' />
-                      <span className='mt-2 block text-sm font-semibold text-foreground'>{t('table.noDataText')}</span>
-                    </div>
+                <div className='flex items-center justify-center p-4'>
+                  <div className='text-center'>
+                    <Image priority src={EmptyBox} alt='' height={30} width={30} className='mx-auto' />
+                    <span className='mt-2 block text-sm font-semibold text-foreground'>{t('table.noDataText')}</span>
                   </div>
-                )}
+                </div>
+              )}
             </DropdownMenuContent>
           </DropdownMenu>
           {buttons && buttons.length > 0
             ? buttons.map((button: IButtonInDataTableHeader) => (
-              <Button
-                disabled={button.disabled}
-                key={button.title}
-                variant={button.variants ? button.variants : 'default'}
-                className='whitespace-nowrap'
-                onClick={() => button.onClick()}
-              >
-                {button.title} {button.icon}
-              </Button>
-            ))
+                <Button
+                  disabled={button.disabled}
+                  key={button.title}
+                  variant={button.variants ? button.variants : 'default'}
+                  className='whitespace-nowrap'
+                  onClick={() => button.onClick()}
+                >
+                  {button.title} {button.icon}
+                </Button>
+              ))
             : ''}
-          { }
+          {}
         </div>
       </div>
       <div className='flex flex-1 flex-col overflow-hidden rounded-md border'>
@@ -282,8 +307,9 @@ export function DataTable<TData, TValue>({
 
                     return (
                       <TableHead
-                        className={`text-nowrap ${!data?.length ? 'pointer-events-none' : ''} ${!isFirstColumn && !isLastColumn ? 'text-center' : ''
-                          } ${isFirstColumn ? 'text-left' : ''} ${isLastColumn ? 'text-right' : ''}`}
+                        className={`text-nowrap ${!data?.length ? 'pointer-events-none' : ''} ${
+                          !isFirstColumn && !isLastColumn ? 'text-center' : ''
+                        } ${isFirstColumn ? 'text-left' : ''} ${isLastColumn ? 'text-right' : ''}`}
                         key={header.id}
                         onMouseDown={(event) => {
                           if (event.detail > 1) {
@@ -380,8 +406,9 @@ export function DataTable<TData, TValue>({
                             e.stopPropagation()
                             onOpenDelete((row.original as any).id)
                           }}
-                          className={`h-8 w-8 transition-opacity duration-200 ${hoveredRow === index ? 'opacity-100' : 'opacity-0'
-                            }`}
+                          className={`h-8 w-8 transition-opacity duration-200 ${
+                            hoveredRow === index ? 'opacity-100' : 'opacity-0'
+                          }`}
                         >
                           <Trash2Icon className='h-4 w-4 text-red-600 dark:text-red-400' />
                           <span className='sr-only'>Delete row</span>

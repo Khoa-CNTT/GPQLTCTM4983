@@ -21,9 +21,11 @@ import {
   subDays,
   subMonths as subMonthsFns
 } from 'date-fns'
+import { vi, Locale } from 'date-fns/locale'
 import { ChevronLeftIcon, ChevronRightIcon } from 'lucide-react'
 import { DayPicker, Matcher, DateRange, TZDate } from 'react-day-picker'
 import { motion, AnimatePresence } from 'framer-motion'
+import { useTranslation } from 'react-i18next'
 
 import { cn } from '@/libraries/utils'
 import { Button, buttonVariants } from '@/components/ui/button'
@@ -44,55 +46,6 @@ type DateRangeOption = {
   value: string
   getRangeFn: () => DateRange
 }
-
-const DATE_RANGE_OPTIONS: DateRangeOption[] = [
-  {
-    label: 'Today & Tomorrow',
-    value: 'today-tomorrow',
-    getRangeFn: () => ({
-      from: startOfDay(new Date()),
-      to: endOfDay(addDays(new Date(), 1))
-    })
-  },
-  {
-    label: 'This Week',
-    value: 'this-week',
-    getRangeFn: () => ({
-      from: addDays(startOfWeek(new Date()), 1),
-      to: addDays(endOfWeek(new Date()), 1)
-    })
-  },
-  {
-    label: 'Last Week',
-    value: 'last-week',
-    getRangeFn: () => {
-      const lastWeekStart = subDays(addDays(startOfWeek(new Date()), 1), 7)
-      return {
-        from: lastWeekStart,
-        to: addDays(endOfWeek(lastWeekStart), 1)
-      }
-    }
-  },
-  {
-    label: 'This Month',
-    value: 'this-month',
-    getRangeFn: () => ({
-      from: startOfMonth(new Date()),
-      to: endOfMonth(new Date())
-    })
-  },
-  {
-    label: 'Last Month',
-    value: 'last-month',
-    getRangeFn: () => {
-      const lastMonth = subMonthsFns(new Date(), 1)
-      return {
-        from: startOfMonth(lastMonth),
-        to: endOfMonth(lastMonth)
-      }
-    }
-  }
-]
 
 export type CalendarProps = Omit<React.ComponentProps<typeof DayPicker>, 'mode'>
 
@@ -127,6 +80,9 @@ export function DateRangePicker({
   className,
   ...props
 }: DateRangePickerProps & CalendarProps) {
+  const { t, i18n } = useTranslation(['common'])
+  const locale = i18n.language === 'vi' ? vi : undefined
+
   const [open, setOpen] = useState(false)
   const [monthYearPicker, setMonthYearPicker] = useState<'month' | 'year' | false>(false)
   const initFromDate = useMemo(() => new TZDate(value?.from || new Date()), [value?.from])
@@ -135,6 +91,59 @@ export function DateRangePicker({
   const [month, setMonth] = useState<Date>(initFromDate)
   const [range, setRange] = useState<DateRange | undefined>(value)
   const [selectedPreset, setSelectedPreset] = useState<string>('')
+
+  // Translated date range options
+  const DATE_RANGE_OPTIONS = useMemo(
+    () => [
+      {
+        label: t('dateRange.todayTomorrow', 'Today & Tomorrow'),
+        value: 'today-tomorrow',
+        getRangeFn: () => ({
+          from: startOfDay(new Date()),
+          to: endOfDay(addDays(new Date(), 1))
+        })
+      },
+      {
+        label: t('dateRange.thisWeek', 'This Week'),
+        value: 'this-week',
+        getRangeFn: () => ({
+          from: addDays(startOfWeek(new Date()), 1),
+          to: addDays(endOfWeek(new Date()), 1)
+        })
+      },
+      {
+        label: t('dateRange.lastWeek', 'Last Week'),
+        value: 'last-week',
+        getRangeFn: () => {
+          const lastWeekStart = subDays(addDays(startOfWeek(new Date()), 1), 7)
+          return {
+            from: lastWeekStart,
+            to: addDays(endOfWeek(lastWeekStart), 1)
+          }
+        }
+      },
+      {
+        label: t('dateRange.thisMonth', 'This Month'),
+        value: 'this-month',
+        getRangeFn: () => ({
+          from: startOfMonth(new Date()),
+          to: endOfMonth(new Date())
+        })
+      },
+      {
+        label: t('dateRange.lastMonth', 'Last Month'),
+        value: 'last-month',
+        getRangeFn: () => {
+          const lastMonth = subMonthsFns(new Date(), 1)
+          return {
+            from: startOfMonth(lastMonth),
+            to: endOfMonth(lastMonth)
+          }
+        }
+      }
+    ],
+    [t]
+  )
 
   const endMonth = useMemo(() => {
     return setYear(month, getYear(month) + 1)
@@ -180,7 +189,7 @@ export function DateRangePicker({
         }
       }
     },
-    [min, max]
+    [min, max, DATE_RANGE_OPTIONS]
   )
 
   const onSubmit = useCallback(() => {
@@ -227,9 +236,9 @@ export function DateRangePicker({
   }, [range, value, open])
 
   const displayFormat = useMemo(() => {
-    if (!displayValue?.from || !displayValue?.to) return 'Pick a date range'
-    return `${format(displayValue.from, `MMM d, yyyy`)} - ${format(displayValue.to, `MMM d, yyyy`)}`
-  }, [displayValue])
+    if (!displayValue?.from || !displayValue?.to) return t('dateRange.pickADateRange', 'Pick a date range')
+    return `${format(displayValue.from, `MMM d, yyyy`, { locale })} - ${format(displayValue.to, `MMM d, yyyy`, { locale })}`
+  }, [displayValue, t, locale])
 
   return (
     <div className={className}>
@@ -273,14 +282,14 @@ export function DateRangePicker({
                       variant='ghost'
                       onClick={() => setMonthYearPicker(monthYearPicker === 'month' ? false : 'month')}
                     >
-                      <span className='text-foreground'>{format(month, 'MMMM')}</span>
+                      <span className='text-foreground'>{format(month, 'MMMM', { locale })}</span>
                     </Button>
                     <Button
                       className='px-2 hover:bg-accent/50'
                       variant='ghost'
                       onClick={() => setMonthYearPicker(monthYearPicker ? false : 'year')}
                     >
-                      <span className='text-foreground'>{format(month, 'yyyy')}</span>
+                      <span className='text-foreground'>{format(month, 'yyyy', { locale })}</span>
                     </Button>
                   </div>
                   <div className={cn('flex space-x-2', monthYearPicker ? 'hidden' : '')}>
@@ -292,11 +301,16 @@ export function DateRangePicker({
                 <div className={cn('w-full py-2', monthYearPicker ? 'hidden' : '')}>
                   <Select value={selectedPreset} onValueChange={onPresetChanged}>
                     <SelectTrigger className='w-full border-muted bg-background hover:bg-accent/50'>
-                      <SelectValue placeholder='Select Date Range' className='text-foreground' />
+                      <SelectValue
+                        placeholder={t('dateRange.selectDateRange', 'Select Date Range')}
+                        className='text-foreground'
+                      />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectGroup>
-                        <SelectLabel className='text-foreground'>Select Date Range</SelectLabel>
+                        <SelectLabel className='text-foreground'>
+                          {t('dateRange.selectDateRange', 'Select Date Range')}
+                        </SelectLabel>
                         {DATE_RANGE_OPTIONS.map((option) => (
                           <SelectItem key={option.value} value={option.value} className='text-foreground'>
                             {option.label}
@@ -315,6 +329,7 @@ export function DateRangePicker({
                     endMonth={endMonth}
                     disabled={[max ? { after: max } : null, min ? { before: min } : null].filter(Boolean) as Matcher[]}
                     onMonthChange={setMonth}
+                    locale={locale}
                     classNames={{
                       dropdowns: 'flex w-full gap-2',
                       months: 'flex w-full h-fit',
@@ -364,13 +379,14 @@ export function DateRangePicker({
                           minDate={minDate}
                           maxDate={maxDate}
                           className='h-full'
+                          locale={locale}
                         />
                       </motion.div>
                     )}
                   </AnimatePresence>
                 </div>
                 <Button className='mt-3 w-full bg-primary hover:bg-primary/90' onClick={onSubmit}>
-                  Apply
+                  {t('button.apply', 'Apply')}
                 </Button>
               </motion.div>
             </PopoverContent>
@@ -387,7 +403,8 @@ function MonthYearPicker({
   maxDate,
   mode = 'month',
   onChange,
-  className
+  className,
+  locale
 }: {
   value: Date
   mode: 'month' | 'year'
@@ -395,6 +412,7 @@ function MonthYearPicker({
   maxDate?: Date
   onChange: (value: Date, mode: 'month' | 'year') => void
   className?: string
+  locale?: Locale
 }) {
   const yearRef = useRef<HTMLDivElement>(null)
   const years = useMemo(() => {
@@ -419,10 +437,10 @@ function MonthYearPicker({
       const endM = endOfDay(setMonthFns(value, i))
       if (minDate && endM < minDate) disabled = true
       if (maxDate && startM > maxDate) disabled = true
-      months.push({ value: i, label: format(new Date(0, i), 'MMM'), disabled })
+      months.push({ value: i, label: format(new Date(0, i), 'MMM', { locale }), disabled })
     }
     return months
-  }, [value, minDate, maxDate])
+  }, [value, minDate, maxDate, locale])
 
   const onYearChange = useCallback(
     (v: TimeOption) => {

@@ -70,11 +70,11 @@ export const defineCreateTrackerTransactionFormBody = ({
       dataSelector: [
         {
           value: 'INCOMING',
-          label: 'INCOMING'
+          label: t('form.defineCreateTrackerTransactionFormBody.direction.options.incoming')
         },
         {
           value: 'EXPENSE',
-          label: 'EXPENSE'
+          label: t('form.defineCreateTrackerTransactionFormBody.direction.options.expense')
         }
       ]
     },
@@ -109,7 +109,7 @@ export const defineCreateTrackerTransactionFormBody = ({
           handleDeleteTrackerType,
           expenditureFund
         }),
-        label: 'Tracker Transaction Type'
+        label: t('form.defineCreateTrackerTransactionFormBody.trackerTypeId.label')
       }
     },
     {
@@ -128,24 +128,24 @@ export const createTrackerTransactionSchema = z
   .object({
     reasonName: z
       .string({
-        message: 'Reason name must be a valid string'
+        message: 'Tên lý do phải là chuỗi hợp lệ'
       })
       .trim()
-      .min(5, { message: 'Reason name must be at least 5 characters long' })
-      .max(100, { message: 'Reason name must not exceed 100 characters' }),
+      .min(5, { message: 'Tên lý do phải có ít nhất 5 ký tự' })
+      .max(100, { message: 'Tên lý do không được vượt quá 100 ký tự' }),
     amount: z
       .any()
       .transform((value) => parseFloat(value))
       .refine((value) => !isNaN(value) && value > 0, {
-        message: 'Amount must be a valid number & greater than 0'
+        message: 'Số tiền phải là số hợp lệ và lớn hơn 0'
       }),
     accountSourceId: z
-      .string({ message: 'Please select a account source' })
-      .uuid({ message: 'Account source ID is not a valid UUID format' }),
-    direction: z.enum(['INCOMING', 'EXPENSE'], { message: 'Direction must be either "Incoming" or "Expense"' }),
+      .string({ message: 'Vui lòng chọn nguồn tài khoản' })
+      .uuid({ message: 'ID nguồn tài khoản không đúng định dạng UUID' }),
+    direction: z.enum(['INCOMING', 'EXPENSE'], { message: 'Loại giao dịch phải là "Thu vào" hoặc "Chi tiêu"' }),
     trackerTypeId: z
-      .string({ message: 'Please select a tracker type' })
-      .uuid({ message: 'Tracker type ID is not a valid UUID format' }),
+      .string({ message: 'Vui lòng chọn danh mục' })
+      .uuid({ message: 'ID danh mục không đúng định dạng UUID' }),
     description: z.any()
   })
   .strict()

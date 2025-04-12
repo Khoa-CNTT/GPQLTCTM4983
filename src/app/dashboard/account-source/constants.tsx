@@ -16,24 +16,11 @@ import { ITabConfig } from '@/components/dashboard/TrackerTransactionChart'
 
 export const formatAccountSourceData = (data: IAccountSource): IAccountSourceDataFormat => {
   const { id, name, type, initAmount, currentAmount, accountBank } = data
+
   return {
     id,
     name,
-    type:
-      type === 'WALLET' ? (
-        <div className='Ư flex items-center'>
-          <Wallet2 className='mr-2' />
-          <span>Wallet</span>
-        </div>
-      ) : type === 'BANKING' ? (
-        <div className='flex items-center'>
-          <Landmark className='mr-2' /> <span>Banking</span>
-        </div>
-      ) : (
-        <div className='flex items-center'>
-          <HandCoins className='mr-2' /> <span>Transfer</span>
-        </div>
-      ),
+    type: type,
     initAmount: formatCurrency(initAmount, 'đ'),
     accountBank: accountBank ? accountBank.type.split('_')[0] + ' Bank' : 'N/A',
     currentAmount: formatCurrency(currentAmount, 'đ'),
@@ -161,7 +148,7 @@ export const initAccountSourceFormData: IAccountSourceBody = {
 export const initEmptyDetailAccountSource: IAccountSourceDataFormat = {
   id: '',
   name: '',
-  type: '',
+  type: EAccountSourceType.WALLET,
   initAmount: '',
   accountBank: '',
   currentAmount: '',

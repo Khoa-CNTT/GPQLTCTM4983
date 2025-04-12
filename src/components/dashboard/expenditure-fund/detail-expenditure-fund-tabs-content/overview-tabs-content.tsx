@@ -6,9 +6,10 @@ import { IOverviewTabsContentProps } from '@/core/expenditure-fund/models/expend
 import { ETypeOfTrackerTransactionType } from '@/core/tracker-transaction-type/models/tracker-transaction-type.enum'
 import { formatCurrency, formatDateTimeVN, translate } from '@/libraries/utils'
 import { CalendarDays, Users2Icon } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 
 export default function OverviewTabsContent({ detailData, setIsDialogOpen }: IOverviewTabsContentProps) {
-  const t = translate(['expenditureFundDetails', 'common'])
+  const { t } = useTranslation(['expenditureFundDetails', 'common'])
 
   return (
     <div className='space-y-4'>
@@ -18,7 +19,7 @@ export default function OverviewTabsContent({ detailData, setIsDialogOpen }: IOv
           {/* Balance Info */}
           <div className='col-span-6'>
             <div className='flex flex-col'>
-              <span className='mb-1 text-sm font-medium'>Current Balance</span>
+              <span className='mb-1 text-sm font-medium'>{t('overview.currentBalance')}</span>
               <div className='text-2xl font-bold'>{formatCurrency(detailData.currentAmount, 'đ')}</div>
             </div>
           </div>
@@ -31,7 +32,7 @@ export default function OverviewTabsContent({ detailData, setIsDialogOpen }: IOv
             </div>
             <div className='flex items-center'>
               <Users2Icon className='mr-2 h-4 w-4 text-muted-foreground' />
-              {detailData.participants.length} Participants
+              {detailData.participants.length} {t('tabs.participants')}
             </div>
           </div>
         </div>

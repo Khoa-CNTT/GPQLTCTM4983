@@ -27,6 +27,16 @@
     "account_source": "Account Source",
     "expenditure_fund": "Expenditure Fund"
   },
+  "sidebar": {
+    "overview": "Overview",
+    "tracker_transaction": "Tracker Transaction",
+    "expenditure_fund": "Expenditure Fund",
+    "transaction": "Transaction",
+    "account_source": "Account Source",
+    "profile": "Profile",
+    "detail": "Detail",
+    "account_detail": "Account Detail"
+  },
   "table": {
     "filterPlaceholder": "Filter",
     "typesLabel": "Types",
@@ -47,5 +57,14 @@
     "info": "Once deleted, the data cannot be recovered!"
   },
   "loading": "Loading",
-  "noTransactionsAvailable": "No transactions available at the moment"
+  "noTransactionsAvailable": "No transactions available at the moment",
+  "noDataText": "No data available",
+  "fundToggle": {
+    "expenditureFunds": "Expenditure Funds"
+  },
+  "combobox": {
+    "select": "Select",
+    "item": "item",
+    "noItemsFound": "No items found"
+  }
 }

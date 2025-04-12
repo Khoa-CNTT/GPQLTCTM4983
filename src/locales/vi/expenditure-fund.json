@@ -7,6 +7,9 @@
   "notiTotalBalanceSummary": "{{percentage}}% so với tháng trước",
   "notiIncomingTransactionSummary": "{{percentage}}% so với hôm qua",
   "notiExpenseTransactionSummary": "{{percentage}}% so với tháng trước",
+  "active": "ĐANG HOẠT ĐỘNG",
+  "inactive": "KHÔNG HOẠT ĐỘNG",
+  "pending": "ĐANG CHỜ XỬ LÝ",
   "form": {
     "createExpenditureFund": {
       "title": "Tạo quỹ chi tiêu",
@@ -37,5 +40,16 @@
     "status": "Trạng thái",
     "currentAmount": "Số tiền hiện tại",
     "owner": "Chủ sở hữu"
+  },
+  "detailExpenditureFund": {
+    "menuItems": {
+      "overview": "Tổng quan",
+      "participants": "Thành viên",
+      "categories": "Danh mục",
+      "transactions": "Giao dịch",
+      "statistics": "Thống kê"
+    },
+    "currentBalance": "Số dư hiện tại",
+    "updateButton": "Cập nhật"
   }
 }

@@ -12,7 +12,8 @@
     "view": "Xem",
     "Invite": "Mời",
     "edit": "Chỉnh sửa",
-    "close": "Đóng"
+    "close": "Đóng",
+    "apply": "Áp dụng"
   },
   "card_header": {
     "create_project": "Tạo dự án",
@@ -26,6 +27,16 @@
     "tracker_transaction": "Theo dõi giao dịch",
     "account_source": "Nguồn tài khoản",
     "expenditure_fund": "Quỹ chi tiêu"
+  },
+  "sidebar": {
+    "overview": "Tổng quan",
+    "tracker_transaction": "Theo dõi giao dịch",
+    "expenditure_fund": "Quỹ chi tiêu",
+    "transaction": "Giao dịch",
+    "account_source": "Nguồn tài khoản",
+    "profile": "Hồ sơ",
+    "detail": "Chi tiết",
+    "account_detail": "Chi tiết tài khoản"
   },
   "table": {
     "filterPlaceholder": "Lọc",
@@ -47,5 +58,23 @@
     "info": "Dữ liệu sau khi xóa sẽ không thể khôi phục được!"
   },
   "loading": "Đang tải",
-  "noTransactionsAvailable": "Hiện không có giao dịch nào"
+  "noTransactionsAvailable": "Hiện không có giao dịch nào",
+  "noDataText": "Không có dữ liệu",
+  "fundToggle": {
+    "expenditureFunds": "Quỹ chi tiêu"
+  },
+  "combobox": {
+    "select": "Chọn",
+    "item": "mục",
+    "noItemsFound": "Không tìm thấy mục nào"
+  },
+  "dateRange": {
+    "pickADateRange": "Chọn khoảng thời gian",
+    "selectDateRange": "Chọn khoảng thời gian",
+    "todayTomorrow": "Hôm nay và ngày mai",
+    "thisWeek": "Tuần này",
+    "lastWeek": "Tuần trước",
+    "thisMonth": "Tháng này",
+    "lastMonth": "Tháng trước"
+  }
 }
