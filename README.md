@@ -3,7 +3,7 @@
   
 </div>
 <div align="center">
-# 🌟 UNIKO - Quản lý Tài chính 🌟
+🌟 UNIKO - Quản lý Tài chính 🌟
 
 ### Giải pháp quản lý tài chính thông minh đa nền tảng 💫
 
