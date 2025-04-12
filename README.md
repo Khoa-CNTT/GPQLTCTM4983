@@ -1,4 +1,4 @@
-<div align="left">
+<div align="center">
   <img src="https://upload.wikimedia.org/wikipedia/vi/1/12/Logo_dtu_footer.png" alt="Logo DTU" width="13%" />
   
 </div>
