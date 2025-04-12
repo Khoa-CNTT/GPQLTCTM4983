@@ -38,14 +38,13 @@ import { useFundSavingTarget } from "@/core/fund-saving-target/hooks"
 import type { ISpendingPlan } from "@/core/fund-saving-plant/models"
 import type { IBudgetTarget, ITotalBudgetTarget } from "@/core/fund-saving-target/models/fund-saving-target.interface"
 
-export default function () {
+export default function DashboardForm() {
   const { fundId } = useStoreLocal()
 
   // API hooks
   const { getAllFundSavingPlan } = useFundSavingPlan()
   const { getAllFundSavingTarget } = useFundSavingTarget()
   const { getAllData: getAllDataTarget } = getAllFundSavingTarget(fundId)
-  const { getAllData: getAllDataPlan } = getAllFundSavingPlan(fundId)
 
   // states
   const [daysToSubtract, setDaysToSubtract] = useState(90)
