@@ -9,6 +9,8 @@ import { expenditureFundRoutes } from './expenditure-fund'
 import { participantRoutes } from './participant'
 import { overviewRoutes } from './overview'
 import { notificationsRoutes } from './notifications'
+import { fundSavingPlanRoutes } from './fund-saving-plant'
+import { fundSavingTargetRoutes } from './fund-saving-target'
 
 export const apiService = {
   authentication: authenticationRoutes,
@@ -21,5 +23,7 @@ export const apiService = {
   expenditureFund: expenditureFundRoutes,
   participant: participantRoutes,
   overview: overviewRoutes,
-  notification: notificationsRoutes
+  notification: notificationsRoutes,
+  fundSavingPlant: fundSavingPlanRoutes,
+  fundSavingTarget: fundSavingTargetRoutes
 }
