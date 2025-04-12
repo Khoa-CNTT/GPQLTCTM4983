@@ -12,7 +12,13 @@
 
 </div>
 
+
 ---
+<div align="center">
+  <img src="https://github.com/user-attachments/assets/5c135f5d-e0d1-4866-b2e5-81dbfd0ac30f" alt="Logo DTU" width="10%" />
+</div>
+
+
 
 ## 🎯 Chào mừng đến với UNIKO: Nơi Ước mơ Tài chính Cất Cánh! ✨
 
@@ -98,24 +104,25 @@ Hãy tưởng tượng bạn có một người bạn thân về tài chính lu�
 - **LangChain**: Framework xây dựng ứng dụng AI
 - **Gemini Flash 2.0**: Mô hình ngôn ngữ tiên tiến
 - **AI Agents**: Tự động hóa ghi chép và phân tích giao dịch
+  
+![image](https://github.com/user-attachments/assets/a51c4824-923a-41ff-8711-206ecbf031a8)
+![image](https://github.com/user-attachments/assets/c1915646-d818-46a5-ad2a-58f7b27786d0)
 
 ## 👥 Đội ngũ tuyệt vời của chúng tôi
 
 ### 🎮 Người dẫn đầu tầm nhìn
 - **Lê Minh Tuấn** ([@auroraphtgrp01](https://github.com/auroraphtgrp01))
-  > *"Biến quản lý tài chính thành một hình thức nghệ thuật!"*
+  > Team Lead – Phụ trách kiến trúc hệ thống, phân tích & thiết kế CSDL, phát triển AI, xây dựng Web/App, nghiên cứu và tích hợp công nghệ.
 
 ### ⭐ Những người đóng góp tài năng
 - **Trần Nguyễn Duy Khánh** ([@AugustusDngQt](https://github.com/AugustusDngQt))
-  > Kiến trúc sư Frontend & Bậc thầy UI/UX
-- **Hồ Thị Thanh Thanh** ([@ThanhkThanh](https://github.com/ThanhkThanh))
-  > Phù thủy Backend & Người vẽ bùa API
+  > Fullstack Developer – Phát triển API backend, hỗ trợ tích hợp AI, xây dựng luồng chức năng cho frontend.
+- **Hồ Thị Thanh Thanh** ([@Beathnh](https://github.com/ThanhkThanh))
+  > Frontend & Mobile App Developer – Thiết kế giao diện người dùng, xây dựng luồng chức năng cho frontend & mobile app.
 - **Nguyễn Quang Huy** ([@kwanghy2303](https://github.com/kwanghy2303))
-  > Pháp sư Đảm bảo Chất lượng & Thợ săn Lỗi
+  > UI/UX & Frontend Developer – Thiết kế giao diện người dùng, tối ưu giao diện đa nền tảng và xây dựng luồng chức năng cho frontend.
 - **Đoàn Võ Văn Trọng** ([@vantrong2405](https://github.com/vantrong2405))
-  > Nhà phát triển Frontend & Người đam mê UI/UX
-
-## 🚀 Tham gia cuộc cách mạng Tài chính
+  > UI/UX & Frontend Developer – Thiết kế giao diện người dùng, tối ưu giao diện đa nền tảng và xây dựng luồng chức năng cho frontend.
 
 ### Yêu cầu tiên quyết
 ```bash
@@ -174,22 +181,6 @@ cd backend
 yarn build
 yarn start:prod
 ```
-
-## 🤝 Tham gia cùng chúng tôi
-
-Muốn là một phần của điều gì đó mang tính cách mạng? Chúng tôi yêu thích những ý tưởng mới và góc nhìn tươi mới! Đây là cách bạn có thể đóng góp:
-
-1. 🍴 Fork dự án
-2. 🌱 Tạo nhánh tính năng của bạn (`git checkout -b feature/TinhNangTuyetVoi`)
-3. 💫 Commit thay đổi của bạn (`git commit -m '✨ Thêm TinhNangTuyetVoi'`)
-4. 🚀 Push lên nhánh (`git push origin feature/TinhNangTuyetVoi`)
-5. 🎉 Mở Pull Request
-
-## 📄 Giấy phép & Quy tắc
-
-Dự án này được bảo vệ dưới Giấy phép MIT - xem file [LICENSE](LICENSE) để biết đầy đủ thông tin.
-
----
 
 <div align="center">
 
