@@ -5,12 +5,8 @@ import {
   TrendingUp,
   TrendingDown,
   DollarSign,
-  CalendarDays,
-  Target,
   Wallet,
-  ArrowRight,
   PiggyBank,
-  BarChart3,
   CreditCard,
 } from "lucide-react"
 import { motion } from "framer-motion"
@@ -31,21 +27,10 @@ import { useAccountSource } from "@/core/account-source/hooks"
 import Image from "next/image"
 import NoDataPlaceHolder from "@/images/2.png"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Progress } from "@/components/ui/progress"
 import { Badge } from "@/components/ui/badge"
-import { useFundSavingPlan } from "@/core/fund-saving-plant/hooks"
-import { useFundSavingTarget } from "@/core/fund-saving-target/hooks"
-import type { ISpendingPlan } from "@/core/fund-saving-plant/models"
-import type { IBudgetTarget, ITotalBudgetTarget } from "@/core/fund-saving-target/models/fund-saving-target.interface"
 
-export default function () {
+export default function DashboardMainForm () {
   const { fundId } = useStoreLocal()
-
-  // API hooks
-  const { getAllFundSavingPlan } = useFundSavingPlan()
-  const { getAllFundSavingTarget } = useFundSavingTarget()
-  const { getAllData: getAllDataTarget } = getAllFundSavingTarget(fundId)
-  const { getAllData: getAllDataPlan } = getAllFundSavingPlan(fundId)
 
   // states
   const [daysToSubtract, setDaysToSubtract] = useState(90)
