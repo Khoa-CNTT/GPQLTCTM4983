@@ -6,6 +6,7 @@ import accountSource from './account-source.json'
 import expenditureFund from './expenditure-fund.json'
 import expenditureFundDetails from './expenditureFundDetails.json'
 import overview from './overview.json'
+import spendingPlan from './spending-plan.json'
 
 const englishTranslations = {
   common,
@@ -15,7 +16,8 @@ const englishTranslations = {
   accountSource,
   expenditureFund,
   expenditureFundDetails,
-  overview
+  overview,
+  spendingPlan
 }
 
 export default englishTranslations

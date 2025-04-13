@@ -10,6 +10,7 @@ import {
     defineCreateSimplifiedBudgetFormBody
 } from "@/core/fund-saving-target/constants/create-fund-saving-target.constant"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { useTranslation } from "react-i18next"
 
 interface CreateBudgetFormProps {
     onCreateBudget: (newBudget: ICreateFundSavingTargetRequest) => void
@@ -26,6 +27,7 @@ const CreateBudgetForm: React.FC<CreateBudgetFormProps> = ({
     isOpen,
     fundId
 }) => {
+    const { t } = useTranslation(['common', 'spendingPlan']);
     const [mode, setMode] = useState<"normal" | "simplified">("normal")
     const formSubmitRef = useRef<HTMLFormElement>(null)
 
@@ -42,12 +44,10 @@ const CreateBudgetForm: React.FC<CreateBudgetFormProps> = ({
                 isCreateNormally: true
             })
         } else {
-            // Simplified mode
             onCreateBudget({
                 targetAmount: parseFloat(data.targetAmount),
                 fundId: data.fundId || fundId || "",
                 isCreateNormally: false,
-                // These fields are required by the interface but will be ignored by the backend
                 name: "",
                 description: "",
                 trackerTypeId: "",
@@ -75,14 +75,14 @@ const CreateBudgetForm: React.FC<CreateBudgetFormProps> = ({
 
     return (
         <div className="py-4">
-            <Tabs defaultValue="normal" className="w-full mb-6" onValueChange={(val) => setMode(val as "normal" | "simplified")}>
+            <Tabs defaultValue="normal" className="w-full mb-6 flex-1" onValueChange={(val) => setMode(val as "normal" | "simplified")}>
                 <TabsList className="grid w-full grid-cols-2">
-                    <TabsTrigger value="normal">Tùy chỉnh</TabsTrigger>
-                    <TabsTrigger value="simplified">Tổng ngân sách</TabsTrigger>
+                    <TabsTrigger value="normal">{t('spendingPlan:targetForm.createBudget.customTab')}</TabsTrigger>
+                    <TabsTrigger value="simplified">{t('spendingPlan:targetForm.createBudget.totalBudgetTab')}</TabsTrigger>
                 </TabsList>
                 <TabsContent value="normal">
                     <div className="mt-4 text-sm text-muted-foreground mb-4">
-                        Tạo mục tiêu tiết kiệm tùy chỉnh với đầy đủ thông tin chi tiết.
+                        {t('spendingPlan:targetForm.createBudget.customDescription')}
                     </div>
                     <FormZod
                         formSchema={createFundSavingTargetSchema as any}
@@ -95,7 +95,7 @@ const CreateBudgetForm: React.FC<CreateBudgetFormProps> = ({
                 </TabsContent>
                 <TabsContent value="simplified">
                     <div className="mt-4 text-sm text-muted-foreground mb-4">
-                        Tạo tổng ngân sách với thông tin tối giản, hệ thống sẽ tự động điền các thông tin còn lại.
+                        {t('spendingPlan:targetForm.createBudget.totalDescription')}
                     </div>
                     <FormZod
                         formSchema={createSimplifiedBudgetSchema}
@@ -110,14 +110,16 @@ const CreateBudgetForm: React.FC<CreateBudgetFormProps> = ({
 
             <div className="flex justify-end gap-2 mt-6 pt-2 border-t">
                 <Button variant="outline" onClick={onClose}>
-                    Hủy
+                    {t('common:button.cancel')}
                 </Button>
                 <Button
                     onClick={() => formSubmitRef.current?.requestSubmit()}
                     disabled={isLoading}
                     isLoading={isLoading}
                 >
-                    {mode === "normal" ? "Tạo mục tiêu" : "Tạo tổng ngân sách"}
+                    {mode === "normal"
+                        ? t('spendingPlan:targetForm.createBudget.createCustomBudget')
+                        : t('spendingPlan:targetForm.createBudget.createTotalBudget')}
                 </Button>
             </div>
         </div>

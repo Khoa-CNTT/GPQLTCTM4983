@@ -4,14 +4,14 @@ import {
     GenericTypeSpendingPlan,
     ICreateFundSavingPlanRequest,
     IUpdateFundSavingPlanRequest,
-} from "@/core/fund-saving-plant/models";
+} from "@/core/fund-saving-plan/models"
 import {
     ICreateFundSavingTargetRequest,
     IUpdateFundSavingTargetRequest,
     IBudgetTarget,
-} from "@/core/fund-saving-target/models";
-import { formatCurrency, formatDateTimeVN } from "@/libraries/utils";
-import toast from "react-hot-toast";
+} from "@/core/fund-saving-target/models"
+import { formatCurrency, formatDateTimeVN } from "@/libraries/utils"
+import toast from "react-hot-toast"
 
 // Modify spending plan data for table display
 export const modifySpendingPlanTableData = (data: ISpendingPlan[]): ISpendingPlanTable[] => {
@@ -32,8 +32,8 @@ export const modifySpendingPlanTableData = (data: ISpendingPlan[]): ISpendingPla
         expiredDate: item.expectedDate ?
             Math.max(0, Math.ceil((new Date(item.expectedDate).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24))) + ' days' :
             'N/A',
-    }));
-};
+    }))
+}
 
 
 export const modifyTargetTableData = (targets: IBudgetTarget[]): IBudgetTarget[] => {
@@ -56,23 +56,23 @@ export const modifyTargetTableData = (targets: IBudgetTarget[]): IBudgetTarget[]
         averageDailyPercentage: target.targetAmount > 0 && target.endDate && target.startDate
             ? ((target.currentAmount / target.targetAmount) / Math.max(1, Math.ceil((new Date(target.endDate).getTime() - new Date(target.startDate).getTime()) / (1000 * 60 * 60 * 24)))) * 100
             : 0,
-    }));
-};
+    }))
+}
 
 // Calculate target totals
 export const calculateTargetTotals = (targets: IBudgetTarget[]) => {
-    const totalTargetAmount = targets.reduce((acc, target) => acc + target.targetAmount, 0);
-    const totalSpentAmount = targets.reduce((acc, target) => acc + target.currentAmount, 0);
-    const remainingTarget = totalTargetAmount - totalSpentAmount;
-    const spendingProgress = totalTargetAmount > 0 ? (totalSpentAmount / totalTargetAmount) * 100 : 0;
+    const totalTargetAmount = targets.reduce((acc, target) => acc + target.targetAmount, 0)
+    const totalSpentAmount = targets.reduce((acc, target) => acc + target.currentAmount, 0)
+    const remainingTarget = totalTargetAmount - totalSpentAmount
+    const spendingProgress = totalTargetAmount > 0 ? (totalSpentAmount / totalTargetAmount) * 100 : 0
 
     return {
         totalTargetAmount,
         totalSpentAmount,
         remainingTarget,
         spendingProgress
-    };
-};
+    }
+}
 
 // Handle creating a spending plan
 export const handleCreateSpendingPlan = async ({
@@ -85,17 +85,17 @@ export const handleCreateSpendingPlan = async ({
     hookCreate(data, {
         onSuccess: (res: any) => {
             if (res.statusCode === 200 || res.statusCode === 201) {
-                callBackRefetchAPI(["getAllSpendingPlans"]);
-                setDataTableConfig((prev) => ({ ...prev, currentPage: 1 }));
-                setIsDialogOpen((prev) => ({ ...prev, isDialogCreatePlanOpen: false }));
-                toast.success("Spending plan created successfully!");
+                callBackRefetchAPI(["getAllSpendingPlans"])
+                setDataTableConfig((prev) => ({ ...prev, currentPage: 1 }))
+                setIsDialogOpen((prev) => ({ ...prev, isDialogCreatePlanOpen: false }))
+                toast.success("Spending plan created successfully!")
             }
             if (res.statusCode === 409) {
-                toast.error(res.message);
+                toast.error(res.message)
             }
         },
-    });
-};
+    })
+}
 
 // Handle updating a spending plan
 export const handleUpdateSpendingPlan = async ({
@@ -109,14 +109,14 @@ export const handleUpdateSpendingPlan = async ({
     hookUpdate(data, {
         onSuccess: (res: any) => {
             if (res.statusCode === 200 || res.statusCode === 201) {
-                callBackRefetchAPI(["getAllSpendingPlans"]);
-                setDataTableConfig((prev) => ({ ...prev, currentPage: 1 }));
-                setIsDialogOpen((prev) => ({ ...prev, isDialogEditPlanOpen: false }));
-                toast.success("Spending plan updated successfully!");
+                callBackRefetchAPI(["getAllSpendingPlans"])
+                setDataTableConfig((prev) => ({ ...prev, currentPage: 1 }))
+                setIsDialogOpen((prev) => ({ ...prev, isDialogEditPlanOpen: false }))
+                toast.success("Spending plan updated successfully!")
             }
         },
-    });
-};
+    })
+}
 
 // Handle creating a target
 export const handleCreateTarget = async ({
@@ -130,14 +130,14 @@ export const handleCreateTarget = async ({
     hookCreate(data, {
         onSuccess: (res: any) => {
             if (res.statusCode === 200 || res.statusCode === 201) {
-                callBackRefetchAPI(["getAllTargets"]);
-                setDataTableConfig((prev) => ({ ...prev, currentPage: 1 }));
-                setIsDialogOpen((prev) => ({ ...prev, isDialogCreateTargetOpen: false }));
-                toast.success("Target created successfully!");
+                callBackRefetchAPI(["getAllTargets"])
+                setDataTableConfig((prev) => ({ ...prev, currentPage: 1 }))
+                setIsDialogOpen((prev) => ({ ...prev, isDialogCreateTargetOpen: false }))
+                toast.success("Target created successfully!")
             }
         },
-    });
-};
+    })
+}
 
 // Handle updating a target
 export const handleUpdateTarget = async ({
@@ -151,14 +151,14 @@ export const handleUpdateTarget = async ({
     hookUpdate(data, {
         onSuccess: (res: any) => {
             if (res.statusCode === 200 || res.statusCode === 201) {
-                callBackRefetchAPI(["getAllTargets"]);
-                setDataTableConfig((prev) => ({ ...prev, currentPage: 1 }));
-                setIsDialogOpen((prev) => ({ ...prev, isDialogEditTargetOpen: false }));
-                toast.success("Target updated successfully!");
+                callBackRefetchAPI(["getAllTargets"])
+                setDataTableConfig((prev) => ({ ...prev, currentPage: 1 }))
+                setIsDialogOpen((prev) => ({ ...prev, isDialogEditTargetOpen: false }))
+                toast.success("Target updated successfully!")
             }
         },
-    });
-};
+    })
+}
 
 export const handleDeleteItem = async ({
     data,
@@ -170,14 +170,14 @@ export const handleDeleteItem = async ({
     hookDelete(data, {
         onSuccess: (res: any) => {
             if (res.statusCode === 200 || res.statusCode === 201) {
-                callBackRefetchAPI(["getAllSpendingPlans", "getAllTargets"]);
-                setDataTableConfig((prev) => ({ ...prev, currentPage: 1 }));
-                setIsDialogOpen((prev) => ({ ...prev, isDialogDeletePlanOpen: false }));
-                toast.success("Item deleted successfully!");
+                callBackRefetchAPI(["getAllSpendingPlans", "getAllTargets"])
+                setDataTableConfig((prev) => ({ ...prev, currentPage: 1 }))
+                setIsDialogOpen((prev) => ({ ...prev, isDialogDeletePlanOpen: false }))
+                toast.success("Item deleted successfully!")
             }
         },
-    });
-};
+    })
+}
 
 export const handleRestoreSpendingPlan = async ({
     data,
@@ -188,13 +188,13 @@ export const handleRestoreSpendingPlan = async ({
     hookRestore(data, {
         onSuccess: (res: any) => {
             if (res.statusCode === 200 || res.statusCode === 201) {
-                callBackRefetchAPI(["getAllSpendingPlans"]);
-                setDataTableConfig((prev) => ({ ...prev, currentPage: 1 }));
-                toast.success("Spending plan restored successfully!");
+                callBackRefetchAPI(["getAllSpendingPlans"])
+                setDataTableConfig((prev) => ({ ...prev, currentPage: 1 }))
+                toast.success("Spending plan restored successfully!")
             }
         },
-    });
-};
+    })
+}
 
 export const handleRestoreTarget = async ({
     data,
@@ -205,13 +205,13 @@ export const handleRestoreTarget = async ({
     hookRestore(data, {
         onSuccess: (res: any) => {
             if (res.statusCode === 200 || res.statusCode === 201) {
-                callBackRefetchAPI(["getAllTargets"]);
-                setDataTableConfig((prev) => ({ ...prev, currentPage: 1 }));
-                toast.success("Target restored successfully!");
+                callBackRefetchAPI(["getAllTargets"])
+                setDataTableConfig((prev) => ({ ...prev, currentPage: 1 }))
+                toast.success("Target restored successfully!")
             }
         },
-    });
-};
+    })
+}
 
 export const handleUpdateSpendingPlanStatus = async ({
     data,
@@ -223,13 +223,13 @@ export const handleUpdateSpendingPlanStatus = async ({
     hookUpdateStatus(data, {
         onSuccess: (res: any) => {
             if (res.statusCode === 200 || res.statusCode === 201) {
-                callBackRefetchAPI(["getAllSpendingPlans"]);
-                setDataTableConfig((prev) => ({ ...prev, currentPage: 1 }));
-                toast.success("Spending plan status updated successfully!");
+                callBackRefetchAPI(["getAllSpendingPlans"])
+                setDataTableConfig((prev) => ({ ...prev, currentPage: 1 }))
+                toast.success("Spending plan status updated successfully!")
             }
         },
-    });
-};
+    })
+}
 
 export const handleUpdateTargetStatus = async ({
     data,
@@ -240,10 +240,10 @@ export const handleUpdateTargetStatus = async ({
     hookUpdateStatus(data, {
         onSuccess: (res: any) => {
             if (res.statusCode === 200 || res.statusCode === 201) {
-                callBackRefetchAPI(["getAllTargets"]);
-                setDataTableConfig((prev) => ({ ...prev, currentPage: 1 }));
-                toast.success("Target status updated successfully!");
+                callBackRefetchAPI(["getAllTargets"])
+                setDataTableConfig((prev) => ({ ...prev, currentPage: 1 }))
+                toast.success("Target status updated successfully!")
             }
         },
-    });
-};
+    })
+}
