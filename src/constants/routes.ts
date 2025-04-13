@@ -33,6 +33,12 @@ export const navItems: NavItem[] = [
     ]
   },
   {
+    title: "Planning & Budgeting",
+    href: "/dashboard/spending-plan",
+    icon: "newspaper",
+    label: "Planning & Budgeting",
+  },
+  {
     title: 'Account Source',
     href: '/dashboard/account-source',
     icon: 'billing',
@@ -45,7 +51,6 @@ export const navItems: NavItem[] = [
       }
     ]
   },
-
   {
     title: 'Profile',
     href: '/dashboard/profile',

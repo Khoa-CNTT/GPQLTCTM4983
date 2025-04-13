@@ -14,6 +14,40 @@
     "edit": "Chỉnh sửa",
     "close": "Đóng"
   },
+  "calendar": {
+    "months": {
+      "january": "Tháng 1",
+      "february": "Tháng 2",
+      "march": "Tháng 3",
+      "april": "Tháng 4",
+      "may": "Tháng 5",
+      "june": "Tháng 6",
+      "july": "Tháng 7",
+      "august": "Tháng 8",
+      "september": "Tháng 9",
+      "october": "Tháng 10",
+      "november": "Tháng 11",
+      "december": "Tháng 12"
+    },
+    "weekdays": {
+      "monday": "Thứ hai",
+      "tuesday": "Thứ ba",
+      "wednesday": "Thứ tư",
+      "thursday": "Thứ năm",
+      "friday": "Thứ sáu",
+      "saturday": "Thứ bảy",
+      "sunday": "Chủ nhật"
+    },
+    "shortWeekdays": {
+      "mon": "T2",
+      "tue": "T3",
+      "wed": "T4",
+      "thu": "T5",
+      "fri": "T6",
+      "sat": "T7",
+      "sun": "CN"
+    }
+  },
   "card_header": {
     "create_project": "Tạo dự án",
     "deploy_project": "Triển khai dự án mới chỉ với một cú nhấp chuột."
@@ -32,20 +66,20 @@
     "typesLabel": "Loại",
     "columnsLabel": "Cột",
     "rowsPerPageLabel": "Số dòng mỗi trang",
-    "pageOf": "Trang {{currentPage}} trong tổng số {{totalPage}}",
+    "pageOf": "Trang {{currentPage}} / {{totalPage}}",
     "loadingText": "Đang tải...",
     "noDataText": "Không có dữ liệu",
-    "selectedRowsText": "{{selected}} trong tổng số {{total}} dòng đã chọn."
+    "selectedRowsText": "Đã chọn {{selected}} / {{total}} dòng"
   },
   "dropdown": {
-    "noTypesAvailable": "Không có loại nào khả dụng"
+    "noTypesAvailable": "Không có loại nào"
   },
   "deleteDialog": {
     "deleteConfirmation": "Xác nhận xóa",
     "description": "Bạn có chắc chắn muốn xóa dữ liệu này?",
     "note": "Lưu ý: ",
-    "info": "Dữ liệu sau khi xóa sẽ không thể khôi phục được!"
+    "info": "Sau khi xóa, dữ liệu không thể khôi phục!"
   },
   "loading": "Đang tải",
-  "noTransactionsAvailable": "Hiện không có giao dịch nào"
+  "noTransactionsAvailable": "Không có giao dịch nào vào lúc này"
 }

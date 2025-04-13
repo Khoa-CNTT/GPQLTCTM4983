@@ -21,13 +21,15 @@ import Head from 'next/head'
 
 export const metadata: Metadata = {
   title: 'UNIKO - Giải pháp quản lý tài chính thông minh',
-  description: 'UNIKO - Phần mềm quản lý tài chính thế hệ mới giúp bạn theo dõi, quản lý và tối ưu hóa tài chính một cách thông minh và hiệu quả.',
+  description:
+    'UNIKO - Phần mềm quản lý tài chính thế hệ mới giúp bạn theo dõi, quản lý và tối ưu hóa tài chính một cách thông minh và hiệu quả.',
   keywords: 'quản lý tài chính, phần mềm tài chính, tài chính cá nhân, quản lý chi tiêu',
   openGraph: {
     title: 'UNIKO - Giải pháp quản lý tài chính thông minh',
-    description: 'UNIKO - Phần mềm quản lý tài chính thế hệ mới giúp bạn theo dõi, quản lý và tối ưu hóa tài chính một cách thông minh và hiệu quả.',
-    images: ['/og-image.jpg'],
-  },
+    description:
+      'UNIKO - Phần mềm quản lý tài chính thế hệ mới giúp bạn theo dõi, quản lý và tối ưu hóa tài chính một cách thông minh và hiệu quả.',
+    images: ['/og-image.jpg']
+  }
 }
 
 export default function MainSection() {
@@ -61,32 +63,30 @@ export default function MainSection() {
       image: AvatarTrong,
       srcGit: 'https://github.com/vantrong2405'
     },
-    {
-      name: 'Pham Minh Triet',
-      role: 'Mobile Developer',
-      image: AvatarTriet,
-      srcGit: 'https://github.com/pmtriet'
-    },
+    // {
+    //   name: 'Pham Minh Triet',
+    //   role: 'Mobile Developer',
+    //   image: AvatarTriet,
+    //   srcGit: 'https://github.com/pmtriet'
+    // },
     { name: 'Nguyen Quang Huy', role: 'Frontend Developer', image: AvatarHuy, srcGit: 'https://github.com/kwanghy2303' }
   ]
 
   return (
     <>
-      <div id='home'
+      <div
+        id='home'
         ref={containerRef}
         className='relative w-full select-none bg-white bg-gradient-to-r from-rose-50/80 via-white to-rose-50/80 dark:bg-black dark:from-rose-950/50 dark:via-slate-900 dark:to-rose-950/50 dark:bg-grid-white/[0.05]'
       >
         <Navbar />
-        <motion.div
-          className='fixed inset-0 overflow-hidden'
-          style={{ opacity }}
-        >
+        <motion.div className='fixed inset-0 overflow-hidden' style={{ opacity }}>
           <Spotlight className='-top-40 left-0 md:-top-20 md:left-60' fill='white' />
           <div className='absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(244,63,94,0.08),transparent_90%)]' />
           {Array.from({ length: 30 }).map((_, i) => (
             <motion.div
               key={i}
-              className='absolute h-2 w-2 rounded-full bg-rose-300/50 dark:bg-rose-400/40 backdrop-blur-sm'
+              className='absolute h-2 w-2 rounded-full bg-rose-300/50 backdrop-blur-sm dark:bg-rose-400/40'
               animate={{
                 x: [Math.random() * window.innerWidth, Math.random() * window.innerWidth],
                 y: [Math.random() * window.innerHeight, Math.random() * window.innerHeight],
@@ -121,7 +121,7 @@ export default function MainSection() {
             <HeroSection />
           </motion.div>
 
-          <div className='mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 space-y-24 py-16'>
+          <div className='mx-auto max-w-7xl space-y-24 px-4 py-16 sm:px-6 lg:px-8'>
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}

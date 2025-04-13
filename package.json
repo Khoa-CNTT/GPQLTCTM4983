@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "git:commit": "npx @auroraphtgrp01/commit",
     "build": "corepack yarn set version 3.6.1 && yarn install && next build",
     "build:local": "next build",
     "start": "next start",
