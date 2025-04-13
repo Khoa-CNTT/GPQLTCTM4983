@@ -1,84 +1,87 @@
 import { z } from 'zod'
 import { EFieldType } from '@/types/formZod.interface'
+import { translate } from '@/libraries/utils'
 
 // Update the schema to match the create form, but omitting non-updatable fields
 export const updateFundSavingTargetSchema = z.object({
-  id: z.string().min(1, 'ID is required'),
+  id: z.string().min(1),
   name: z
     .string()
-    .min(3, { message: "Tên mục tiêu phải có ít nhất 3 ký tự" })
-    .max(100, { message: "Tên mục tiêu không được vượt quá 100 ký tự" }),
+    .min(3)
+    .max(100),
   description: z
     .string()
-    .min(5, { message: "Mô tả phải có ít nhất 5 ký tự" })
-    .max(500, { message: "Mô tả không được vượt quá 500 ký tự" }),
+    .min(5)
+    .max(500),
   targetAmount: z
     .string()
-    .min(1, { message: "Vui lòng nhập số tiền mục tiêu" })
+    .min(1)
     .refine(val => !isNaN(Number(val)) && Number(val) > 0, {
-      message: "Số tiền mục tiêu phải lớn hơn 0"
+      message: "amount_must_be_positive"
     }),
-  startDate: z.date({
-    required_error: "Vui lòng chọn ngày bắt đầu",
-  }),
-  endDate: z.date({
-    required_error: "Vui lòng chọn ngày kết thúc",
-  })
+  startDate: z.date(),
+  endDate: z.date()
 }).refine(
   (data) => data.endDate > data.startDate,
   {
-    message: "Ngày kết thúc phải sau ngày bắt đầu",
+    message: "end_date_after_start_date",
     path: ["endDate"],
   }
 )
 
 export type IUpdateFundSavingTargetFormValues = z.infer<typeof updateFundSavingTargetSchema>
 
-export const defineUpdateFundSavingTargetFormBody = () => [
-  {
-    name: 'name',
-    label: 'Tên mục tiêu',
-    type: EFieldType.Input,
-    placeHolder: 'Nhập tên mục tiêu',
-    props: {
-      className: 'col-span-2 mb-4'
+// Updated to place date fields side by side
+export const defineUpdateFundSavingTargetFormBody = () => {
+  const t = translate(['spendingPlan', 'common']);
+
+  return [
+    {
+      name: 'name',
+      label: t('targetForm.fields.title'),
+      type: EFieldType.Input,
+      placeHolder: t('targetForm.fields.titlePlaceholder'),
+      props: {
+        className: 'col-span-2 mb-4'
+      }
+    },
+    {
+      name: 'description',
+      label: t('targetForm.fields.description'),
+      type: EFieldType.Textarea,
+      placeHolder: t('targetForm.fields.descriptionPlaceholder'),
+      props: {
+        className: 'col-span-2 mb-4',
+        rows: 3
+      }
+    },
+    {
+      name: 'targetAmount',
+      label: t('targetForm.fields.targetAmount'),
+      type: EFieldType.MoneyInput,
+      placeHolder: t('targetForm.fields.targetAmountPlaceholder'),
+      props: {
+        className: 'col-span-2 mb-4'
+      }
+    },
+    // Date fields are now each col-span-1 to appear side by side in a grid-cols-2 layout
+    {
+      name: 'startDate',
+      label: t('targetForm.fields.startDate'),
+      type: EFieldType.DatePicker,
+      placeHolder: t('targetForm.fields.startDatePlaceholder'),
+      props: {
+        className: 'mb-4'  // col-span-1 by default
+      }
+    },
+    {
+      name: 'endDate',
+      label: t('targetForm.fields.endDate'),
+      type: EFieldType.DatePicker,
+      placeHolder: t('targetForm.fields.endDatePlaceholder'),
+      props: {
+        className: 'mb-4'  // col-span-1 by default
+      }
     }
-  },
-  {
-    name: 'description',
-    label: 'Mô tả',
-    type: EFieldType.Textarea,
-    placeHolder: 'Nhập mô tả chi tiết về mục tiêu',
-    props: {
-      className: 'col-span-2 mb-4',
-      rows: 3
-    }
-  },
-  {
-    name: 'targetAmount',
-    label: 'Số tiền mục tiêu',
-    type: EFieldType.MoneyInput,
-    placeHolder: 'Nhập số tiền mục tiêu',
-    props: {
-      className: 'mb-4'
-    }
-  },
-  {
-    name: 'startDate',
-    label: 'Từ ngày',
-    type: EFieldType.DatePicker,
-    placeHolder: 'Chọn ngày bắt đầu',
-    props: {
-      className: 'mb-4'
-    }
-  },
-  {
-    name: 'endDate',
-    label: 'Đến ngày',
-    type: EFieldType.DatePicker,
-    placeHolder: 'Chọn ngày kết thúc',
-    props: {
-      className: 'mb-4'
-    }
-  }
-]
+  ];
+}

@@ -7,6 +7,7 @@ import {
     updateFundSavingTargetSchema,
     defineUpdateFundSavingTargetFormBody
 } from "@/core/fund-saving-target/constants/update-fund-saving-target.constant"
+import { useTranslation } from "react-i18next"
 
 interface EditBudgetFormProps {
     selectedBudget: IBudgetTarget | null
@@ -17,6 +18,7 @@ interface EditBudgetFormProps {
 }
 
 const EditBudgetForm: React.FC<EditBudgetFormProps> = ({ selectedBudget, onClose, onUpdateBudget, isLoading }) => {
+    const { t } = useTranslation(['common', 'spendingPlan']);
     const formSubmitRef = useRef<HTMLFormElement>(null)
 
     const handleUpdateBudget = (data: any) => {
@@ -55,13 +57,13 @@ const EditBudgetForm: React.FC<EditBudgetFormProps> = ({ selectedBudget, onClose
 
             <div className="flex justify-end gap-2 mt-4">
                 <Button variant="outline" onClick={onClose}>
-                    Hủy
+                    {t('common:button.cancel')}
                 </Button>
                 <Button
                     onClick={() => formSubmitRef.current?.requestSubmit()}
                     disabled={isLoading}
                 >
-                    {isLoading ? "Đang cập nhật..." : "Cập nhật"}
+                    {isLoading ? t('spendingPlan:form.updating') : t('common:button.update')}
                 </Button>
             </div>
         </div>

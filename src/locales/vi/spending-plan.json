@@ -1,0 +1,231 @@
+{
+  "title": "Kế hoạch và ngân sách",
+  "cardTitles": {
+    "totalBudget": "Tổng ngân sách",
+    "spent": "Đã chi tiêu",
+    "remaining": "Còn lại",
+    "plannedSpending": "Kế hoạch chi tiêu"
+  },
+  "cardDetails": {
+    "totalBudgetPlan": "Tổng kế hoạch tài chính",
+    "usageProgress": "Tiến độ sử dụng",
+    "used": "Đã sử dụng",
+    "remaining": "Còn lại",
+    "highSpendingRate": "Tốc độ chi tiêu cao",
+    "daysLeft": "ngày",
+    "upcomingPlans": "kế hoạch sắp tới"
+  },
+  "budgetSection": {
+    "title": "Danh sách ngân sách",
+    "viewAll": "Xem tất cả",
+    "createBudget": "Tạo ngân sách",
+    "noBudgets": "Chưa có ngân sách nào",
+    "noBudgetsDescription": "Tạo ngân sách để theo dõi và kiểm soát chi tiêu của bạn theo từng hạng mục",
+    "createFirstBudget": "Tạo ngân sách đầu tiên"
+  },
+  "targetDetails": {
+    "progress": "Tiến độ",
+    "target": "Mục tiêu",
+    "spent": "Đã chi",
+    "remaining": "Còn lại",
+    "uncategorized": "Không phân loại"
+  },
+  "planDetails": {
+    "title": "Tiêu đề",
+    "category": "Danh mục",
+    "description": "Mô tả",
+    "noDescription": "Không có mô tả",
+    "amount": "Số tiền",
+    "expectedDate": "Ngày dự kiến",
+    "expirationDate": "Ngày hết hạn",
+    "frequency": "Tần suất lặp lại",
+    "daysLeft": "Số ngày còn lại",
+    "daysRemaining": "{{count}} ngày",
+    "undetermined": "Không xác định",
+    "fundSource": "Nguồn tiền",
+    "today": "Hôm nay",
+    "upcoming": "Sắp tới"
+  },
+  "planSection": {
+    "title": "Kế hoạch sắp tới",
+    "frequency": "Tần suất",
+    "createPlan": "Tạo kế hoạch",
+    "today": "Hôm nay",
+    "upcoming": "Sắp tới",
+    "noPlans": "Không có kế hoạch nào",
+    "noPlansDescription": "Bạn chưa có kế hoạch chi tiêu nào sắp tới. Hãy tạo kế hoạch để quản lý chi tiêu hiệu quả hơn.",
+    "createFirstPlan": "Tạo kế hoạch đầu tiên",
+    "viewAll": "Xem tất cả"
+  },
+  "form": {
+    "updating": "Đang cập nhật...",
+    "creating": "Đang tạo...",
+    "updatePlan": "Cập nhật kế hoạch",
+    "createPlan": "Tạo kế hoạch",
+    "updateStatus": "Cập nhật trạng thái",
+    "selectNewStatus": "Chọn trạng thái mới",
+    "selectStatus": "Chọn trạng thái",
+    "statusActive": "Đang hoạt động",
+    "statusCancelled": "Hủy",
+    "noPlanFound": "Không tìm thấy thông tin kế hoạch",
+    "planFields": {
+      "title": "Tiêu đề kế hoạch",
+      "titlePlaceholder": "Nhập tiêu đề kế hoạch chi tiêu",
+      "description": "Mô tả (Không bắt buộc)",
+      "descriptionPlaceholder": "Nhập mô tả chi tiết",
+      "amount": "Số tiền",
+      "amountPlaceholder": "Nhập số tiền cần chi tiêu",
+      "date": "Ngày thực hiện",
+      "datePlaceholder": "Chọn ngày",
+      "month": "Tháng",
+      "monthPlaceholder": "Chọn tháng",
+      "day": "Ngày",
+      "dayPlaceholder": "Chọn ngày",
+      "category": "Phân loại chi tiêu",
+      "categoryPlaceholder": "Chọn phân loại",
+      "frequency": "Tần suất lặp lại",
+      "frequencyPlaceholder": "Chọn tần suất lặp lại",
+      "notifyBefore": "Thông báo trước (ngày)",
+      "notifyBeforePlaceholder": "Chọn thời gian thông báo",
+      "notifyOptions": {
+        "none": "Không thông báo",
+        "oneDay": "1 ngày",
+        "twoDays": "2 ngày",
+        "threeDays": "3 ngày",
+        "fiveDays": "5 ngày",
+        "sevenDays": "7 ngày"
+      }
+    }
+  },
+  "frequency": {
+    "daily": "Hàng ngày",
+    "weekly": "Hàng tuần",
+    "monthly": "Hàng tháng",
+    "annual": "Hàng năm"
+  },
+  "dialog": {
+    "plan": {
+      "create": {
+        "title": "Tạo kế hoạch chi tiêu",
+        "description": "Tạo một kế hoạch chi tiêu mới để quản lý tài chính hiệu quả hơn."
+      },
+      "edit": {
+        "title": "Chỉnh sửa kế hoạch chi tiêu",
+        "description": "Cập nhật thông tin kế hoạch chi tiêu của bạn."
+      },
+      "detail": {
+        "title": "Chi tiết kế hoạch",
+        "description": "Xem thông tin chi tiết của kế hoạch chi tiêu."
+      },
+      "delete": {
+        "title": "Xóa kế hoạch",
+        "description": "Bạn có chắc chắn muốn xóa kế hoạch này? Hành động này không thể hoàn tác."
+      },
+      "changeStatus": {
+        "title": "Đổi tần suất lặp lại",
+        "description": "Thay đổi tần suất lặp lại cho kế hoạch chi tiêu của bạn."
+      },
+      "viewAll": {
+        "title": "Chi tiết tất cả kế hoạch chi tiêu",
+        "description": "Xem tất cả các kế hoạch chi tiêu của bạn."
+      }
+    },
+    "budget": {
+      "create": {
+        "title": "Tạo ngân sách mới",
+        "description": "Tạo một ngân sách mới để quản lý chi tiêu hiệu quả hơn."
+      },
+      "edit": {
+        "title": "Chỉnh sửa ngân sách",
+        "description": "Cập nhật thông tin ngân sách của bạn."
+      },
+      "detail": {
+        "title": "Chi tiết ngân sách",
+        "description": "Xem thông tin chi tiết của ngân sách."
+      },
+      "delete": {
+        "title": "Xóa ngân sách",
+        "description": "Bạn có chắc chắn muốn xóa ngân sách này? Hành động này không thể hoàn tác."
+      },
+      "changeStatus": {
+        "title": "Đổi trạng thái",
+        "description": "Bạn có chắc chắn muốn đổi trạng thái ngân sách này? Hành động này không thể hoàn tác."
+      },
+      "viewAll": {
+        "title": "Chi tiết tất cả mục tiêu",
+        "description": "Xem tất cả các mục tiêu tiết kiệm của bạn."
+      }
+    }
+  },
+  "targetForm": {
+    "createBudget": {
+      "customTab": "Tùy chỉnh",
+      "totalBudgetTab": "Tổng ngân sách",
+      "customDescription": "Tạo mục tiêu tiết kiệm tùy chỉnh với đầy đủ thông tin chi tiết.",
+      "totalDescription": "Tạo tổng ngân sách với thông tin tối giản, hệ thống sẽ tự động điền các thông tin còn lại.",
+      "createCustomBudget": "Tạo mục tiêu",
+      "createTotalBudget": "Tạo tổng ngân sách"
+    },
+    "fields": {
+      "title": "Tên mục tiêu",
+      "titlePlaceholder": "Nhập tên mục tiêu",
+      "description": "Mô tả",
+      "descriptionPlaceholder": "Nhập mô tả chi tiết về mục tiêu",
+      "targetAmount": "Số tiền mục tiêu",
+      "targetAmountPlaceholder": "Nhập số tiền mục tiêu",
+      "totalTargetAmount": "Tổng số tiền ngân sách",
+      "totalTargetAmountPlaceholder": "Nhập tổng số tiền ngân sách",
+      "startDate": "Từ ngày",
+      "startDatePlaceholder": "Chọn ngày bắt đầu",
+      "endDate": "Đến ngày",
+      "endDatePlaceholder": "Chọn ngày kết thúc",
+      "category": "Phân loại chi tiêu",
+      "categoryPlaceholder": "Chọn phân loại"
+    },
+    "viewAll": {
+      "searchPlaceholder": "Tìm kiếm mục tiêu...",
+      "selectType": "Chọn loại",
+      "selectMonth": "Chọn tháng",
+      "selectStatus": "Trạng thái",
+      "allTypes": "Tất cả",
+      "allMonths": "Tất cả",
+      "allStatuses": "Tất cả trạng thái",
+      "completed": "Hoàn thành",
+      "inProgress": "Đang thực hiện",
+      "clearFilters": "Xóa bộ lọc",
+      "showing": "Hiển thị {{count}} mục tiêu",
+      "loading": "Đang tải dữ liệu...",
+      "noResults": "Không tìm thấy mục tiêu nào"
+    },
+    "detailBudget": {
+      "notFound": "Không tìm thấy mục tiêu",
+      "notFoundDescription": "Không thể tìm thấy thông tin chi tiết của mục tiêu này. Vui lòng thử lại sau.",
+      "target": "Mục tiêu",
+      "saved": "Đã tiết kiệm",
+      "progress": "Tiến độ",
+      "missing": "Còn thiếu",
+      "startDate": "Thời gian bắt đầu",
+      "endDate": "Thời gian kết thúc",
+      "timeRemaining": "Thời gian còn lại"
+    },
+    "deleteBudget": {
+      "target": "Mục tiêu",
+      "current": "Hiện tại",
+      "status": "Trạng thái",
+      "description": "Mô tả",
+      "period": "Thời gian"
+    },
+    "changeStatus": {
+      "notFound": "Không tìm thấy thông tin mục tiêu",
+      "target": "Mục tiêu",
+      "current": "Hiện tại",
+      "currentStatus": "Trạng thái hiện tại",
+      "period": "Thời gian",
+      "selectNewStatus": "Chọn trạng thái mới",
+      "statusPlaceholder": "Chọn trạng thái",
+      "active": "Đang hoạt động",
+      "cancelled": "Hủy",
+      "updateStatus": "Cập nhật trạng thái"
+    }
+  }
+}

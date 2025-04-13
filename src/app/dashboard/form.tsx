@@ -1,61 +1,81 @@
 "use client"
-import React, { useEffect, useState } from "react"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { useState, useEffect } from "react"
+import { Card, CardContent } from "@/components/ui/card"
 import {
+  Calendar,
   TrendingUp,
   TrendingDown,
-  DollarSign,
-  CalendarDays,
+  PieChart,
   Target,
+  Clock,
   Wallet,
-  ArrowRight,
   PiggyBank,
   BarChart3,
-  CreditCard,
+  ArrowRight,
 } from "lucide-react"
-import { motion } from "framer-motion"
 import { LineChart } from "@/components/core/charts/LineChart"
 import { BalanceChart } from "@/components/core/charts/BalanceChart"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import Image from "next/image"
+import NoDataPlaceHolder from "@/images/2.png"
+import { formatCurrency } from "@/libraries/utils"
+
+// Hooks and types
 import { useOverviewPage } from "@/core/overview/hooks"
 import { useStoreLocal } from "@/hooks/useStoreLocal"
+import { useAccountSource } from "@/core/account-source/hooks"
+import { useFundSavingTarget } from "@/core/fund-saving-target/hooks"
+import { useFundSavingPlan } from "@/core/fund-saving-plan/hooks"
 import type {
   ICashFlowAnalysisStatistic,
   ITotalAmount,
   ITotalBalanceChart,
 } from "@/core/overview/models/overview.interface"
+import type { ChartConfig } from "@/components/ui/chart"
+import type { ISpendingPlan } from "@/core/fund-saving-plan/models"
+import type { IBudgetTarget, IGetAllDataFundSavingTarget, ITotalBudgetTarget } from "@/core/fund-saving-target/models"
+
+// Utilities
 import { initDataStatisticAccountBalance, initDataStatisticCashFlowAnalysis } from "./handler"
 import { initEmptyBalanceChartConfig, initEmptyTotalAmount } from "./constants"
-import { formatCurrency } from "@/libraries/utils"
-import type { ChartConfig } from "@/components/ui/chart"
-import { useAccountSource } from "@/core/account-source/hooks"
-import Image from "next/image"
-import NoDataPlaceHolder from "@/images/2.png"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Progress } from "@/components/ui/progress"
-import { Badge } from "@/components/ui/badge"
-import { useFundSavingPlan } from "@/core/fund-saving-plant/hooks"
-import { useFundSavingTarget } from "@/core/fund-saving-target/hooks"
-import type { ISpendingPlan } from "@/core/fund-saving-plant/models"
-import type { IBudgetTarget, ITotalBudgetTarget } from "@/core/fund-saving-target/models/fund-saving-target.interface"
 
 export default function DashboardForm() {
+  // =========== HOOKS ===========
   const { fundId } = useStoreLocal()
-
-  // API hooks
+  const { getStatisticOverviewPage } = useOverviewPage()
+  const { getStatisticAccountBalance } = useAccountSource()
   const { getAllFundSavingPlan } = useFundSavingPlan()
   const { getAllFundSavingTarget } = useFundSavingTarget()
-  const { getAllData: getAllDataTarget } = getAllFundSavingTarget(fundId)
 
-  // states
-  const [daysToSubtract, setDaysToSubtract] = useState(90)
+  // =========== STATE ===========
+  // Time range state
+  const [timeRange, setTimeRange] = useState<string>("30d")
+  const [daysToSubtract, setDaysToSubtract] = useState(30)
+
+  // Chart data state
   const [cashFlowAnalysisChartData, setCashFlowAnalysisChartData] = useState<ICashFlowAnalysisStatistic[]>([])
   const [balanceChartData, setBalanceChartData] = useState<ITotalBalanceChart[]>([])
   const [balanceChartConfig, setBalanceChartConfig] = useState<ChartConfig>(initEmptyBalanceChartConfig)
+
+  // Financial metrics state
   const [totalIncome, setTotalIncome] = useState<ITotalAmount>(initEmptyTotalAmount)
   const [totalExpenses, setTotalExpenses] = useState<ITotalAmount>(initEmptyTotalAmount)
-  const [timeRange, setTimeRange] = useState<string>("90d")
 
-  React.useEffect(() => {
+  // Budget targets and spending plans state
+  const [spendingPlans, setSpendingPlans] = useState<ISpendingPlan[]>([])
+  const [targets, setTargets] = useState<IBudgetTarget[]>([])
+  const [totalBudgetTarget, setTotalBudgetTarget] = useState<ITotalBudgetTarget | null>(null)
+  const [targetPagination, setTargetPagination] = useState<IGetAllDataFundSavingTarget["pagination"] | null>(null)
+
+  // =========== API DATA ===========
+  const { getStatisticAccountBalanceData } = getStatisticAccountBalance(fundId)
+  const { getStatisticOverviewPageData } = getStatisticOverviewPage({ daysToSubtract }, fundId)
+  const { getAllData: getAllDataTarget } = getAllFundSavingTarget(fundId)
+  const { getAllData: getAllDataPlan } = getAllFundSavingPlan(fundId)
+
+  // =========== EFFECTS ===========
+  // Time range effect
+  useEffect(() => {
     if (timeRange === "30d") {
       setDaysToSubtract(30)
     } else if (timeRange === "7d") {
@@ -65,268 +85,268 @@ export default function DashboardForm() {
     }
   }, [timeRange])
 
-
-  const { getStatisticOverviewPage } = useOverviewPage()
-  const { getStatisticAccountBalance } = useAccountSource()
-
-  const { getStatisticAccountBalanceData } = getStatisticAccountBalance(fundId)
-  const { getStatisticOverviewPageData } = getStatisticOverviewPage(
-    {
-      daysToSubtract,
-    },
-    fundId,
-  )
-
+  // Cash flow data effect
   useEffect(() => {
-    if (getStatisticOverviewPageData)
+    if (getStatisticOverviewPageData) {
       initDataStatisticCashFlowAnalysis({
         data: getStatisticOverviewPageData.data,
         setCashFlowAnalysisChartData,
         setTotalIncome,
         setTotalExpenses,
       })
+    }
   }, [getStatisticOverviewPageData])
 
+  // Balance chart data effect
   useEffect(() => {
-    if (getStatisticAccountBalanceData && getStatisticAccountBalanceData.data.length > 0)
+    if (getStatisticAccountBalanceData && getStatisticAccountBalanceData.data.length > 0) {
       initDataStatisticAccountBalance({
         data: getStatisticAccountBalanceData.data,
         setBalanceChartConfig,
         setBalanceChartData,
       })
+    }
   }, [getStatisticAccountBalanceData])
 
+  // Spending plans and targets effect
+  useEffect(() => {
+    if (getAllDataPlan && getAllDataPlan?.data) {
+      setSpendingPlans(getAllDataPlan?.data || [])
+    }
+
+    if (getAllDataTarget && getAllDataTarget?.data) {
+      setTargets(getAllDataTarget?.data?.budgetTargets?.data || [])
+      setTotalBudgetTarget(getAllDataTarget?.data?.totalBudgetTarget || null)
+      setTargetPagination(getAllDataTarget?.data?.budgetTargets?.pagination || null)
+    }
+  }, [getAllDataPlan, getAllDataTarget])
+
+  // =========== COMPUTED VALUES ===========
   const netSavings = totalIncome.amount - totalExpenses.amount
   const savingsPercentage = totalIncome.amount > 0 ? Math.round((netSavings / totalIncome.amount) * 100) : 0
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       {/* Header with time selector */}
-      <div className="flex justify-end items-center">
-        <Select value={timeRange} onValueChange={setTimeRange}>
-          <SelectTrigger className="w-[160px]" aria-label="Select time range">
-            <SelectValue placeholder="Last 3 months" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="90d">Last 3 months</SelectItem>
-            <SelectItem value="30d">Last 30 days</SelectItem>
-            <SelectItem value="7d">Last 7 days</SelectItem>
-          </SelectContent>
-        </Select>
+      <div className="flex justify-between items-center">
+        <h2 className="text-xl font-bold ">Financial Overview</h2>
+        <div className="flex items-center gap-2">
+          <Calendar className="h-4 w-4 " />
+          <Select value={timeRange} onValueChange={setTimeRange}>
+            <SelectTrigger className="w-[140px] h-8  border-1 border-black " aria-label="Select time range">
+              <SelectValue placeholder="Last 30 days" />
+            </SelectTrigger>
+            <SelectContent className=" border-gray-800 ">
+              <SelectItem value="90d">Last 3 months</SelectItem>
+              <SelectItem value="30d">Last 30 days</SelectItem>
+              <SelectItem value="7d">Last 7 days</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
       </div>
 
       {/* Key metrics row */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Balance Card */}
-        <motion.div
-          whileHover={{ scale: 1.02 }}
-          transition={{ type: "spring", stiffness: 300, damping: 20 }}
-          className="col-span-1"
-        >
-          <Card className="overflow-hidden bg-gradient-to-br from-purple-50 to-indigo-50 dark:from-purple-900/20 dark:to-indigo-900/10">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div className="space-y-2">
-                  <p className="text-sm font-medium text-muted-foreground">Current Balance</p>
-                  <h3 className="text-2xl font-bold tracking-tight">{formatCurrency(netSavings, "đ", "vi-vn")}</h3>
-                  <div className="flex items-center gap-1 text-sm font-medium text-purple-600">
-                    <CreditCard className="h-4 w-4" />
-                    <span>Available funds</span>
-                  </div>
-                </div>
-                <motion.div
-                  whileHover={{ scale: 1.1, rotate: 5 }}
-                  initial={{ opacity: 0, scale: 0.5 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 0.3 }}
-                  className="rounded-full bg-purple-100 p-3 dark:bg-purple-900/20"
-                >
-                  <Wallet className="h-8 w-8 text-purple-600 dark:text-purple-400" />
-                </motion.div>
+        <Card className="dark:bg-[#1e1a2c] border-1 border-black overflow-hidden ">
+          <CardContent className="p-4">
+            <div className="flex justify-between items-start">
+              <div>
+                <p className="text-sm font-medium ">Current Balance</p>
+                <h3 className="text-xl font-bold tracking-tight  mt-1">
+                  {formatCurrency(netSavings, "đ", "vi-vn")}
+                </h3>
               </div>
-            </CardContent>
-          </Card>
-        </motion.div>
+              <div className="rounded-full bg-purple-900/30 p-2">
+                <Wallet className="h-5 w-5 text-purple-400" />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
 
         {/* Income Card */}
-        <motion.div
-          whileHover={{ scale: 1.02 }}
-          transition={{ type: "spring", stiffness: 300, damping: 20 }}
-          className="col-span-1"
-        >
-          <Card className="overflow-hidden bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/10">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div className="space-y-2">
-                  <p className="text-sm font-medium text-muted-foreground">Total Income</p>
-                  <h3 className="text-2xl font-bold tracking-tight">
-                    {formatCurrency(totalIncome.amount ?? 0, "đ", "vi-vn")}
-                  </h3>
-                  <div
-                    className={`flex items-center gap-1 text-sm font-medium ${totalIncome.rate?.[0] !== "-" || totalIncome.rate === undefined ? "text-green-600" : "text-red-600"}`}
-                  >
-                    {totalIncome.rate?.[0] !== "-" || totalIncome.rate === undefined ? (
-                      <TrendingUp className="h-4 w-4" />
-                    ) : (
-                      <TrendingDown className="h-4 w-4" />
-                    )}
-                    <span>{(totalIncome.rate?.[0] === "-" ? "" : "+") + (totalIncome.rate || "0") + "%"}</span>
-                  </div>
-                </div>
-                <motion.div
-                  whileHover={{ scale: 1.1, rotate: 5 }}
-                  initial={{ opacity: 0, scale: 0.5 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 0.3 }}
-                  className="rounded-full bg-green-100 p-3 dark:bg-green-900/20"
-                >
-                  <TrendingUp className="h-8 w-8 text-green-600 dark:text-green-400" />
-                </motion.div>
+        <Card className="dark:bg-[#1a2c20] border-1 border-black overflow-hidden ">
+          <CardContent className="p-4">
+            <div className="flex justify-between items-start">
+              <div>
+                <p className="text-sm font-medium ">Total Income</p>
+                <h3 className="text-xl font-bold tracking-tight  mt-1">
+                  {formatCurrency(totalIncome.amount ?? 0, "đ", "vi-vn")}
+                </h3>
               </div>
-            </CardContent>
-          </Card>
-        </motion.div>
+              <div className="rounded-full bg-green-900/30 p-2">
+                <TrendingUp className="h-5 w-5 text-green-400" />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
 
         {/* Expenses Card */}
-        <motion.div
-          whileHover={{ scale: 1.02 }}
-          transition={{ type: "spring", stiffness: 300, damping: 20 }}
-          className="col-span-1"
-        >
-          <Card className="overflow-hidden bg-gradient-to-br from-red-50 to-rose-50 dark:from-red-900/20 dark:to-rose-900/10">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div className="space-y-2">
-                  <p className="text-sm font-medium text-muted-foreground">Total Expenses</p>
-                  <h3 className="text-2xl font-bold tracking-tight">
-                    {formatCurrency(totalExpenses.amount ?? 0, "đ", "vi-vn")}
-                  </h3>
-                  <div
-                    className={`flex items-center gap-1 text-sm font-medium ${totalExpenses.rate?.[0] !== "-" || totalExpenses.rate === undefined ? "text-red-600" : "text-green-600"}`}
-                  >
-                    {totalExpenses.rate?.[0] !== "-" || totalExpenses.rate === undefined ? (
-                      <TrendingUp className="h-4 w-4" />
-                    ) : (
-                      <TrendingDown className="h-4 w-4" />
-                    )}
-                    <span>{(totalExpenses.rate?.[0] === "-" ? "" : "+") + (totalExpenses.rate || "0") + "%"}</span>
-                  </div>
-                </div>
-                <motion.div
-                  whileHover={{ scale: 1.1, rotate: -5 }}
-                  initial={{ opacity: 0, scale: 0.5 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 0.3 }}
-                  className="rounded-full bg-red-100 p-3 dark:bg-red-900/20"
-                >
-                  <TrendingDown className="h-8 w-8 text-red-600 dark:text-red-400" />
-                </motion.div>
+        <Card className="dark:bg-[#2c1a1a] border-1 border-black overflow-hidden ">
+          <CardContent className="p-4">
+            <div className="flex justify-between items-start">
+              <div>
+                <p className="text-sm font-medium ">Total Expenses</p>
+                <h3 className="text-xl font-bold tracking-tight  mt-1">
+                  {formatCurrency(totalExpenses.amount ?? 0, "đ", "vi-vn")}
+                </h3>
               </div>
-            </CardContent>
-          </Card>
-        </motion.div>
+              <div className="rounded-full bg-red-900/30 p-2">
+                <TrendingDown className="h-5 w-5 text-red-400" />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
 
         {/* Savings Rate Card */}
-        <motion.div
-          whileHover={{ scale: 1.02 }}
-          transition={{ type: "spring", stiffness: 300, damping: 20 }}
-          className="col-span-1"
-        >
-          <Card className="overflow-hidden bg-gradient-to-br from-blue-50 to-sky-50 dark:from-blue-900/20 dark:to-sky-900/10">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div className="space-y-2">
-                  <p className="text-sm font-medium text-muted-foreground">Savings Rate</p>
-                  <h3 className="text-2xl font-bold tracking-tight">{savingsPercentage}%</h3>
-                  <div className="flex items-center gap-1 text-sm font-medium text-blue-600">
-                    <DollarSign className="h-4 w-4" />
-                    <span>{formatCurrency(netSavings, "đ", "vi-vn")}</span>
-                  </div>
-                </div>
-                <motion.div
-                  whileHover={{ scale: 1.1, rotate: 5 }}
-                  initial={{ opacity: 0, scale: 0.5 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 0.3 }}
-                  className="rounded-full bg-blue-100 p-3 dark:bg-blue-900/20"
-                >
-                  <PiggyBank className="h-8 w-8 text-blue-600 dark:text-blue-400" />
-                </motion.div>
+        <Card className="dark:bg-[#1a202c] border-1 border-black overflow-hidden ">
+          <CardContent className="p-4">
+            <div className="flex justify-between items-start">
+              <div>
+                <p className="text-sm font-medium ">Savings Rate</p>
+                <h3 className="text-xl font-bold tracking-tight  mt-1">{savingsPercentage}%</h3>
               </div>
-            </CardContent>
-          </Card>
-        </motion.div>
+              <div className="rounded-full bg-blue-900/30 p-2">
+                <PiggyBank className="h-5 w-5 text-blue-400" />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
       </div>
 
-      {/* Charts and data section */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Cash Flow Chart */}
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3, delay: 0.1 }}
-          className="lg:col-span-2"
-        >
-          <Card className="h-full">
-            <CardHeader className="pb-2">
-              <div className="flex items-center justify-between">
-                <div>
-                  <CardTitle>Cash Flow Analysis</CardTitle>
-                  <CardDescription>Income vs Expenses over time</CardDescription>
+      {/* Charts row */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        <div className="lg:col-span-2">
+          {/* Cash Flow Chart */}
+          <Card className=" border-1 border-black mb-16">
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center gap-2">
+                  <BarChart3 className="h-4 w-4 text-blue-400" />
+                  <h3 className="text-sm font-bold ">Cash Flow Analysis</h3>
                 </div>
-                <Badge variant="outline" className="text-xs">
-                  {timeRange === "7d" ? "7 days" : timeRange === "30d" ? "30 days" : "90 days"}
-                </Badge>
+                <div className="flex items-center gap-4">
+                  <div className="flex items-center gap-1">
+                    <div className="w-2 h-2 rounded-full bg-green-500"></div>
+                    <span className="text-xs ">Income</span>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <div className="w-2 h-2 rounded-full bg-red-500"></div>
+                    <span className="text-xs ">Expenses</span>
+                  </div>
+                </div>
               </div>
-            </CardHeader>
-            <CardContent className="pt-0">
               {cashFlowAnalysisChartData.length > 0 ? (
-                <div className="h-full">
+                <div>
                   <LineChart chartData={cashFlowAnalysisChartData} />
                 </div>
               ) : (
-                <div className="flex flex-col items-center justify-center h-[300px]">
-                  <Image
-                    src={NoDataPlaceHolder || "/placeholder.svg"}
-                    alt="No data available"
-                    width={150}
-                    height={150}
-                  />
-                  <span className="mt-2 text-sm font-semibold text-foreground">No data available</span>
+                  <div className="flex flex-col items-center justify-center select-none aspect-auto h-[250px] w-full">
+                  <Image src={NoDataPlaceHolder || "/placeholder.svg"} alt="No data available" width={100} height={100} />
+                  <span className="mt-2 text-xs ">No data available</span>
                 </div>
               )}
             </CardContent>
           </Card>
-        </motion.div>
+
+          {/* Budget and Plans summary row */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 my-auto">
+            {/* Budget Overview Card */}
+            <Card className=" border-1 border-black">
+              <CardContent className="p-4">
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center gap-2">
+                    <Target className="h-4 w-4 text-blue-400" />
+                    <h3 className="text-sm font-bold ">Budget Overview</h3>
+                  </div>
+                  {totalBudgetTarget && (
+                    <span className="text-xs bg-blue-900/30 text-blue-400 px-2 py-1 rounded-full">
+                      {totalBudgetTarget.progress}% Complete
+                    </span>
+                  )}
+                </div>
+
+                {totalBudgetTarget ? (
+                  <div className="flex justify-between items-center">
+                    <div>
+                      <p className="text-xs ">Target Amount</p>
+                      <p className="text-base font-medium  mt-1">
+                        {formatCurrency(totalBudgetTarget.targetAmount, "đ", "vi-vn")}
+                      </p>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-xs ">Current Amount</p>
+                      <p className="text-base font-medium  mt-1">
+                        {formatCurrency(totalBudgetTarget.currentAmount, "đ", "vi-vn")}
+                      </p>
+                    </div>
+                  </div>
+                ) : (
+                    <div className="flex items-center justify-center h-[60px] select-none">
+                    <span className="text-sm ">No budget target set</span>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+
+            {/* Budget Targets Summary Card */}
+            <Card className=" border-1 border-black">
+              <CardContent className="p-4">
+                <div className="flex items-center gap-2 mb-3">
+                  <Target className="h-4 w-4 text-green-400" />
+                  <h3 className="text-sm font-bold ">Budget Targets</h3>
+                </div>
+
+                <div className="flex justify-between items-center">
+                  <div>
+                    <p className="text-xs ">Active Targets</p>
+                    <p className="text-2xl font-bold  mt-1">{targets.length}</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Spending Plans Summary Card */}
+            <Card className=" border-1 border-black">
+              <CardContent className="p-4">
+                <div className="flex items-center gap-2 mb-3">
+                  <Clock className="h-4 w-4 text-amber-400" />
+                  <h3 className="text-sm font-bold ">Spending Plans</h3>
+                </div>
+
+                <div className="flex justify-between items-center">
+                  <div>
+                    <p className="text-xs ">Active Plans</p>
+                    <p className="text-2xl font-bold  mt-1">{spendingPlans.length}</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
 
         {/* Account Balance Chart */}
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3, delay: 0.2 }}
-          className="lg:col-span-1"
-        >
-          <Card>
-            <CardContent className="pt-0 h-full">
-              {balanceChartData.length > 0 ? (
-                <div className="h-full">
-                  <BalanceChart chartConfig={balanceChartConfig} chartData={balanceChartData} />
-                </div>
-              ) : (
-                <div className="flex flex-col items-center justify-center h-[300px]">
-                  <Image
-                    src={NoDataPlaceHolder || "/placeholder.svg"}
-                    alt="No data available"
-                    width={150}
-                    height={150}
-                  />
-                  <span className="mt-2 text-sm font-semibold text-foreground">No data available</span>
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        </motion.div>
+        <Card className="lg:col-span-1  border-1 border-black h-full]">
+          <CardContent className="p-4">
+            <div className="flex items-center gap-2 mb-2">
+              <PieChart className="h-4 w-4 text-purple-400" />
+              <h3 className="text-sm font-bold ">Account Balance</h3>
+            </div>
+            {balanceChartData.length > 0 ? (
+              <div>
+                <BalanceChart chartConfig={balanceChartConfig} chartData={balanceChartData} />
+              </div>
+            ) : (
+                <div className="flex flex-col items-center justify-center select-none">
+                <Image src={NoDataPlaceHolder || "/placeholder.svg"} alt="No data available" width={100} height={100} />
+                <span className="mt-2 text-xs ">No data available</span>
+              </div>
+            )}
+          </CardContent>
+        </Card>
       </div>
+
+
     </div>
   )
 }
