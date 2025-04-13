@@ -95,6 +95,7 @@ export interface IUpdateTransactionBody {
   amount: number
   accountSourceId: string
   direction: ETypeOfTrackerTransactionType
+  trackerTransactionTypeId?: string
 }
 
 export interface IClassiFyFormProps {

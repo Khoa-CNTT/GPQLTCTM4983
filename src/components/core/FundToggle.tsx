@@ -20,9 +20,7 @@ export default function FundToggle() {
 
   useEffect(() => {
     setFundArr(fundOfUserData?.data || [])
-    if (!fundId) {
-      setFundId(fundOfUserData?.data?.[0]?.id || '')
-    }
+    if (fundId !== fundOfUserData?.data?.[0]?.id) setFundId(fundOfUserData?.data?.[0]?.id || '')
   }, [fundOfUserData])
 
   const selectedFund = fundArr?.find((fund) => fund.id === fundId) ?? fundArr?.[0]
@@ -47,7 +45,7 @@ export default function FundToggle() {
             <span>Expenditure Funds</span>
           </div>
           <DropdownMenuSeparator />
-          <div className='max-h-[150px] overflow-x-hidden overflow-y-auto'>
+          <div className='max-h-[150px] overflow-y-auto overflow-x-hidden'>
             {fundArr?.map((fund, index) => (
               <React.Fragment key={fund.id}>
                 {index !== 0 && <DropdownMenuSeparator />}
