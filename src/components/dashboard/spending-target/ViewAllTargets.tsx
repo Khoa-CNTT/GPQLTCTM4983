@@ -13,6 +13,7 @@ import { formatCurrency } from "@/libraries/utils";
 import { IBudgetTarget } from "@/core/fund-saving-target/models/fund-saving-target.interface";
 import { format } from "date-fns";
 import { vi } from "date-fns/locale";
+import { useTranslation } from "react-i18next";
 
 interface ViewAllTargetsProps {
     isLoading: boolean;
@@ -25,6 +26,7 @@ const ViewAllTargets: React.FC<ViewAllTargetsProps> = ({
     targets,
     onSelectTarget,
 }) => {
+    const { t } = useTranslation(['common', 'spendingPlan']);
     const [searchTerm, setSearchTerm] = useState("");
     const [selectedType, setSelectedType] = useState<string>("all");
     const [selectedMonth, setSelectedMonth] = useState<string>("all");
@@ -46,12 +48,12 @@ const ViewAllTargets: React.FC<ViewAllTargetsProps> = ({
             };
         });
         return [
-            { value: "all", label: "Tất cả" },
+            { value: "all", label: t('spendingPlan:targetForm.viewAll.allMonths') },
             ...Array.from(new Set(months.map(m => JSON.stringify(m))))
                 .map(m => JSON.parse(m))
                 .sort((a, b) => b.value.localeCompare(a.value))
         ];
-    }, [targets]);
+    }, [targets, t]);
 
     // Filter targets based on search, type, month, and status
     const filteredTargets = useMemo(() => {
@@ -83,12 +85,14 @@ const ViewAllTargets: React.FC<ViewAllTargetsProps> = ({
         }
         if (selectedStatus !== "all") {
             filters.push({
-                label: selectedStatus === "success" ? "Hoàn thành" : "Đang thực hiện",
+                label: selectedStatus === "success"
+                    ? t('spendingPlan:targetForm.viewAll.completed')
+                    : t('spendingPlan:targetForm.viewAll.inProgress'),
                 clear: () => setSelectedStatus("all")
             });
         }
         return filters;
-    }, [selectedType, selectedMonth, selectedStatus, availableMonths]);
+    }, [selectedType, selectedMonth, selectedStatus, availableMonths, t]);
 
     return (
         <div className="flex-1 overflow-hidden flex flex-col">
@@ -103,7 +107,7 @@ const ViewAllTargets: React.FC<ViewAllTargetsProps> = ({
                                         <div className="relative flex-1">
                                             <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
                                             <Input
-                                                placeholder="Tìm kiếm mục tiêu..."
+                                                placeholder={t('spendingPlan:targetForm.viewAll.searchPlaceholder')}
                                                 value={searchTerm}
                                                 onChange={(e) => setSearchTerm(e.target.value)}
                                                 className="pl-8"
@@ -114,14 +118,14 @@ const ViewAllTargets: React.FC<ViewAllTargetsProps> = ({
                                             onValueChange={setSelectedType}
                                         >
                                             <SelectTrigger className="w-full md:w-[200px]">
-                                                <SelectValue placeholder="Chọn loại" />
+                                                <SelectValue placeholder={t('spendingPlan:targetForm.viewAll.selectType')} />
                                             </SelectTrigger>
                                             <SelectContent>
                                                 {trackerTypes
                                                     .filter((type): type is string => type !== null)
                                                     .map((type) => (
                                                         <SelectItem key={type} value={type}>
-                                                            {type === "all" ? "Tất cả" : type}
+                                                            {type === "all" ? t('spendingPlan:targetForm.viewAll.allTypes') : type}
                                                         </SelectItem>
                                                     ))}
                                             </SelectContent>
@@ -131,7 +135,7 @@ const ViewAllTargets: React.FC<ViewAllTargetsProps> = ({
                                             onValueChange={setSelectedMonth}
                                         >
                                             <SelectTrigger>
-                                                <SelectValue placeholder="Chọn tháng" />
+                                                <SelectValue placeholder={t('spendingPlan:targetForm.viewAll.selectMonth')} />
                                             </SelectTrigger>
                                             <SelectContent>
                                                 {availableMonths.map((month) => (
@@ -146,12 +150,12 @@ const ViewAllTargets: React.FC<ViewAllTargetsProps> = ({
                                             onValueChange={setSelectedStatus}
                                         >
                                             <SelectTrigger>
-                                                <SelectValue placeholder="Trạng thái" />
+                                                <SelectValue placeholder={t('spendingPlan:targetForm.viewAll.selectStatus')} />
                                             </SelectTrigger>
                                             <SelectContent>
-                                                <SelectItem value="all">Tất cả trạng thái</SelectItem>
-                                                <SelectItem value="success">Hoàn thành</SelectItem>
-                                                <SelectItem value="pending">Đang thực hiện</SelectItem>
+                                                <SelectItem value="all">{t('spendingPlan:targetForm.viewAll.allStatuses')}</SelectItem>
+                                                <SelectItem value="success">{t('spendingPlan:targetForm.viewAll.completed')}</SelectItem>
+                                                <SelectItem value="pending">{t('spendingPlan:targetForm.viewAll.inProgress')}</SelectItem>
                                             </SelectContent>
                                         </Select>
                                     </div>
@@ -177,7 +181,7 @@ const ViewAllTargets: React.FC<ViewAllTargetsProps> = ({
 
                                 {/* Results count */}
                                 <div className="text-sm text-muted-foreground flex items-center gap-2">
-                                    <span>Hiển thị {filteredTargets.length} mục tiêu</span>
+                                    <span>{t('spendingPlan:targetForm.viewAll.showing', { count: filteredTargets.length })}</span>
                                     {(selectedType !== "all" || selectedMonth !== "all" || selectedStatus !== "all") && (
                                         <button
                                             onClick={() => {
@@ -188,7 +192,7 @@ const ViewAllTargets: React.FC<ViewAllTargetsProps> = ({
                                             }}
                                             className="h-auto py-1 px-2 text-xs bg-transparent border-none cursor-pointer"
                                         >
-                                            Xóa bộ lọc
+                                            {t('spendingPlan:targetForm.viewAll.clearFilters')}
                                         </button>
                                     )}
                                 </div>
@@ -222,7 +226,7 @@ const ViewAllTargets: React.FC<ViewAllTargetsProps> = ({
 
                                                 <div className="mb-4">
                                                     <div className="flex justify-between text-sm mb-2">
-                                                        <span className="text-muted-foreground">Tiến độ mục tiêu</span>
+                                                        <span className="text-muted-foreground">{t('spendingPlan:targetDetails.progress')}</span>
                                                         <span className={`font-medium ${
                                                             isNearlyComplete
                                                                 ? 'text-amber-600 dark:text-amber-500'
@@ -244,13 +248,13 @@ const ViewAllTargets: React.FC<ViewAllTargetsProps> = ({
 
                                                 <div className="flex justify-between text-sm">
                                                     <div className="space-y-1">
-                                                        <span className="text-muted-foreground block">Hiện tại</span>
+                                                        <span className="text-muted-foreground block">{t('spendingPlan:targetForm.detailBudget.saved')}</span>
                                                         <span className="font-medium text-base text-foreground">
                                                             {formatCurrency(target.currentAmount)}
                                                         </span>
                                                     </div>
                                                     <div className="space-y-1 text-right">
-                                                        <span className="text-muted-foreground block">Mục tiêu</span>
+                                                        <span className="text-muted-foreground block">{t('spendingPlan:targetForm.detailBudget.target')}</span>
                                                         <span className="font-medium text-base text-foreground">
                                                             {formatCurrency(target.targetAmount)}
                                                         </span>
@@ -271,7 +275,7 @@ const ViewAllTargets: React.FC<ViewAllTargetsProps> = ({
                                             className="opacity-50 mb-4"
                                         />
                                         <p className="text-muted-foreground">
-                                            Không tìm thấy mục tiêu nào
+                                            {t('spendingPlan:targetForm.viewAll.noResults')}
                                         </p>
                                     </div>
                                 )}
@@ -287,7 +291,7 @@ const ViewAllTargets: React.FC<ViewAllTargetsProps> = ({
                                     className="object-contain opacity-80"
                                 />
                             </div>
-                            <p className="text-muted-foreground animate-pulse">Đang tải dữ liệu...</p>
+                            <p className="text-muted-foreground animate-pulse">{t('spendingPlan:targetForm.viewAll.loading')}</p>
                         </div>
                     )}
                 </CardContent>

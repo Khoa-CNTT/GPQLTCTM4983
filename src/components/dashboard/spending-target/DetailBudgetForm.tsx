@@ -21,6 +21,8 @@ import {
     Wallet,
     XCircle,
 } from "lucide-react"
+import { useTranslation } from "react-i18next"
+
 interface DetailBudgetFormProps {
     selectedTarget: IBudgetTarget | null
     onClose: () => void
@@ -29,17 +31,19 @@ interface DetailBudgetFormProps {
 }
 
 const DetailBudgetForm: React.FC<DetailBudgetFormProps> = ({ selectedTarget, onClose, setIsDialogOpen }) => {
+    const { t } = useTranslation(['common', 'spendingPlan']);
+    
     if (!selectedTarget) {
         return (
             <div className="flex flex-col items-center justify-center py-12 px-4 text-center">
                 <PiggyBank className="h-16 w-16 text-muted-foreground mb-4 opacity-50" />
-                <h3 className="text-xl font-semibold mb-2">Không tìm thấy mục tiêu</h3>
+                <h3 className="text-xl font-semibold mb-2">{t('spendingPlan:targetForm.detailBudget.notFound')}</h3>
                 <p className="text-muted-foreground max-w-md mb-6">
-                    Không thể tìm thấy thông tin chi tiết của mục tiêu này. Vui lòng thử lại sau.
+                    {t('spendingPlan:targetForm.detailBudget.notFoundDescription')}
                 </p>
                 <Button variant="outline" onClick={onClose} className="min-w-[100px]">
                     <XCircle className="mr-2 h-4 w-4" />
-                    Đóng
+                    {t('common:button.close')}
                 </Button>
             </div>
         )
@@ -62,6 +66,9 @@ const DetailBudgetForm: React.FC<DetailBudgetFormProps> = ({ selectedTarget, onC
                         >
                             {selectedTarget.trackerTypeName}
                         </Badge>
+                        <Badge>
+                            {selectedTarget.status}
+                        </Badge>
                     </div>
 
                     {selectedTarget.description && (
@@ -75,14 +82,14 @@ const DetailBudgetForm: React.FC<DetailBudgetFormProps> = ({ selectedTarget, onC
                         <div className="p-4 bg-muted/30 rounded-lg">
                             <div className="flex items-center mb-2">
                                 <Target className="h-5 w-5 text-muted-foreground mr-2" />
-                                <h3 className="font-medium">Mục tiêu</h3>
+                                <h3 className="font-medium">{t('spendingPlan:targetForm.detailBudget.target')}</h3>
                             </div>
-                            <p className="text-2xl font-semibold">{formatCurrency(selectedTarget.targetAmount)}</p>
+                            <p className="text-2xl font-semibold">{formatCurrency(selectedTarget.targetAmount, 'VND')}</p>
                         </div>
                         <div className="p-4 bg-muted/30 rounded-lg">
                             <div className="flex items-center mb-2">
                                 <Wallet className="h-5 w-5 text-muted-foreground mr-2" />
-                                <h3 className="font-medium">Đã tiết kiệm</h3>
+                                <h3 className="font-medium">{t('spendingPlan:targetForm.detailBudget.saved')}</h3>
                             </div>
                             <p className="text-2xl font-semibold">{formatCurrency(selectedTarget.currentAmount)}</p>
                         </div>
@@ -92,7 +99,7 @@ const DetailBudgetForm: React.FC<DetailBudgetFormProps> = ({ selectedTarget, onC
                         <div className="flex justify-between text-sm mb-2">
                             <span className="text-muted-foreground flex items-center">
                                 <Clock className="h-4 w-4 mr-1.5" />
-                                Tiến độ:
+                                {t('spendingPlan:targetForm.detailBudget.progress')}:
                             </span>
                             <span
                                 className={`font-medium flex items-center ${isCompleted ? "text-emerald-600" : "text-blue-600"}`}
@@ -103,13 +110,12 @@ const DetailBudgetForm: React.FC<DetailBudgetFormProps> = ({ selectedTarget, onC
                         </div>
                         <Progress
                             value={percentage}
-                            className={`h-3 ${isCompleted ? "bg-emerald-100" : percentage > 75 ? "bg-blue-100" : "bg-muted/50"
-                                }`}
+                            className={`h-3 ${isCompleted ? "bg-emerald-100" : percentage > 75 ? "bg-blue-100" : "bg-muted/50"}`}
                         />
 
                         {!isCompleted && (
                             <p className="text-sm text-muted-foreground mt-2">
-                                Còn thiếu: {formatCurrency(remaining)}
+                                {t('spendingPlan:targetForm.detailBudget.missing')}: {formatCurrency(remaining, 'VND')}
                             </p>
                         )}
                     </div>
@@ -117,14 +123,14 @@ const DetailBudgetForm: React.FC<DetailBudgetFormProps> = ({ selectedTarget, onC
                     <div className="mt-6 border-t pt-4">
                         <div className="grid grid-cols-2 gap-4">
                             <div>
-                                <p className="text-sm text-muted-foreground">Thời gian bắt đầu</p>
+                                <p className="text-sm text-muted-foreground">{t('spendingPlan:targetForm.detailBudget.startDate')}</p>
                                 <p className="flex items-center mt-1">
                                     <CalendarDays className="h-4 w-4 mr-1.5 text-muted-foreground" />
                                     {formatDateTimeVN(selectedTarget.startDate, false)}
                                 </p>
                             </div>
                             <div>
-                                <p className="text-sm text-muted-foreground">Thời gian kết thúc</p>
+                                <p className="text-sm text-muted-foreground">{t('spendingPlan:targetForm.detailBudget.endDate')}</p>
                                 <p className="flex items-center mt-1">
                                     <CalendarDays className="h-4 w-4 mr-1.5 text-muted-foreground" />
                                     {formatDateTimeVN(selectedTarget.endDate, false)}
@@ -134,15 +140,8 @@ const DetailBudgetForm: React.FC<DetailBudgetFormProps> = ({ selectedTarget, onC
                     </div>
 
                     <div className="mt-4">
-                        <p className="text-sm text-muted-foreground">Thời gian còn lại</p>
+                        <p className="text-sm text-muted-foreground">{t('spendingPlan:targetForm.detailBudget.timeRemaining')}</p>
                         <p className="font-medium mt-1">{selectedTarget.remainingDays}</p>
-                    </div>
-
-                    <div className="mt-6">
-                        <Badge
-                        >
-                            {selectedTarget.status}
-                        </Badge>
                     </div>
                 </div>
             </div>
@@ -151,19 +150,19 @@ const DetailBudgetForm: React.FC<DetailBudgetFormProps> = ({ selectedTarget, onC
                 <div className="flex gap-3 ml-auto">
                     <Button variant="outline" onClick={onClose}>
                         <XCircle className="mr-2 h-4 w-4" />
-                        Đóng
+                        {t('common:button.close')}
                     </Button>
                     <Button variant="destructive" onClick={() => setIsDialogOpen(
                         (prev) => ({ ...prev, isDialogDeleteTargetOpen: true })
                     )}>
                         <Trash2 className="mr-2 h-4 w-4" />
-                        Xóa
+                        {t('common:button.delete')}
                     </Button>
                     <Button
                         onClick={() => setIsDialogOpen((prev) => ({ ...prev, isDialogEditTargetOpen: true })
-                    )}>
+                        )}>
                         <PencilIcon className="mr-2 h-4 w-4" />
-                        Chỉnh sửa
+                        {t('common:button.edit')}
                     </Button>
                 </div>
             </div>

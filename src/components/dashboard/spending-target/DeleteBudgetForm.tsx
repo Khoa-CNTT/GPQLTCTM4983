@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge"
 import { Trash2 } from "lucide-react"
 import { formatCurrency } from "@/libraries/utils"
 import { IBudgetTarget } from "@/core/fund-saving-target/models"
+import { useTranslation } from "react-i18next"
 
 interface DeleteBudgetFormProps {
     selectedBudget: IBudgetTarget | null
@@ -15,6 +16,8 @@ interface DeleteBudgetFormProps {
 }
 
 const DeleteBudgetForm: React.FC<DeleteBudgetFormProps> = ({ selectedBudget, onClose, onDeleteBudget, isLoading }) => {
+    const { t } = useTranslation(['common', 'spendingPlan']);
+
     const handleDelete = () => {
         if (selectedBudget) {
             onDeleteBudget(selectedBudget.id)
@@ -33,25 +36,25 @@ const DeleteBudgetForm: React.FC<DeleteBudgetFormProps> = ({ selectedBudget, onC
                                 <Badge>{selectedBudget.fundName}</Badge>
                             </div>
                             <div className="mt-2 flex justify-between text-sm">
-                                <span className="text-muted-foreground">Mục tiêu: </span>
+                                <span className="text-muted-foreground">{t('spendingPlan:targetForm.deleteBudget.target')}: </span>
                                 <span>{formatCurrency(selectedBudget.targetAmount, "đ", "vi-vn")}</span>
                             </div>
                             <div className="mt-1 flex justify-between text-sm">
-                                <span className="text-muted-foreground">Hiện tại: </span>
+                                <span className="text-muted-foreground">{t('spendingPlan:targetForm.deleteBudget.current')}: </span>
                                 <span>{formatCurrency(selectedBudget.currentAmount, "đ", "vi-vn")}</span>
                             </div>
                             <div className="mt-1 flex justify-between text-sm">
-                                <span className="text-muted-foreground">Trạng thái: </span>
+                                <span className="text-muted-foreground">{t('spendingPlan:targetForm.deleteBudget.status')}: </span>
                                 <span>{selectedBudget.status}</span>
                             </div>
                             {selectedBudget.description && (
                                 <div className="mt-2">
-                                    <span className="text-sm text-muted-foreground">Mô tả: </span>
+                                    <span className="text-sm text-muted-foreground">{t('spendingPlan:targetForm.deleteBudget.description')}: </span>
                                     <p className="text-sm mt-1">{selectedBudget.description}</p>
                                 </div>
                             )}
                             <div className="mt-2 flex justify-between text-sm">
-                                <span className="text-muted-foreground">Thời gian: </span>
+                                <span className="text-muted-foreground">{t('spendingPlan:targetForm.deleteBudget.period')}: </span>
                                 <span>
                                     {new Date(selectedBudget.startDate).toLocaleDateString('vi-VN')} - {new Date(selectedBudget.endDate).toLocaleDateString('vi-VN')}
                                 </span>
@@ -62,7 +65,7 @@ const DeleteBudgetForm: React.FC<DeleteBudgetFormProps> = ({ selectedBudget, onC
             )}
             <div className="flex justify-end space-x-2">
                 <Button variant="outline" onClick={onClose}>
-                    Hủy
+                    {t('common:button.cancel')}
                 </Button>
                 <Button
                     variant="destructive"
@@ -71,7 +74,7 @@ const DeleteBudgetForm: React.FC<DeleteBudgetFormProps> = ({ selectedBudget, onC
                     isLoading={isLoading}
                 >
                     <Trash2 className="mr-2 h-4 w-4" />
-                    Xóa
+                    {t('common:button.delete')}
                 </Button>
             </div>
         </div>

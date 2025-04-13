@@ -3,20 +3,21 @@
 import React from "react";
 import CustomDialog from "@/components/dashboard/Dialog";
 import { IDataTableConfig, IDialogConfig } from "@/types/common.i";
-import CreatePlanForm from "../../../components/dashboard/spending-plant/CreatePlanForm";
-import EditPlanForm from "../../../components/dashboard/spending-plant/EditPlanForm";
-import DeletePlanForm from "../../../components/dashboard/spending-plant/DeletePlanForm";
-import DetailPlanForm from "../../../components/dashboard/spending-plant/DetailPlanForm";
+import CreatePlanForm from "../../../components/dashboard/spending-plan/CreatePlanForm";
+import EditPlanForm from "../../../components/dashboard/spending-plan/EditPlanForm";
+import DeletePlanForm from "../../../components/dashboard/spending-plan/DeletePlanForm";
+import DetailPlanForm from "../../../components/dashboard/spending-plan/DetailPlanForm";
 import CreateBudgetForm from "../../../components/dashboard/spending-target/CreateBudgetForm";
 import EditBudgetForm from "../../../components/dashboard/spending-target/EditBudgetForm";
 import DeleteBudgetForm from "../../../components/dashboard/spending-target/DeleteBudgetForm";
 import ChangeStatusBudgetForm from "@/components/dashboard/spending-target/ChangeStatusBudgetForm";
-import ChangeStatusPlanForm from "@/components/dashboard/spending-plant/ChangeStatusPlanForm";
+import ChangeStatusPlanForm from "@/components/dashboard/spending-plan/ChangeStatusPlanForm";
 import { IBudgetTarget, ICreateFundSavingTargetRequest, IDialogFlags, IGetAllDataFundSavingTargetTable, IUpdateFundSavingTargetRequest } from "@/core/fund-saving-target/models/fund-saving-target.interface";
-import { ICreateFundSavingPlanRequest, ISpendingPlan, ISpendingPlanTable, IUpdateFundSavingPlanRequest } from "@/core/fund-saving-plant/models";
 import DetailBudgetForm from "@/components/dashboard/spending-target/DetailBudgetForm";
 import { DataTable } from "@/components/dashboard/DataTable";
 import { ColumnDef } from "@tanstack/react-table";
+import { useTranslation } from "react-i18next";
+import { ICreateFundSavingPlanRequest, ISpendingPlan, ISpendingPlanTable, IUpdateFundSavingPlanRequest } from "@/core/fund-saving-plan/models";
 
 interface ISpendingPlanDialogProps {
     plansDialog: {
@@ -67,10 +68,12 @@ const SpendingPlanDialog: React.FC<ISpendingPlanDialogProps> = ({
     sharedDialogElements,
     callBack,
 }) => {
+    const { t } = useTranslation(['common', 'spendingPlan']);
     const { isDialogOpen, setIsDialogOpen, selectedPlan, selectedTarget } = sharedDialogElements;
+
     const createPlanDialog: IDialogConfig = {
-        title: "Tạo kế hoạch chi tiêu",
-        description: "Tạo một kế hoạch chi tiêu mới để quản lý tài chính hiệu quả hơn.",
+        title: t('spendingPlan:dialog.plan.create.title'),
+        description: t('spendingPlan:dialog.plan.create.description'),
         content: (
             <CreatePlanForm
                 isOpen={isDialogOpen.isDialogCreatePlanOpen}
@@ -85,8 +88,8 @@ const SpendingPlanDialog: React.FC<ISpendingPlanDialogProps> = ({
     };
 
     const editPlanDialog: IDialogConfig = {
-        title: "Chỉnh sửa kế hoạch chi tiêu",
-        description: "Cập nhật thông tin kế hoạch chi tiêu của bạn.",
+        title: t('spendingPlan:dialog.plan.edit.title'),
+        description: t('spendingPlan:dialog.plan.edit.description'),
         content: (
             <EditPlanForm
                 isOpen={isDialogOpen.isDialogEditPlanOpen}
@@ -102,8 +105,8 @@ const SpendingPlanDialog: React.FC<ISpendingPlanDialogProps> = ({
     };
 
     const detailPlanDialog: IDialogConfig = {
-        title: "Chi tiết kế hoạch",
-        description: "Xem thông tin chi tiết của kế hoạch chi tiêu.",
+        title: t('spendingPlan:dialog.plan.detail.title'),
+        description: t('spendingPlan:dialog.plan.detail.description'),
         content: (
             <DetailPlanForm
                 selectedPlan={selectedPlan}
@@ -116,8 +119,8 @@ const SpendingPlanDialog: React.FC<ISpendingPlanDialogProps> = ({
     };
 
     const deletePlanDialog: IDialogConfig = {
-        title: "Xóa kế hoạch",
-        description: "Bạn có chắc chắn muốn xóa kế hoạch này? Hành động này không thể hoàn tác.",
+        title: t('spendingPlan:dialog.plan.delete.title'),
+        description: t('spendingPlan:dialog.plan.delete.description'),
         content: (
             <DeletePlanForm
                 selectedPlan={selectedPlan}
@@ -134,8 +137,8 @@ const SpendingPlanDialog: React.FC<ISpendingPlanDialogProps> = ({
     };
 
     const changeStatusPlanDialog: IDialogConfig = {
-        title: "Đổi tần suất lặp lại",
-        description: "Thay đổi tần suất lặp lại cho kế hoạch chi tiêu của bạn.",
+        title: t('spendingPlan:dialog.plan.changeStatus.title'),
+        description: t('spendingPlan:dialog.plan.changeStatus.description'),
         content: (
             <ChangeStatusPlanForm
                 selectedPlan={selectedPlan}
@@ -153,8 +156,8 @@ const SpendingPlanDialog: React.FC<ISpendingPlanDialogProps> = ({
 
     // Target Dialog Configurations
     const createTargetDialog: IDialogConfig = {
-        title: "Tạo ngân sách mới",
-        description: "Tạo một ngân sách mới để quản lý chi tiêu hiệu quả hơn.",
+        title: t('spendingPlan:dialog.budget.create.title'),
+        description: t('spendingPlan:dialog.budget.create.description'),
         content: (
             <CreateBudgetForm
                 isOpen={isDialogOpen.isDialogCreateTargetOpen}
@@ -163,14 +166,14 @@ const SpendingPlanDialog: React.FC<ISpendingPlanDialogProps> = ({
                 isLoading={targetsDialog.isLoading}
             />
         ),
-        className: "sm:max-w-[425px] md:max-w-[600px]",
+        className: "sm:max-w-[450px] md:max-w-[650px]",
         isOpen: isDialogOpen.isDialogCreateTargetOpen,
         onClose: () => setIsDialogOpen((prev) => ({ ...prev, isDialogCreateTargetOpen: false })),
     };
 
     const editTargetDialog: IDialogConfig = {
-        title: "Chỉnh sửa ngân sách",
-        description: "Cập nhật thông tin ngân sách của bạn.",
+        title: t('spendingPlan:dialog.budget.edit.title'),
+        description: t('spendingPlan:dialog.budget.edit.description'),
         content: (
             <EditBudgetForm
                 isOpen={isDialogOpen.isDialogEditTargetOpen}
@@ -180,14 +183,14 @@ const SpendingPlanDialog: React.FC<ISpendingPlanDialogProps> = ({
                 isLoading={targetsDialog.isLoading}
             />
         ),
-        className: "sm:max-w-[425px] md:max-w-[600px]",
+        className: "sm:max-w-[450px] md:max-w-[650px]",
         isOpen: isDialogOpen.isDialogEditTargetOpen,
         onClose: () => setIsDialogOpen((prev) => ({ ...prev, isDialogEditTargetOpen: false })),
     };
 
     const detailTargetDialog: IDialogConfig = {
-        title: "Chi tiết ngân sách",
-        description: "Xem thông tin chi tiết của ngân sách.",
+        title: t('spendingPlan:dialog.budget.detail.title'),
+        description: t('spendingPlan:dialog.budget.detail.description'),
         content: (
             <DetailBudgetForm
                 setIsDialogOpen={setIsDialogOpen}
@@ -208,8 +211,8 @@ const SpendingPlanDialog: React.FC<ISpendingPlanDialogProps> = ({
     };
 
     const deleteTargetDialog: IDialogConfig = {
-        title: "Xóa ngân sách",
-        description: "Bạn có chắc chắn muốn xóa ngân sách này? Hành động này không thể hoàn tác.",
+        title: t('spendingPlan:dialog.budget.delete.title'),
+        description: t('spendingPlan:dialog.budget.delete.description'),
         content: (
             <DeleteBudgetForm
                 selectedBudget={selectedTarget}
@@ -226,8 +229,8 @@ const SpendingPlanDialog: React.FC<ISpendingPlanDialogProps> = ({
     };
 
     const changeStatusTargetDialog: IDialogConfig = {
-        title: "Đổi trạng thái",
-        description: "Bạn có chắc chắn muốn đổi trạng thái ngân sách này? Hành động này không thể hoàn tác.",
+        title: t('spendingPlan:dialog.budget.changeStatus.title'),
+        description: t('spendingPlan:dialog.budget.changeStatus.description'),
         content: (
             <ChangeStatusBudgetForm
                 selectedBudget={selectedTarget}
@@ -244,8 +247,8 @@ const SpendingPlanDialog: React.FC<ISpendingPlanDialogProps> = ({
     };
 
     const viewAllDataDialog: IDialogConfig = {
-        title: "Chi tiết tất cả mục tiêu",
-        description: "Xem tất cả các mục tiêu tiết kiệm của bạn.",
+        title: t('spendingPlan:dialog.budget.viewAll.title'),
+        description: t('spendingPlan:dialog.budget.viewAll.description'),
         content: (
             <div className='overflow-x-auto'>
                 <DataTable
@@ -254,8 +257,6 @@ const SpendingPlanDialog: React.FC<ISpendingPlanDialogProps> = ({
                     config={targetsDialog.targetTableConfig}
                     setConfig={targetsDialog.setTargetTableConfig}
                     onRowClick={(rowData) => {
-                        console.log('rowData:', rowData);
-
                         targetsDialog.setSelectedTarget(rowData as any);
                         setIsDialogOpen(prev => ({
                             ...prev,
@@ -272,8 +273,8 @@ const SpendingPlanDialog: React.FC<ISpendingPlanDialogProps> = ({
     };
 
     const viewAllPlansDialog: IDialogConfig = {
-        title: "Chi tiết tất cả kế hoạch chi tiêu",
-        description: "Xem tất cả các kế hoạch chi tiêu của bạn.",
+        title: t('spendingPlan:dialog.plan.viewAll.title'),
+        description: t('spendingPlan:dialog.plan.viewAll.description'),
         content: (
             <div className='overflow-x-auto'>
                 <DataTable
