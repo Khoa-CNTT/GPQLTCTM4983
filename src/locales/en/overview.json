@@ -5,9 +5,11 @@
     "overview": "Overview"
   },
   "dashboard": {
+    "financial_overview": "Financial Overview",
     "balance_chart": {
       "no_data": "No data available",
-      "title": "Total Balance"
+      "title": "Total Balance",
+      "distribution": "Account Distribution"
     },
     "income_card": {
       "title": "Total Income",
@@ -16,6 +18,23 @@
     "expenses_card": {
       "title": "Total Expenses",
       "trend": "from last week"
+    },
+    "savings": {
+      "title": "Net Savings",
+      "rate": "Savings Rate"
+    },
+    "budget": {
+      "overview": "Budget Overview",
+      "complete": "Complete",
+      "target_amount": "Target Amount",
+      "current_amount": "Current Amount",
+      "no_target": "No budget target set",
+      "targets": "Budget Targets",
+      "active_targets": "Active Targets"
+    },
+    "plans": {
+      "title": "Spending Plans",
+      "active": "Active Plans"
     },
     "cash_flow": {
       "title": "Cash Flow Analysis",
@@ -30,8 +49,8 @@
     },
     "chart": {
       "transactions": "Transactions",
-      "incoming": "Incoming",
-      "outgoing": "Outgoing"
+      "incoming": "Income",
+      "outgoing": "Expenses"
     }
   }
 }

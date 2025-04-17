@@ -85,6 +85,10 @@
       "categoryPlaceholder": "Chọn phân loại",
       "frequency": "Tần suất lặp lại",
       "frequencyPlaceholder": "Chọn tần suất lặp lại",
+      "startDate": "Ngày bắt đầu",
+      "startDatePlaceholder": "Chọn ngày bắt đầu",
+      "weekday": "Ngày trong tuần",
+      "weekdayPlaceholder": "Chọn ngày trong tuần",
       "notifyBefore": "Thông báo trước (ngày)",
       "notifyBeforePlaceholder": "Chọn thời gian thông báo",
       "notifyOptions": {

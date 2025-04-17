@@ -237,8 +237,8 @@ export default function SpendingPlanForm() {
         <div className="mx-auto flex flex-col h-[calc(100vh-10rem)]">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 flex-shrink-0">
                 {/* Total Budget Card */}
-                <Card className="group relative overflow-hidden bg-gradient-to-br from-blue-400 via-indigo-500 to-purple-600 transition-all duration-300 hover:shadow-lg">
-                    <CardHeader className="pb-2 px-4 md:px-6">
+                <Card className="group relative overflow-hidden bg-gradient-to-br from-blue-400 via-indigo-500 to-purple-600 transition-all duration-300 hover:shadow-xl shadow-md shadow-blue-200 dark:shadow-blue-900/20">
+                    <CardHeader className="pb-4 px-4 md:px-6">
                         <CardTitle className="text-sm md:text-md font-medium text-white 2xl:text-lg line-clamp-1">
                             {t('spendingPlan:cardTitles.totalBudget')}
                         </CardTitle>
@@ -255,22 +255,11 @@ export default function SpendingPlanForm() {
                                 </p>
                             </div>
                         </div>
-                        <div className="mt-3 md:mt-4">
-                            <div className="flex justify-between text-xs md:text-sm mb-1.5">
-                                <span className="text-white/80">{t('spendingPlan:cardDetails.usageProgress')}</span>
-                                <span className="font-medium text-white">
-                                    {totalBudgetTarget ? Math.round(totalBudgetTarget.progress) : 0}%
-                                </span>
-                            </div>
-                            {totalBudgetTarget && (
-                                <Progress value={totalBudgetTarget.progress} className="h-1.5 md:h-2 bg-blue-200/30" />
-                            )}
-                        </div>
                     </CardContent>
                 </Card>
 
                 {/* Spent Amount Card */}
-                <Card className="group relative overflow-hidden bg-gradient-to-br from-rose-400 via-pink-500 to-rose-600 transition-all duration-300 hover:shadow-lg">
+                <Card className="group relative overflow-hidden bg-gradient-to-br from-rose-400 via-pink-500 to-rose-600 transition-all duration-300 hover:shadow-xl shadow-md shadow-rose-200 dark:shadow-rose-900/20">
                     <CardHeader className="pb-2 px-4 md:px-6">
                         <CardTitle className="text-sm md:text-md font-medium text-white 2xl:text-lg line-clamp-1">
                             {t('spendingPlan:cardTitles.spent')}
@@ -281,7 +270,7 @@ export default function SpendingPlanForm() {
                             <Banknote className="h-8 w-8 md:h-12 md:w-12 animate-pulse text-white opacity-75 flex-shrink-0" />
                             <div className="text-right ml-2">
                                 <p className="text-lg md:text-xl lg:text-2xl font-bold text-white truncate">
-                                    {formatCurrency(totalBudgetTarget?.currentAmount || 0)}
+                                    {formatCurrency(totalBudgetTarget?.currentAmount || 0 , 'VND')}
                                 </p>
                                 <p className="text-xs md:text-sm text-rose-100 line-clamp-1">
                                     {t('spendingPlan:cardDetails.used')} {totalBudgetTarget ? Math.round(totalBudgetTarget.progress) : 0}%
@@ -299,7 +288,7 @@ export default function SpendingPlanForm() {
                 </Card>
 
                 {/* Remaining Budget Card */}
-                <Card className="group relative overflow-hidden bg-gradient-to-br from-teal-400 via-emerald-500 to-green-600 transition-all duration-300 hover:shadow-lg">
+                <Card className="group relative overflow-hidden bg-gradient-to-br from-teal-400 via-emerald-500 to-green-600 transition-all duration-300 hover:shadow-xl shadow-md shadow-emerald-200 dark:shadow-emerald-900/20">
                     <CardHeader className="pb-2 px-4 md:px-6">
                         <CardTitle className="text-sm md:text-md font-medium text-white 2xl:text-lg line-clamp-1">
                             {t('spendingPlan:cardTitles.remaining')}
@@ -329,7 +318,7 @@ export default function SpendingPlanForm() {
                 </Card>
 
                 {/* Planned Spending Card */}
-                <Card className="group relative overflow-hidden bg-gradient-to-br from-amber-400 via-orange-500 to-amber-600 transition-all duration-300 hover:shadow-lg">
+                <Card className="group relative overflow-hidden bg-gradient-to-br from-amber-400 via-orange-500 to-amber-600 transition-all duration-300 hover:shadow-xl shadow-md shadow-amber-200 dark:shadow-amber-900/20">
                     <CardHeader className="pb-2 px-4 md:px-6">
                         <CardTitle className="text-sm md:text-md font-medium text-white 2xl:text-lg line-clamp-1">
                             {t('spendingPlan:cardTitles.plannedSpending')}
@@ -340,7 +329,7 @@ export default function SpendingPlanForm() {
                             <CalendarDays className="h-8 w-8 md:h-12 md:w-12 animate-pulse text-white opacity-75 flex-shrink-0" />
                             <div className="text-right ml-2">
                                 <p className="text-lg md:text-xl lg:text-2xl font-bold text-white truncate">
-                                    {formatCurrency(totalPlannedAmount)}
+                                    {formatCurrency(totalPlannedAmount,'VND')}
                                 </p>
                             </div>
                         </div>
@@ -359,8 +348,8 @@ export default function SpendingPlanForm() {
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6 flex-1 min-h-0">
                 {/* Budget Targets Section */}
                 <div className="lg:col-span-2 flex flex-col min-h-[calc(60%)]">
-                    <Card className="h-full border flex flex-col">
-                        <CardHeader className="pb-2 flex-shrink-0">
+                    <Card className="h-full border shadow-md   flex flex-col">
+                        <CardHeader className="pb-2 flex-shrink-0  border-b">
                             <div className="flex items-center justify-between flex-wrap gap-3">
                                 <div className="flex items-center gap-2">
                                     <CardTitle className="text-base lg:text-lg">{t('spendingPlan:budgetSection.title')}</CardTitle>
@@ -370,14 +359,14 @@ export default function SpendingPlanForm() {
                                     <Button
                                         variant="outline"
                                         onClick={() => openDialog("isDialogViewAllDataOpen")}
-                                        className="flex items-center gap-1.5 px-2 sm:px-4 h-8 sm:h-9 text-xs sm:text-sm"
+                                        className="flex items-center gap-1.5 px-2 sm:px-4 h-8 sm:h-9 text-xs sm:text-sm shadow-sm"
                                         size="sm"
                                     >
                                         <ListChecks className="h-3.5 w-3.5" /> {t('spendingPlan:budgetSection.viewAll')}
                                     </Button>
                                     <Button
                                         variant="default"
-                                        className="bg-emerald-600 hover:bg-emerald-700 text-white px-2 sm:px-4 h-8 sm:h-9 text-xs sm:text-sm"
+                                        className="bg-emerald-600 hover:bg-emerald-700  px-2 sm:px-4 h-8 sm:h-9 text-xs sm:text-sm shadow-sm"
                                         onClick={() => setIsDialogOpen((prev) => ({ ...prev, isDialogCreateTargetOpen: true }))}
                                         size="sm"
                                     >
@@ -401,7 +390,7 @@ export default function SpendingPlanForm() {
                                                     <div
                                                         key={target.id}
                                                         onClick={() => openDialog("isDialogDetailTargetOpen", target)}
-                                                        className="p-4 rounded-lg border hover:border-emerald-200 hover:shadow-sm hover:bg-emerald-50/50 dark:hover:bg-emerald-950/10 cursor-pointer transition-all"
+                                                        className="p-4 rounded-lg border hover:border-emerald-200 hover:shadow-md shadow-sm bg-white dark:bg-gray-950/50 hover:bg-emerald-50/50 dark:hover:bg-emerald-950/10 cursor-pointer transition-all"
                                                     >
                                                         <div className="flex items-start gap-3">
                                                             <div className={`p-2 rounded-lg ${isNearlyComplete
@@ -489,11 +478,11 @@ export default function SpendingPlanForm() {
                         </div>
 
                         {targets.length > 5 && (
-                            <div className="p-3 border-t flex-shrink-0">
+                            <div className="p-3 border-t flex-shrink-0 bg-gray-50 dark:bg-gray-800/50">
                                 <Button
                                     variant="outline"
                                     onClick={() => openDialog("isDialogViewAllDataOpen")}
-                                    className="w-full z-50"
+                                    className="w-full z-50 shadow-sm"
                                 >
                                     <ListChecks className="mr-2 h-4 w-4" />
                                     {t('spendingPlan:budgetSection.viewAll')}
@@ -505,35 +494,22 @@ export default function SpendingPlanForm() {
 
                 {/* Upcoming Plans Section */}
                 <div className="lg:col-span-1 flex flex-col min-h-[calc(60%)]">
-                    <Card className="h-full border flex flex-col">
-                        <CardHeader className="pb-2 flex-shrink-0">
-                            <div className="flex flex-col gap-3">
+                    <Card className="h-full border shadow-md  flex flex-col">
+                        <CardHeader className="pb-4 flex-shrink-0  border-b">
+                            <div className="flex justify-between items-center gap-3">
                                 <div className="flex items-center gap-2">
                                     <CardTitle className="text-base lg:text-lg">{t('spendingPlan:planSection.title')}</CardTitle>
                                     <CalendarDays className="h-5 w-5 text-blue-500" />
                                 </div>
-                                <div className="grid grid-cols-2 gap-2">
-                                    <Select value={planTypeFilter} onValueChange={(value) => setPlanTypeFilter(value as "DAILY" | "WEEKLY" | "MONTHLY" | "ANNUAL")}>
-                                        <SelectTrigger className="h-8 sm:h-9 text-xs sm:text-sm">
-                                            <SelectValue placeholder={t('spendingPlan:planSection.frequency')} />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem value="DAILY">{t('spendingPlan:frequency.daily')}</SelectItem>
-                                            <SelectItem value="WEEKLY">{t('spendingPlan:frequency.weekly')}</SelectItem>
-                                            <SelectItem value="MONTHLY">{t('spendingPlan:frequency.monthly')}</SelectItem>
-                                            <SelectItem value="ANNUAL">{t('spendingPlan:frequency.annual')}</SelectItem>
-                                        </SelectContent>
-                                    </Select>
                                     <Button
                                         variant="default"
-                                        className="bg-blue-600 hover:bg-blue-700 text-white h-8 sm:h-9 text-xs sm:text-sm"
+                                        className="bg-blue-600 hover:bg-blue-700  shadow-sm"
                                         onClick={() => setIsDialogOpen((prev) => ({ ...prev, isDialogCreatePlanOpen: true }))}
                                         size="sm"
                                     >
                                         <Sparkles className="mr-1.5 h-3.5 w-3.5" />
                                         <span className="truncate">{t('spendingPlan:planSection.createPlan')}</span>
                                     </Button>
-                                </div>
                             </div>
                         </CardHeader>
 
@@ -564,12 +540,12 @@ export default function SpendingPlanForm() {
                                                                     <div
                                                                         key={plan.id}
                                                                         onClick={() => openDialog("isDialogDetailPlanOpen", plan)}
-                                                                        className="p-3 rounded-lg border border-red-100 bg-red-50/30 dark:border-red-900/30 dark:bg-red-950/20 hover:border-red-200 hover:bg-red-50 dark:hover:bg-red-950/30 cursor-pointer transition-all"
+                                                                        className="p-3 rounded-lg border shadow-sm bg-white dark:bg-gray-950/50 border-blue-100 bg-gradient-to-r from-blue-50 to-white dark:from-blue-900/10 dark:to-transparent dark:border-blue-800/30 hover:border-blue-300 hover:shadow-md cursor-pointer transition-all"
                                                                     >
                                                                         <div className="flex justify-between mb-1.5">
                                                                             <div className="font-medium">{plan.name}</div>
-                                                                            <Badge variant="outline" className="text-xs font-normal text-red-600 border-red-200 dark:border-red-800">
-                                                                                <Flame className="h-3.5 w-3.5 mr-1.5" />
+                                                                            <Badge variant="outline" className="text-xs font-normal text-blue-600 border-blue-200 dark:border-blue-800 bg-blue-50 dark:bg-blue-900/20">
+                                                                                <Clock className="h-3.5 w-3.5 mr-1.5" />
                                                                                 {t('spendingPlan:planDetails.today')}
                                                                             </Badge>
                                                                         </div>
@@ -586,7 +562,7 @@ export default function SpendingPlanForm() {
                                                                                 </span>
                                                                             </span>
                                                                             <span className="font-medium text-teal-600">
-                                                                                {formatCurrency(plan.targetAmount)}
+                                                                                {formatCurrency(plan.targetAmount, 'VND')}
                                                                             </span>
                                                                         </div>
                                                                     </div>
@@ -615,8 +591,9 @@ export default function SpendingPlanForm() {
                                                                 <div
                                                                     key={plan.id}
                                                                     onClick={() => openDialog("isDialogDetailPlanOpen", plan)}
-                                                                    className={`p-3 rounded-lg border hover:border-blue-200 hover:bg-blue-50/50 dark:hover:bg-blue-950/20 cursor-pointer transition-all ${isNearDate ? 'border-amber-100 bg-amber-50/30 dark:border-amber-900/30 dark:bg-amber-950/10' : ''
-                                                                        }`}
+                                                                    className={`p-3 rounded-lg border shadow-sm bg-white dark:bg-gray-950/50 hover:border-blue-200 hover:bg-blue-50/50 dark:hover:bg-blue-950/20 hover:shadow-md cursor-pointer transition-all ${
+                                                                        isNearDate ? 'border-amber-100 bg-gradient-to-r from-amber-50 to-white dark:from-amber-900/10 dark:to-transparent dark:border-amber-800/30' : ''
+                                                                    }`}
                                                                 >
                                                                     <div className="flex justify-between mb-1.5">
                                                                         <div className="font-medium">{plan.name}</div>
@@ -641,7 +618,7 @@ export default function SpendingPlanForm() {
                                                                             </div>
                                                                         )}
                                                                         <span className="font-medium text-blue-600 whitespace-nowrap">
-                                                                            {formatCurrency(plan.targetAmount)}
+                                                                            {formatCurrency(plan.targetAmount , 'VND')}
                                                                         </span>
                                                                     </div>
                                                                 </div>
@@ -673,11 +650,11 @@ export default function SpendingPlanForm() {
                         </div>
 
                         {upcomingPlans.length > 5 && (
-                            <div className="p-3 border-t flex-shrink-0">
+                            <div className="p-3 border-t flex-shrink-0 bg-gray-50 dark:bg-gray-800/50">
                                 <Button
                                     variant="outline"
                                     onClick={() => openDialog("isDialogViewAllPlansOpen")}
-                                    className="w-full"
+                                    className="w-full shadow-sm"
                                 >
                                     <ListChecks className="mr-2 h-4 w-4" />
                                     {t('spendingPlan:planSection.viewAll')} <span className="ml-1">{upcomingPlans.length}</span> {t('spendingPlan:cardDetails.upcomingPlans')}
