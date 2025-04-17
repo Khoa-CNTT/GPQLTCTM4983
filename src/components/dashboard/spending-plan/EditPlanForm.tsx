@@ -1,177 +1,101 @@
 "use client"
-import React, { useEffect, useRef, useState } from "react";
-import { Button } from "@/components/ui/button";
-import FormZod from "@/components/core/FormZod";
-import { useTranslation } from "react-i18next";
-import {
-  createFundSavingPlanSchema,
-  defineCreateFundSavingPlanFormBody,
-  getDaysInMonth,
-  generateFrequencyOptions
-} from "@/core/fund-saving-plan/constants/create-fund-saving-plan.constant";
-import { IBodyFormField } from "@/types/formZod.interface";
-import { formatCurrency } from "@/libraries/utils";
+import React, { useEffect, useRef, useState } from "react"
+import { Button } from "@/components/ui/button"
+import FormZod from "@/components/core/FormZod"
+import { useTranslation } from "react-i18next"
+import { defineEditFundSavingPlanFormBody, editFundSavingPlanSchema } from "@/core/fund-saving-plan/constants/edit-fund-saving-plan.constant"
+import { ISpendingPlan, IUpdateFundSavingPlanRequest, RecurringFrequency } from "@/core/fund-saving-plan/models"
 
-interface IEditPlanFormProps {
-  isOpen: boolean;
-  plan: any;
-  onUpdatePlan: (id: string, data: any) => void;
-  onClose: () => void;
-  isLoading: boolean;
+interface EditPlanFormProps {
+    selectedPlan: ISpendingPlan | null
+    onClose: () => void
+    onUpdatePlan: (updatedPlan: IUpdateFundSavingPlanRequest) => void
+    isLoading: boolean
+    isOpen: boolean;
 }
 
-const EditPlanForm: React.FC<IEditPlanFormProps> = ({
-  isOpen,
-  onUpdatePlan,
-  onClose,
-  isLoading,
-  plan,
-}) => {
-  const { t } = useTranslation(['common', 'spendingPlan']);
-  const formSubmitRef = useRef<HTMLFormElement>(null);
-  const formRef = useRef<any>(null);
-  const [year] = useState<number>(new Date().getFullYear());
-  const [currentMonth, setCurrentMonth] = useState<string>(
-    plan?.month?.toString() || (new Date().getMonth() + 1).toString()
-  );
-  const [selectedDay, setSelectedDay] = useState<string>(
-    plan?.day?.toString() || new Date().getDate().toString()
-  );
-  const [selectedFrequency, setSelectedFrequency] = useState(plan?.type || "MONTHLY");
+const EditPlanForm: React.FC<EditPlanFormProps> = ({ selectedPlan, onClose, onUpdatePlan, isLoading, isOpen }) => {
+    const { t } = useTranslation(['common', 'spendingPlan']);
+    const formSubmitRef = useRef<HTMLFormElement>(null)
+    const formRef = useRef<any>(null)
+    const [key, setKey] = useState(0); // Force re-render with key change
 
-  // Precompute day options based on month and year
-  const getDaysForMonth = (month: string, year: number) => {
-    const numberOfDays = getDaysInMonth(parseInt(month), year);
-    return Array.from({ length: numberOfDays }, (_, i) => i + 1);
-  };
-
-  // Initialize form fields once with all possible fields
-  const [allFormFields] = useState(() => {
-    const days = getDaysForMonth(currentMonth, year);
-    return defineCreateFundSavingPlanFormBody(days);
-  });
-
-  // Apply visibility based on current frequency without recreating the fields
-  const visibleFields = React.useMemo(() => {
-    return allFormFields.map(field => {
-      if (field.name === 'startDate') {
-        return { ...field, hidden: selectedFrequency !== 'DAILY' && selectedFrequency !== 'MONTHLY' };
-      } else if (field.name === 'weekDay') {
-        return { ...field, hidden: selectedFrequency !== 'WEEKLY' };
-      } else if (field.name === 'day') {
-        // For day field, update options when month changes but keep visibility rules
-        if (field.name === 'day' && currentMonth) {
-          const days = getDaysForMonth(currentMonth, year);
-          return {
-            ...field,
-            hidden: selectedFrequency !== 'MONTHLY' && selectedFrequency !== 'ANNUAL',
-            dataSelector: days.map(d => ({ value: d.toString(), label: d.toString() }))
-          };
+    // Force re-render the form when selectedPlan changes
+    useEffect(() => {
+        if (isOpen && selectedPlan) {
+            setKey(prev => prev + 1);
         }
-        return { ...field, hidden: selectedFrequency !== 'MONTHLY' && selectedFrequency !== 'ANNUAL' };
-      } else if (field.name === 'month') {
-        return { ...field, hidden: selectedFrequency !== 'ANNUAL' };
-      }
-      return field;
-    });
-  }, [allFormFields, selectedFrequency, currentMonth, year]);
+    }, [isOpen, selectedPlan]);
 
-  // Handle day selection when month changes
-  useEffect(() => {
-    if (currentMonth && formRef.current) {
-      const numberOfDays = getDaysInMonth(parseInt(currentMonth), year);
+    // Reset form values when selectedPlan changes
+    useEffect(() => {
+        if (isOpen && formRef.current && selectedPlan) {
+            const dateValue = new Date(selectedPlan.expectedDate);
+            formRef.current.reset({
+                name: selectedPlan.name || "",
+                description: selectedPlan.description || "",
+                targetAmount: selectedPlan.targetAmount?.toString() || "0",
+                startDate: dateValue,
+                type: (selectedPlan.type as RecurringFrequency) || "MONTHLY"
+            });
+        }
+    }, [isOpen, selectedPlan, key]);
 
-      // Adjust selected day if it exceeds the number of days in the month
-      if (parseInt(selectedDay) > numberOfDays) {
-        setSelectedDay(numberOfDays.toString());
-        formRef.current.setValue('day', numberOfDays.toString());
-      }
+    const handleUpdatePlan = (data: any) => {
+        if (!selectedPlan) return;
+
+        onUpdatePlan({
+            id: selectedPlan.id,
+            name: data.name,
+            description: data.description,
+            targetAmount: parseFloat(data.targetAmount.replace(/[^\d.-]/g, '')),
+            startDate: new Date(data.startDate).toISOString().split('T')[0],
+            type: data.type as RecurringFrequency
+        });
     }
-  }, [currentMonth, year, selectedDay]);
 
-  // Watch form fields and update state accordingly
-  useEffect(() => {
-    if (!formRef.current) return;
-
-    const subscription = formRef.current.watch((value: any, { name }: any) => {
-      if (name === 'month' && value.month) {
-        setCurrentMonth(value.month);
-      }
-      if (name === 'day' && value.day) {
-        setSelectedDay(value.day);
-      }
-      if (name === 'type' && value.type) {
-        setSelectedFrequency(value.type);
-      }
-    });
-
-    return () => subscription?.unsubscribe();
-  }, []);
-
-  // Default form values based on existing plan
-  const defaultValues = {
-    name: plan?.name || "",
-    description: plan?.description || "",
-    targetAmount: formatCurrency(plan?.targetAmount || 0),
-    trackerTypeId: plan?.trackerType?.id || "",
-    month: plan?.month?.toString() || (new Date().getMonth() + 1).toString(),
-    day: plan?.day?.toString() || new Date().getDate().toString(),
-    type: plan?.type || "MONTHLY",
-    weekDay: plan?.weekDay?.toString() || "1", // Monday as default
-    startDate: plan?.startDate ? new Date(plan.startDate) : new Date(),
-  };
-
-  const handleUpdatePlan = (data: any) => {
-    const planData: any = {
-      name: data.name,
-      description: data.description,
-      targetAmount: parseFloat(data.targetAmount.replace(/[^\d.-]/g, '')),
-      trackerTypeId: data.trackerTypeId,
-      type: data.type,
+    // We'll use this for initial render, but subsequent updates will use reset() directly
+    const defaultValues = selectedPlan ? {
+        name: selectedPlan.name || "",
+        description: selectedPlan.description || "",
+        targetAmount: selectedPlan.targetAmount?.toString() || "0",
+        startDate: new Date(selectedPlan.expectedDate),
+        type: (selectedPlan.type as RecurringFrequency) || "MONTHLY"
+    } : {
+        name: "",
+        description: "",
+        targetAmount: "0",
+        startDate: new Date(),
+        type: "MONTHLY" as RecurringFrequency
     };
 
-    // Add appropriate date fields based on frequency type
-    if (data.type === 'DAILY') {
-      planData.startDate = data.startDate;
-    } else if (data.type === 'WEEKLY') {
-      planData.weekDay = parseInt(data.weekDay);
-    } else if (data.type === 'MONTHLY') {
-      planData.day = parseInt(data.day);
-      planData.startDate = data.startDate;
-    } else if (data.type === 'ANNUAL') {
-      planData.month = parseInt(data.month);
-      planData.day = parseInt(data.day);
-    }
+    return (
+        <div className="space-y-4 py-2 pb-4" key={key}>
+            <FormZod
+                formSchema={editFundSavingPlanSchema}
+                formFieldBody={defineEditFundSavingPlanFormBody()}
+                onSubmit={handleUpdatePlan}
+                submitRef={formSubmitRef}
+                formRef={formRef}
+                defaultValues={defaultValues}
+                classNameForm="grid grid-cols-2 gap-x-4 gap-y-0"
+            />
 
-    onUpdatePlan(plan.id, planData);
-  };
+            <div className="pt-4 flex justify-end space-x-2">
+                <Button variant="outline" onClick={onClose}>
+                    {t('common:button.cancel')}
+                </Button>
+                <Button
+                    onClick={() => formSubmitRef.current?.requestSubmit()}
+                    disabled={isLoading}
+                    isLoading={isLoading}
+                    className="bg-gradient-to-r from-blue-500 to-indigo-500 text-white"
+                >
+                    {t('spendingPlan:form.updatePlan')}
+                </Button>
+            </div>
+        </div>
+    )
+}
 
-  return (
-    <div className="space-y-4 py-2 pb-4">
-      <FormZod
-        formSchema={createFundSavingPlanSchema}
-        formFieldBody={visibleFields}
-        onSubmit={handleUpdatePlan}
-        submitRef={formSubmitRef}
-        formRef={formRef}
-        defaultValues={defaultValues}
-        classNameForm="grid grid-cols-2 gap-x-4 gap-y-0"
-      />
-      <div className="pt-4 flex justify-end space-x-2">
-        <Button variant="outline" onClick={onClose}>
-          {t('common:button.cancel')}
-        </Button>
-        <Button
-          onClick={() => formSubmitRef.current?.requestSubmit()}
-          disabled={isLoading}
-          isLoading={isLoading}
-          className="bg-gradient-to-r from-teal-500 to-emerald-500 text-white"
-        >
-          {t('spendingPlan:form.updatePlan')}
-        </Button>
-      </div>
-    </div>
-  );
-};
-
-export default EditPlanForm;
+export default EditPlanForm
