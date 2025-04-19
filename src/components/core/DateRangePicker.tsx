@@ -237,8 +237,19 @@ export function DateRangePicker({
 
   const displayFormat = useMemo(() => {
     if (!displayValue?.from || !displayValue?.to) return t('dateRange.pickADateRange', 'Pick a date range')
+
+    if (i18n.language === 'vi') {
+      const formatDateVi = (date: Date) => {
+        const day = format(date, 'd')
+        const month = format(date, 'M')
+        const year = format(date, 'yyyy')
+        return `${day} tháng ${month}, ${year}`
+      }
+      return `${formatDateVi(displayValue.from)} - ${formatDateVi(displayValue.to)}`
+    }
+
     return `${format(displayValue.from, `MMM d, yyyy`, { locale })} - ${format(displayValue.to, `MMM d, yyyy`, { locale })}`
-  }, [displayValue, t, locale])
+  }, [displayValue, t, locale, i18n.language])
 
   return (
     <div className={className}>
@@ -282,7 +293,9 @@ export function DateRangePicker({
                       variant='ghost'
                       onClick={() => setMonthYearPicker(monthYearPicker === 'month' ? false : 'month')}
                     >
-                      <span className='text-foreground'>{format(month, 'MMMM', { locale })}</span>
+                      <span className='text-foreground'>
+                        {i18n.language === 'vi' ? `Tháng ${format(month, 'MM')}` : format(month, 'MMMM', { locale })}
+                      </span>
                     </Button>
                     <Button
                       className='px-2 hover:bg-accent/50'
@@ -437,7 +450,12 @@ function MonthYearPicker({
       const endM = endOfDay(setMonthFns(value, i))
       if (minDate && endM < minDate) disabled = true
       if (maxDate && startM > maxDate) disabled = true
-      months.push({ value: i, label: format(new Date(0, i), 'MMM', { locale }), disabled })
+
+      if (locale === vi) {
+        months.push({ value: i, label: `Tháng ${i + 1}`, disabled })
+      } else {
+        months.push({ value: i, label: format(new Date(0, i), 'MMM', { locale }), disabled })
+      }
     }
     return months
   }, [value, minDate, maxDate, locale])

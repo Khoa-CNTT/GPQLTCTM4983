@@ -157,14 +157,34 @@ export const DateTimePicker = React.forwardRef<HTMLDivElement, DateTimePickerPro
 
       if (showTime) {
         if (use12HourFormat) {
+          if (i18n.language === 'vi') {
+            const day = format(displayValue, 'd')
+            const month = format(displayValue, 'M')
+            const year = format(displayValue, 'yyyy')
+            const time = format(displayValue, 'hh:mm:ss a')
+            return `${day} Tháng ${month}, ${year}, ${time}`
+          }
           return format(displayValue, 'MMM d, yyyy, hh:mm:ss a', { locale })
         } else {
+          if (i18n.language === 'vi') {
+            const day = format(displayValue, 'd')
+            const month = format(displayValue, 'M')
+            const year = format(displayValue, 'yyyy')
+            const time = format(displayValue, 'HH:mm:ss')
+            return `${day} Tháng ${month}, ${year}, ${time}`
+          }
           return format(displayValue, 'MMM d, yyyy, HH:mm:ss', { locale })
         }
       } else {
+        if (i18n.language === 'vi') {
+          const day = format(displayValue, 'd')
+          const month = format(displayValue, 'M')
+          const year = format(displayValue, 'yyyy')
+          return `${day} Tháng ${month}, ${year}`
+        }
         return format(displayValue, 'MMMM d, yyyy', { locale })
       }
-    }, [displayValue, showTime, use12HourFormat, locale])
+    }, [displayValue, showTime, use12HourFormat, locale, i18n.language])
 
     return (
       <div ref={ref} className={className}>
@@ -197,7 +217,9 @@ export const DateTimePicker = React.forwardRef<HTMLDivElement, DateTimePickerPro
                   size='icon'
                   onClick={() => setMonthYearPicker(monthYearPicker === 'month' ? false : 'month')}
                 >
-                  <span className=''>{format(month, 'MMMM', { locale })}</span>{' '}
+                  <span className=''>
+                    {i18n.language === 'vi' ? `Tháng ${format(month, 'MM')}` : format(month, 'MMMM', { locale })}
+                  </span>
                 </Button>
                 <Button
                   className='w-full p-2'
@@ -205,7 +227,7 @@ export const DateTimePicker = React.forwardRef<HTMLDivElement, DateTimePickerPro
                   size='icon'
                   onClick={() => setMonthYearPicker(monthYearPicker ? false : 'year')}
                 >
-                  <span className=''>{format(month, 'yyyy', { locale })}</span>{' '}
+                  <span className=''>{format(month, 'yyyy', { locale })}</span>
                 </Button>
               </div>
               <div className={cn('flex space-x-2', monthYearPicker ? 'hidden' : '')}>
@@ -325,7 +347,12 @@ function MonthYearPicker({
       const endM = endOfMonth(setMonthFns(value, i))
       if (minDate && endM < minDate) disabled = true
       if (maxDate && startM > maxDate) disabled = true
-      months.push({ value: i, label: format(new Date(0, i), 'MMM', { locale }), disabled })
+
+      if (locale === vi) {
+        months.push({ value: i, label: `Tháng ${i + 1}`, disabled })
+      } else {
+        months.push({ value: i, label: format(new Date(0, i), 'MMM', { locale }), disabled })
+      }
     }
     return months
   }, [value, minDate, maxDate, locale])
