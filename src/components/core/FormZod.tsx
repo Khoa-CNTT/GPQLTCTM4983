@@ -189,12 +189,39 @@ export default function FormZod<T extends z.ZodRawShape>({
     reValidateMode: 'onSubmit'
   })
 
+  const { formState } = form
+  const { errors, isSubmitting, isSubmitSuccessful, isSubmitted } = formState
+
+  // Log errors khi form được submit mà có lỗi
+  useEffect(() => {
+    if (isSubmitted && Object.keys(errors).length > 0) {
+      console.log('FormZod validation errors:', errors)
+    }
+  }, [isSubmitted, errors])
+
+  // Debug log khi có vấn đề về submit
+  useEffect(() => {
+    if (isSubmitting) {
+      console.log('FormZod is submitting...')
+    }
+    
+    if (isSubmitSuccessful) {
+      console.log('FormZod submitted successfully')
+    }
+  }, [isSubmitting, isSubmitSuccessful])
+
   const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     e.stopPropagation()
-    form.handleSubmit((data) => {
-      onSubmit(data)
-    })()
+    
+    try {
+      form.handleSubmit((data) => {
+        console.log('FormZod submit data:', data)
+        onSubmit(data)
+      })()
+    } catch (error) {
+      console.error('FormZod submission error:', error)
+    }
   }
 
   const memoizedFormFieldBody = useMemo(() => formFieldBody, [formFieldBody])
@@ -245,6 +272,13 @@ export default function FormZod<T extends z.ZodRawShape>({
               ) : null
             })}
           </div>
+          {Object.keys(errors).length > 0 && (
+            <div className="text-red-500 text-sm mt-2">
+              {Object.entries(errors).map(([key, error]) => (
+                <p key={key}>{`${key}: ${error?.message?.toString() || 'Invalid value'}`}</p>
+              ))}
+            </div>
+          )}
           {!submitRef && (
             <Button {...buttonConfig} type='submit' disabled={disabled || buttonConfig?.disabled}>
               {buttonConfig?.label ?? 'Submit'}

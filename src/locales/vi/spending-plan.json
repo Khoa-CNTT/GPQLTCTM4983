@@ -28,7 +28,9 @@
     "target": "Mục tiêu",
     "spent": "Đã chi",
     "remaining": "Còn lại",
-    "uncategorized": "Không phân loại"
+    "uncategorized": "Không phân loại",
+    "active": "Đang hoạt động",
+    "inactive": "Ngừng hoạt động"
   },
   "planDetails": {
     "title": "Tiêu đề",
@@ -91,6 +93,9 @@
       "weekdayPlaceholder": "Chọn ngày trong tuần",
       "notifyBefore": "Thông báo trước (ngày)",
       "notifyBeforePlaceholder": "Chọn thời gian thông báo",
+      "dayOfWeek": "Ngày trong tuần",
+      "expectedDate": "Ngày thực hiện",
+      "dayOfWeekPlaceholder": "Chọn ngày trong tuần",
       "notifyOptions": {
         "none": "Không thông báo",
         "oneDay": "1 ngày",

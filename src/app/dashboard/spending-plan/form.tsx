@@ -290,8 +290,17 @@ export default function SpendingPlanForm() {
                 {/* Remaining Budget Card */}
                 <Card className="group relative overflow-hidden bg-gradient-to-br from-teal-400 via-emerald-500 to-green-600 transition-all duration-300 hover:shadow-xl shadow-md shadow-emerald-200 dark:shadow-emerald-900/20">
                     <CardHeader className="pb-2 px-4 md:px-6">
-                        <CardTitle className="text-sm md:text-md font-medium text-white 2xl:text-lg line-clamp-1">
+                        <CardTitle className="text-sm md:text-md font-medium text-white 2xl:text-lg line-clamp-1 flex items-center justify-between">
                             {t('spendingPlan:cardTitles.remaining')}
+
+                            <div className="flex items-end">
+                                {totalBudgetTarget && (
+                                    <Badge className="bg-white/20 text-white border-none text-xs px-1.5 py-0.5">
+                                        <Clock className="h-3 w-3 mr-1" />
+                                        <span className="line-clamp-1">{totalBudgetTarget.remainingDays} {t('spendingPlan:cardDetails.daysLeft')}</span>
+                                    </Badge>
+                                )}
+                            </div>
                         </CardTitle>
                     </CardHeader>
                     <CardContent className="px-4 md:px-6">
@@ -306,22 +315,22 @@ export default function SpendingPlanForm() {
                                 </p>
                             </div>
                         </div>
-                        <div className="mt-3 md:mt-4 flex items-end justify-end">
-                            {totalBudgetTarget && (
-                                <Badge className="bg-white/20 text-white border-none text-xs px-1.5 py-0.5">
-                                    <Clock className="h-3 w-3 mr-1" />
-                                    <span className="line-clamp-1">{totalBudgetTarget.remainingDays} {t('spendingPlan:cardDetails.daysLeft')}</span>
-                                </Badge>
-                            )}
-                        </div>
                     </CardContent>
                 </Card>
 
                 {/* Planned Spending Card */}
                 <Card className="group relative overflow-hidden bg-gradient-to-br from-amber-400 via-orange-500 to-amber-600 transition-all duration-300 hover:shadow-xl shadow-md shadow-amber-200 dark:shadow-amber-900/20">
                     <CardHeader className="pb-2 px-4 md:px-6">
-                        <CardTitle className="text-sm md:text-md font-medium text-white 2xl:text-lg line-clamp-1">
+                        <CardTitle className="text-sm md:text-md font-medium text-white 2xl:text-lg line-clamp-1 flex items-center justify-between">
                             {t('spendingPlan:cardTitles.plannedSpending')}
+
+                            <div className="flex items-end">
+                                {upcomingPlans.length > 0 && (
+                                    <Badge className="bg-white/20 text-white border-none text-xs px-1.5 py-0.5">
+                                        <span className="line-clamp-1">{upcomingPlans.length} {t('spendingPlan:cardDetails.upcomingPlans')}</span>
+                                    </Badge>
+                                )}
+                            </div>
                         </CardTitle>
                     </CardHeader>
                     <CardContent className="px-4 md:px-6">
@@ -332,13 +341,6 @@ export default function SpendingPlanForm() {
                                     {formatCurrency(totalPlannedAmount,'VND')}
                                 </p>
                             </div>
-                        </div>
-                        <div className="mt-3 md:mt-4 flex items-end justify-end">
-                            {upcomingPlans.length > 0 && (
-                                <Badge className="bg-white/20 text-white border-none text-xs px-1.5 py-0.5">
-                                    <span className="line-clamp-1">{upcomingPlans.length} {t('spendingPlan:cardDetails.upcomingPlans')}</span>
-                                </Badge>
-                            )}
                         </div>
                     </CardContent>
                 </Card>
@@ -441,7 +443,7 @@ export default function SpendingPlanForm() {
                                                                 <div className="mt-3 flex justify-between text-xs text-muted-foreground">
                                                                     <span>{target.remainingDays}</span>
                                                                     <Badge variant="outline" className="text-[10px] h-4">
-                                                                        {target.status}
+                                                                        {target.status === 'ACTIVE' ? t('spendingPlan:targetDetails.active') : t('spendingPlan:targetDetails.inactive')}
                                                                     </Badge>
                                                                 </div>
                                                             </div>

@@ -5,6 +5,7 @@ import { KNamespace, KPrefix } from '@/types/i18n'
 import { type ClassValue, clsx } from 'clsx'
 import i18next, { Namespace, TFunction, TOptions } from 'i18next'
 import { twMerge } from 'tailwind-merge'
+import { addDays } from "date-fns"
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -149,4 +150,39 @@ export function getTranslatedFormBody(formBody: IBodyFormField[], t: Function): 
       label: typeof option.label === 'string' ? t(option.label) : option.label
     }))
   }))
+}
+
+export const getDaysInMonth = (month: number, year: number) => {
+  return new Date(year, month, 0).getDate()
+}
+export const getDaysForMonth = (month: string, year: number) => {
+  const numberOfDays = getDaysInMonth(parseInt(month), year)
+  return Array.from({ length: numberOfDays }, (_, i) => i + 1)
+}
+
+export const getNextDayOfWeek = (dayOfWeek: number): Date => {
+  const today = new Date()
+  const todayDayOfWeek = today.getDay()
+
+  let daysToAdd = dayOfWeek - todayDayOfWeek
+
+  if (daysToAdd <= 0) {
+    daysToAdd += 7
+  }
+
+  return addDays(today, daysToAdd)
+}
+
+export const getNextDayOfMonth = (day: number): Date => {
+  const today = new Date()
+  const currentMonth = today.getMonth()
+  const currentYear = today.getFullYear()
+
+  const targetDate = new Date(currentYear, currentMonth, day)
+
+  if (targetDate < today) {
+    return new Date(currentYear, currentMonth + 1, day)
+  }
+
+  return targetDate
 }
