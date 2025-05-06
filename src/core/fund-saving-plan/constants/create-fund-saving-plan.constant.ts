@@ -1,5 +1,6 @@
 import { modifiedTrackerTypeForComboBox } from '@/app/dashboard/tracker-transaction/handlers'
 import EditTrackerTypeDialog from '@/components/dashboard/EditTrackerType'
+import { ETypeOfTrackerTransactionType } from '@/core/tracker-transaction-type/models/tracker-transaction-type.enum'
 import { translate } from '@/libraries/utils'
 import { EFieldType } from '@/types/formZod.interface'
 import { z } from 'zod'
@@ -22,11 +23,9 @@ export const createFundSavingPlanSchema = z.object({
 })
 
 export const defineCreatePlanFormBody = ({
-  accountSourceData,
   incomeTrackerType,
   expenseTrackerType,
   currentDirection,
-  setCurrentDirection,
   setOpenEditTrackerTxTypeDialog,
   openEditTrackerTxTypeDialog,
   typeOfEditTrackerType,
@@ -36,8 +35,7 @@ export const defineCreatePlanFormBody = ({
   handleDeleteTrackerType,
   expenditureFund,
   directionCategoryMap,
-  onCategoryChange,
-  isPending
+  onCategoryChange
 }: any) => {
   const t = translate(['spendingPlan'])
   return [
@@ -77,16 +75,21 @@ export const defineCreatePlanFormBody = ({
         autoComplete: 'trackerTypeId',
         setOpenEditDialog: setOpenEditTrackerTxTypeDialog,
         dataArr: modifiedTrackerTypeForComboBox(
-          currentDirection === 'INCOMING' ? incomeTrackerType : expenseTrackerType
+          currentDirection === ETypeOfTrackerTransactionType.INCOMING ? incomeTrackerType : expenseTrackerType
         ),
-        onValueChange: onCategoryChange,
+        onValueChange: (value: string) => {
+          if (onCategoryChange) {
+            onCategoryChange(value)
+          }
+        },
+        value: directionCategoryMap?.[currentDirection] || '',
         dialogEdit: EditTrackerTypeDialog({
           openEditDialog: openEditTrackerTxTypeDialog,
           setOpenEditDialog: setOpenEditTrackerTxTypeDialog,
           dataArr: modifiedTrackerTypeForComboBox(
-            typeOfEditTrackerType === 'INCOMING' ? incomeTrackerType : expenseTrackerType
+            typeOfEditTrackerType === ETypeOfTrackerTransactionType.INCOMING ? incomeTrackerType : expenseTrackerType
           ),
-          typeDefault: currentDirection || 'INCOMING',
+          typeDefault: currentDirection || ETypeOfTrackerTransactionType.INCOMING,
           type: typeOfEditTrackerType,
           setType: setTypeOfEditTrackerType,
           handleCreateTrackerType,

@@ -218,7 +218,6 @@ const CreatePlanForm: React.FC<ICreatePlanFormProps> = ({
       <FormZod
         formSchema={createFundSavingPlanSchema}
         formFieldBody={defineCreatePlanFormBody({
-          accountSourceData: [],
           incomeTrackerType,
           expenseTrackerType,
           currentDirection,
@@ -237,9 +236,7 @@ const CreatePlanForm: React.FC<ICreatePlanFormProps> = ({
               ...prev,
               [currentDirection]: value
             }))
-            form.setValue('trackerTypeId', value)
-          },
-          isPending: false
+          }
         })}
         onSubmit={() => {}}
         submitRef={formCreateRef}

@@ -195,6 +195,16 @@ const SpendingPlanDialog: React.FC<ISpendingPlanDialogProps> = ({
         onCreateBudget={callBack.onCreateTarget}
         onClose={() => setIsDialogOpen((prev) => ({ ...prev, isDialogCreateTargetOpen: false }))}
         isLoading={targetsDialog.isLoading}
+        trackerTypeProps={{
+          incomeTrackerType,
+          expenseTrackerType,
+          setOpenEditTrackerTxTypeDialog,
+          openEditTrackerTxTypeDialog,
+          handleCreateTrackerType: callBack.handleCreateTrackerType,
+          handleUpdateTrackerType: callBack.handleUpdateTrackerType,
+          handleDeleteTrackerType: callBack.handleDeleteTrackerType,
+          expenditureFund
+        }}
       />
     ),
     className: 'sm:max-w-[450px] md:max-w-[650px]',
