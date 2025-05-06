@@ -5,9 +5,11 @@
     "overview": "Tổng quan"
   },
   "dashboard": {
+    "financial_overview": "Tổng Quan Tài Chính",
     "balance_chart": {
       "no_data": "Không có dữ liệu",
-      "title": "Tổng số dư"
+      "title": "Tổng số dư",
+      "distribution": "Phân bổ tài khoản"
     },
     "income_card": {
       "title": "Tổng thu nhập",
@@ -16,6 +18,23 @@
     "expenses_card": {
       "title": "Tổng chi tiêu",
       "trend": "so với tuần trước"
+    },
+    "savings": {
+      "title": "Tiết kiệm ròng",
+      "rate": "Tỷ lệ tiết kiệm"
+    },
+    "budget": {
+      "overview": "Tổng quan ngân sách",
+      "complete": "Hoàn thành",
+      "target_amount": "Số tiền mục tiêu",
+      "current_amount": "Số tiền hiện tại",
+      "no_target": "Chưa thiết lập mục tiêu ngân sách",
+      "targets": "Mục tiêu ngân sách",
+      "active_targets": "Mục tiêu đang hoạt động"
+    },
+    "plans": {
+      "title": "Kế hoạch chi tiêu",
+      "active": "Kế hoạch đang hoạt động"
     },
     "cash_flow": {
       "title": "Phân tích dòng tiền",

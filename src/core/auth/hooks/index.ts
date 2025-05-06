@@ -9,6 +9,7 @@ import { useResetPassword } from '@/core/auth/hooks/useResetPassword'
 import { useVerifyEmail } from '@/core/auth/hooks/useVerifyEmail'
 import { useLogout } from '@/core/auth/hooks/useLogout'
 import { useResendVerifyEmail } from './useResendVerifyEmail'
+import { useSignInFacebook } from './useSignInFacebook '
 
 export const useAuth = (opts?: IUseQueryHookOptions) => {
   const [isRememberMe, setIsRememberMe] = useState(true)
@@ -16,6 +17,7 @@ export const useAuth = (opts?: IUseQueryHookOptions) => {
   const { mutate: signUp, isPending: isSigningUp } = useSignUp(opts)
   const { mutate: resetPassword, isPending: isResetPassword } = useResetPassword()
   const { mutate: signInGoogle, isPending: isSigningInGoogle } = useSignInGoogle()
+  const { mutate: signInFacebook, isPending: isSigningInFacebook } = useSignInFacebook()
   return {
     signIn,
     isSigningIn,
@@ -30,6 +32,8 @@ export const useAuth = (opts?: IUseQueryHookOptions) => {
     useLogout,
     signInGoogle,
     isSigningInGoogle,
-    resendVerifyEmail: useResendVerifyEmail
+    resendVerifyEmail: useResendVerifyEmail,
+    signInFacebook,
+    isSigningInFacebook
   }
 }

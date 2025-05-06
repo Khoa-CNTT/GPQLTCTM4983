@@ -28,7 +28,9 @@
     "target": "Target",
     "spent": "Spent",
     "remaining": "Remaining",
-    "uncategorized": "Uncategorized"
+    "uncategorized": "Uncategorized",
+    "active": "Active",
+    "inactive": "Inactive"
   },
   "planDetails": {
     "title": "Title",
@@ -85,6 +87,11 @@
       "categoryPlaceholder": "Select category",
       "frequency": "Repeat Frequency",
       "frequencyPlaceholder": "Select repeat frequency",
+      "startDate": "Start Date",
+      "startDatePlaceholder": "Select start date",
+      "dayOfWeek": "Day of Week",
+      "expectedDate": "expectedDate",
+      "dayOfWeekPlaceholder": "Select day of week",
       "notifyBefore": "Notify Before (days)",
       "notifyBeforePlaceholder": "Select notification time",
       "notifyOptions": {

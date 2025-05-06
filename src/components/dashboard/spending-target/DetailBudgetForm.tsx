@@ -31,8 +31,8 @@ interface DetailBudgetFormProps {
 }
 
 const DetailBudgetForm: React.FC<DetailBudgetFormProps> = ({ selectedTarget, onClose, setIsDialogOpen }) => {
-    const { t } = useTranslation(['common', 'spendingPlan']);
-    
+    const { t } = useTranslation(['common', 'spendingPlan'])
+
     if (!selectedTarget) {
         return (
             <div className="flex flex-col items-center justify-center py-12 px-4 text-center">
@@ -91,7 +91,7 @@ const DetailBudgetForm: React.FC<DetailBudgetFormProps> = ({ selectedTarget, onC
                                 <Wallet className="h-5 w-5 text-muted-foreground mr-2" />
                                 <h3 className="font-medium">{t('spendingPlan:targetForm.detailBudget.saved')}</h3>
                             </div>
-                            <p className="text-2xl font-semibold">{formatCurrency(selectedTarget.currentAmount)}</p>
+                            <p className="text-2xl font-semibold">{formatCurrency(selectedTarget.currentAmount , 'VND')}</p>
                         </div>
                     </div>
 

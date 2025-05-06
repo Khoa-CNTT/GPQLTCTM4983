@@ -16,7 +16,7 @@ interface DeleteBudgetFormProps {
 }
 
 const DeleteBudgetForm: React.FC<DeleteBudgetFormProps> = ({ selectedBudget, onClose, onDeleteBudget, isLoading }) => {
-    const { t } = useTranslation(['common', 'spendingPlan']);
+    const { t } = useTranslation(['common', 'spendingPlan'])
 
     const handleDelete = () => {
         if (selectedBudget) {

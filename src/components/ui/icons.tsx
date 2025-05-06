@@ -47,13 +47,15 @@ import {
   AArrowDown,
   AArrowUp,
   X,
-  ChartCandlestick
+  ChartCandlestick,
+  Facebook
 } from 'lucide-react'
 import Image from 'next/image'
 
 export type Icon = LucideIcon
 
 export const Icons = {
+  facebook: Facebook,
   sun: SunMedium,
   moon: Moon,
   login: ScanFace,

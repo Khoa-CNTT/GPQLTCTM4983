@@ -58,7 +58,7 @@ const DetailPlanForm: React.FC<DetailPlanFormProps> = ({
                 <div className="mt-4 grid grid-cols-2 gap-4">
                     <div>
                         <h4 className="text-sm font-medium text-muted-foreground">{t('spendingPlan:planDetails.amount')}</h4>
-                        <p className="text-base font-medium text-emerald-600">{formatCurrency(selectedPlan.targetAmount)}</p>
+                        <p className="text-base font-medium text-emerald-600">{formatCurrency(selectedPlan.targetAmount , 'VND')}</p>
                     </div>
                     <div>
                         <h4 className="text-sm font-medium text-muted-foreground">{t('spendingPlan:planDetails.expectedDate')}</h4>
@@ -80,9 +80,7 @@ const DetailPlanForm: React.FC<DetailPlanFormProps> = ({
                     <div>
                         <h4 className="text-sm font-medium text-muted-foreground">{t('spendingPlan:planDetails.daysLeft')}</h4>
                         <p className="text-base font-medium">
-                            {selectedPlan.remainingDays !== null
-                                ? t('spendingPlan:planDetails.daysRemaining', { count: selectedPlan.remainingDays })
-                                : t('spendingPlan:planDetails.undetermined')}
+                            {selectedPlan.remainingDays}
                         </p>
                     </div>
                 </div>

@@ -52,3 +52,8 @@ export interface ISignInGoogleBody {
   access_token?: string
   credential?: string
 }
+
+export interface ISignInFacebookBody {
+  accessToken: string;
+}
+

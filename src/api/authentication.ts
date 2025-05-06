@@ -5,6 +5,7 @@ export const authenticationRoutes = {
   resetPassword: 'auth/reset-password/:token',
   verifyEmail: 'auth/verify-email/:token',
   loginGoogle: 'auth/login/google',
+  loginFaceBook: 'auth/login/facebook',
   verifyToken: 'auth/verify-token/:refreshToken',
   logOut: 'auth/logout',
   resendVerifyToken: 'auth/resend-verify-email/:email'

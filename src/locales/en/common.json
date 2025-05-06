@@ -25,7 +25,8 @@
     "transaction": "Transaction",
     "tracker_transaction": "Tracker Transaction",
     "account_source": "Account Source",
-    "expenditure_fund": "Expenditure Fund"
+    "expenditure_fund": "Expenditure Fund",
+    "spending_plan": "Planning & Budgeting"
   },
   "sidebar": {
     "overview": "Overview",
@@ -35,7 +36,8 @@
     "account_source": "Account Source",
     "profile": "Profile",
     "detail": "Detail",
-    "account_detail": "Account Detail"
+    "account_detail": "Account Detail",
+    "spending_plan": "Planning & Budgeting"
   },
   "table": {
     "filterPlaceholder": "Filter",
@@ -72,13 +74,13 @@
       "december": "December"
     },
     "weekdays": {
+      "sunday": "Sunday",
       "monday": "Monday",
       "tuesday": "Tuesday",
       "wednesday": "Wednesday",
       "thursday": "Thursday",
       "friday": "Friday",
-      "saturday": "Saturday",
-      "sunday": "Sunday"
+      "saturday": "Saturday"
     },
     "shortWeekdays": {
       "mon": "Mon",
