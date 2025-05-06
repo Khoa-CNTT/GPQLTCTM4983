@@ -55,9 +55,11 @@ import { GET_ADVANCED_ACCOUNT_SOURCE_KEY } from '@/core/account-source/constants
 import { STATISTIC_TRACKER_TRANSACTION_KEY } from '@/core/tracker-transaction/constants'
 import { Badge } from '@/components/ui/badge'
 import DonutChart from '@/components/core/charts/DonutChart'
+import { Checkbox } from '@/components/ui/checkbox'
+import { ArrowUpDown, HandCoins, Landmark, Wallet2 } from 'lucide-react'
 
 export default function AccountSourceForm() {
-  const { t } = useTranslation(['common', 'accountSource'])
+  const { t, i18n } = useTranslation(['common', 'accountSource'])
   // States
   const [dataDetail, setDataDetail] = useState<IAccountSource>(initEmptyAccountSource)
   const [dataTableConfig, setDataTableConfig] = useState<IDataTableConfig>(initTableConfig)
@@ -119,13 +121,109 @@ export default function AccountSourceForm() {
   // Memos
   const isWallet = currentTypeAccount === 'WALLET'
   const titles = ['Name', 'Type', 'Init Amount', 'Account Bank', 'Current Amount']
+
   const columns = useMemo(() => {
     if (tableData.length === 0) return []
-    return getColumns<IAccountSourceDataFormat>({
-      headers: titles,
-      isSort: true
-    })
-  }, [tableData])
+
+    const selectionColumn = {
+      id: 'select',
+      header: ({ table }: any) => (
+        <Checkbox
+          checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && 'indeterminate')}
+          onCheckedChange={(value: any) => table.toggleAllPageRowsSelected(!!value)}
+          aria-label='Select all'
+        />
+      ),
+      cell: ({ row }: any) => (
+        <Checkbox
+          checked={row.getIsSelected()}
+          onCheckedChange={(value: any) => row.toggleSelected(!!value)}
+          aria-label='Select row'
+        />
+      ),
+      enableSorting: false,
+      enableHiding: false
+    }
+
+    const dataColumns = [
+      {
+        accessorKey: 'name',
+        header: ({ column }: any) => (
+          <div className='flex' onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
+            {t('accountSource:table.name')}
+            <ArrowUpDown className='ml-2 mt-1 h-3 w-3' />
+          </div>
+        ),
+        cell: ({ row }: any) => <div>{row.getValue('name')}</div>
+      },
+      {
+        accessorKey: 'type',
+        header: ({ column }: any) => (
+          <div className='flex' onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
+            {t('accountSource:table.type')}
+            <ArrowUpDown className='ml-2 mt-1 h-3 w-3' />
+          </div>
+        ),
+        cell: ({ row }: any) => {
+          const type = row.original.checkType
+          if (type === 'WALLET') {
+            return (
+              <div className='flex items-center'>
+                <Wallet2 className='mr-2' />
+                <span>{t('accountSource:type.WALLET')}</span>
+              </div>
+            )
+          } else if (type === 'BANKING') {
+            return (
+              <div className='flex items-center'>
+                <Landmark className='mr-2' />
+                <span>{t('accountSource:type.BANKING')}</span>
+              </div>
+            )
+          } else {
+            return (
+              <div className='flex items-center'>
+                <HandCoins className='mr-2' />
+                <span>Transfer</span>
+              </div>
+            )
+          }
+        }
+      },
+      {
+        accessorKey: 'initAmount',
+        header: ({ column }: any) => (
+          <div className='flex' onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
+            {t('accountSource:table.initAmount')}
+            <ArrowUpDown className='ml-2 mt-1 h-3 w-3' />
+          </div>
+        ),
+        cell: ({ row }: any) => <div>{row.getValue('initAmount')}</div>
+      },
+      {
+        accessorKey: 'accountBank',
+        header: ({ column }: any) => (
+          <div className='flex' onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
+            {t('accountSource:table.accountBank')}
+            <ArrowUpDown className='ml-2 mt-1 h-3 w-3' />
+          </div>
+        ),
+        cell: ({ row }: any) => <div>{row.getValue('accountBank')}</div>
+      },
+      {
+        accessorKey: 'currentAmount',
+        header: ({ column }: any) => (
+          <div className='flex' onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
+            {t('accountSource:table.currentAmount')}
+            <ArrowUpDown className='ml-2 mt-1 h-3 w-3' />
+          </div>
+        ),
+        cell: ({ row }: any) => <div>{row.getValue('currentAmount')}</div>
+      }
+    ]
+
+    return [selectionColumn, ...dataColumns]
+  }, [tableData, t])
 
   const refetchPage = () => {
     refetchGetAdvanced()
@@ -179,6 +277,26 @@ export default function AccountSourceForm() {
       setHeightDonut('h-[20rem]')
     }
   }, [viewportHeight])
+
+  // Tạo một key duy nhất cho DataTable để đảm bảo re-render khi ngôn ngữ thay đổi
+  const tableKey = useMemo(() => {
+    console.log('Generating new table key for language:', i18n.language)
+    return `account-source-table-${i18n.language}-${Math.random()}`
+  }, [i18n.language])
+
+  // Khi ngôn ngữ thay đổi, lấy lại dữ liệu từ server
+  useEffect(() => {
+    const refetchData = async () => {
+      try {
+        await refetchPage()
+      } catch (error) {
+        console.error('Failed to refetch data:', error)
+      }
+    }
+
+    console.log('Language changed, refetching data...')
+    refetchData()
+  }, [i18n.language])
 
   // Other components
   const dataTableButtons = initButtonInDataTableHeader({ setIsDialogOpen })
@@ -315,6 +433,7 @@ export default function AccountSourceForm() {
           <Card className='h-full w-full'>
             <CardContent className='h-full'>
               <DataTable
+                key={tableKey}
                 data={tableData}
                 config={dataTableConfig}
                 setConfig={setDataTableConfig}
@@ -394,7 +513,7 @@ export default function AccountSourceForm() {
               <div className='relative overflow-hidden'>
                 <div className='mb-6 flex items-center justify-between'>
                   <Badge variant='secondary' className='rounded-full px-3 py-1 text-sm font-semibold'>
-                    {isWallet ? 'WALLET' : 'BANKING'}
+                    {isWallet ? t('accountSource:badge.WALLET') : t('accountSource:badge.BANKING')}
                   </Badge>
                   <motion.div whileHover={{ rotate: 20 }} transition={{ type: 'spring', stiffness: 300 }}>
                     {isWallet ? <Wallet size={28} /> : <BanknoteIcon size={28} />}

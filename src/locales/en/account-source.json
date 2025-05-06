@@ -75,7 +75,7 @@
       },
       "password": {
         "label": "Password",
-        "placeholder": "Enter your login password"
+        "placeholder": "Enter your password"
       },
       "accounts": {
         "label": "Accounts",
@@ -83,7 +83,7 @@
       }
     },
     "button": {
-      "save_changes_account_source": "Save Changes Accout Source",
+      "save_changes_account_source": "Save Changes Account Source",
       "edit_account_source": "Edit Account Source"
     },
     "editAccountSource": {
@@ -111,15 +111,15 @@
   "AccountSourceCard": {
     "totalBlance": {
       "label": "Total Balance",
-      "gradually": "increaseFromLastMonth"
+      "gradually": "Increase from last month"
     },
     "totalBanking": {
       "label": "Total Banking",
-      "gradually": "increaseFromLastMonth"
+      "gradually": "Increase from last month"
     },
     "totalWallet": {
       "label": "Total Wallet",
-      "gradually": "noChangeFromYesterday"
+      "gradually": "No change from yesterday"
     }
   },
   "AccountSourceCardDetail": {
@@ -135,5 +135,26 @@
     "Decreased": "Decreased",
     "from": "from"
   },
-  "WalletBalanceSummary": "Wallet Balance Summary"
+  "WalletBalanceSummary": "Wallet Balance Summary",
+  "badge": {
+    "WALLET": "Wallet",
+    "BANKING": "Banking"
+  },
+  "validation": {
+    "bank_type": "Bank type must be \"MB_BANK\"",
+    "login_id_min": "Username must be at least 6 characters",
+    "login_id_max": "Username cannot exceed 50 characters",
+    "password_min": "Password must be at least 6 characters",
+    "password_max": "Password cannot exceed 50 characters",
+    "account_number_min": "Account number must be at least 10 digits",
+    "account_number_max": "Account number cannot exceed 14 digits",
+    "account_required": "At least one account number is required",
+    "account_max": "Maximum 5 account numbers allowed",
+    "source_name_required": "Source Name is required",
+    "source_name_min": "Source Name must be at least 5 characters long",
+    "source_name_max": "Source Name must be at most 30 characters long",
+    "source_name_pattern": "Source name can only contain letters and spaces",
+    "account_source_type": "Account source type must be either \"Wallet\" or \"Banking\"",
+    "init_amount_required": "Initial Amount is required"
+  }
 }

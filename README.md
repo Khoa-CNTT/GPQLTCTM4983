@@ -1,6 +1,9 @@
 <div align="center">
-
-# 🌟 UNIKO - Quản lý Tài chính 🌟
+  <img src="https://upload.wikimedia.org/wikipedia/vi/1/12/Logo_dtu_footer.png" alt="Logo DTU" width="20%" />
+  
+</div>
+<div align="center">
+🌟 UNIKO - Quản lý Tài chính 🌟
 
 ### Giải pháp quản lý tài chính thông minh đa nền tảng 💫
 
@@ -13,10 +16,7 @@
 </div>
 
 
----
-<div align="center">
-  <img src="https://github.com/user-attachments/assets/5c135f5d-e0d1-4866-b2e5-81dbfd0ac30f" alt="Logo DTU" width="10%" />
-</div>
+
 
 
 

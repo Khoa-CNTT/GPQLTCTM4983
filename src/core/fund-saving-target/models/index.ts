@@ -1,0 +1,1 @@
+export * from "./fund-saving-target.interface"

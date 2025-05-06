@@ -73,11 +73,11 @@ export default function CategoryTabsContent({
       <div className='flex space-x-2'>
         <Select onValueChange={(value) => setType(value as ETypeOfTrackerTransactionType)} value={type}>
           <SelectTrigger style={{ userSelect: 'none' }}>
-            <SelectValue placeholder='Select type' />
+            <SelectValue placeholder={t('categoryTabsContent.selectType')} />
           </SelectTrigger>
           <SelectContent style={{ userSelect: 'none' }}>
-            <SelectItem value='INCOMING'>Incoming</SelectItem>
-            <SelectItem value='EXPENSE'>Expense</SelectItem>
+            <SelectItem value='INCOMING'>{t('categoryTabsContent.incoming')}</SelectItem>
+            <SelectItem value='EXPENSE'>{t('categoryTabsContent.expense')}</SelectItem>
           </SelectContent>
         </Select>
         <Button

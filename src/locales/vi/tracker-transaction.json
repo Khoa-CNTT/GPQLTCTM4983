@@ -7,6 +7,8 @@
   "notiExpense": "{{percentage}}% so với hôm qua",
   "leftThisMonth": "còn lại trong tháng này",
   "fromLastWeek": "so với tuần trước",
+  "incoming": "THU VÀO",
+  "expense": "CHI TIÊU",
   "charts": {
     "expenseChart": {
       "label": "Biểu đồ chi tiêu",
@@ -74,7 +76,8 @@
     "form": {
       "name": "Tên",
       "type": "Loại",
-      "description": "Mô tả"
+      "description": "Mô tả",
+      "selectType": "Chọn loại cho danh mục"
     }
   },
   "defineContentCreateTracker": {
@@ -100,6 +103,13 @@
   },
   "unclassifiedForm": {
     "title": "Giao dịch chưa phân loại",
-    "button": "Dữ liệu từ ngân hàng"
+    "button": "Ngân hàng"
+  },
+  "table": {
+    "reasonName": "Mục đích",
+    "category": "Danh mục",
+    "amount": "Số tiền",
+    "transactionDate": "Ngày giao dịch",
+    "accountSource": "Nguồn tài khoản"
   }
 }

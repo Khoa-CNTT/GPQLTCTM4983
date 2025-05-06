@@ -34,11 +34,12 @@ export default function NotificationDropdown() {
 
   // effects
   useEffect(() => {
-    if (data) {
+    if (data?.pages?.[0]?.data) {
       setNotifications((prev) => [...prev, ...data.pages[0].data.data])
       setUnreadCount(data.pages[0].data.unreadCount)
     }
   }, [data])
+
 
   // functions
   const formatTimestamp = (date: Date) => {

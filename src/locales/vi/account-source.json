@@ -32,8 +32,8 @@
         "placeholder": "Chọn nguồn tài khoản"
       },
       "direction": {
-        "label": "Hướng giao dịch",
-        "placeholder": "Chọn hướng giao dịch",
+        "label": "Loại giao dịch",
+        "placeholder": "Chọn loại giao dịch",
         "options": {
           "incoming": "THU VÀO",
           "expense": "CHI RA"
@@ -75,7 +75,7 @@
       },
       "password": {
         "label": "Mật khẩu",
-        "placeholder": "Nhập mật khẩu đăng nhập của bạn"
+        "placeholder": "Nhập mật khẩu của bạn"
       },
       "accounts": {
         "label": "Tài khoản",
@@ -106,7 +106,7 @@
   },
   "type": {
     "WALLET": "Ví điện tử",
-    "BANKING": "Ví ngân hàng"
+    "BANKING": "Ngân hàng"
   },
   "AccountSourceCard": {
     "totalBlance": {
@@ -135,5 +135,26 @@
     "Decreased": "Giảm",
     "from": "từ"
   },
-  "WalletBalanceSummary": "Tóm tắt số dư ví"
+  "WalletBalanceSummary": "Tóm tắt số dư ví",
+  "badge": {
+    "WALLET": "Ví điện tử",
+    "BANKING": "Ngân hàng"
+  },
+  "validation": {
+    "bank_type": "Loại ngân hàng phải là \"MB_BANK\"",
+    "login_id_min": "Tên đăng nhập phải có ít nhất 6 ký tự",
+    "login_id_max": "Tên đăng nhập không được quá 50 ký tự",
+    "password_min": "Mật khẩu phải có ít nhất 6 ký tự",
+    "password_max": "Mật khẩu không được quá 50 ký tự",
+    "account_number_min": "Số tài khoản phải có ít nhất 10 chữ số",
+    "account_number_max": "Số tài khoản không được quá 14 chữ số",
+    "account_required": "Phải có ít nhất một số tài khoản",
+    "account_max": "Tối đa 5 số tài khoản được phép",
+    "source_name_required": "Tên nguồn tài khoản là bắt buộc",
+    "source_name_min": "Tên nguồn tài khoản phải có ít nhất 5 ký tự",
+    "source_name_max": "Tên nguồn tài khoản không được quá 30 ký tự",
+    "source_name_pattern": "Tên nguồn tài khoản chỉ có thể chứa chữ cái và khoảng trắng",
+    "account_source_type": "Loại nguồn tài khoản phải là \"Ví điện tử\" hoặc \"Ngân hàng\"",
+    "init_amount_required": "Số dư ban đầu là bắt buộc"
+  }
 }

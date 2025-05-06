@@ -12,12 +12,13 @@ import {
 import { Button } from '@/components/ui/button'
 import { motion } from 'framer-motion'
 import { useExpenditureFund } from '@/core/expenditure-fund/hooks'
+import { useTranslation } from 'react-i18next'
 
 export default function FundToggle() {
   const { fundId, setFundId, fundArr, setFundArr } = useStoreLocal()
   const { getFundOfUser } = useExpenditureFund()
   const { fundOfUserData, isGetFundPending } = getFundOfUser()
-
+  const { t } = useTranslation(['common'])
   useEffect(() => {
     setFundArr(fundOfUserData?.data || [])
     if (fundId !== fundOfUserData?.data?.[0]?.id) setFundId(fundOfUserData?.data?.[0]?.id || '')
@@ -42,7 +43,7 @@ export default function FundToggle() {
       <DropdownMenuContent className='w-56 select-none' align='center' sideOffset={5}>
         <DropdownMenuGroup>
           <div className='px-2 py-1.5 text-center text-sm font-semibold text-muted-foreground'>
-            <span>Expenditure Funds</span>
+            <span>{t('fundToggle.expenditureFunds')}</span>
           </div>
           <DropdownMenuSeparator />
           <div className='max-h-[150px] overflow-y-auto overflow-x-hidden'>
