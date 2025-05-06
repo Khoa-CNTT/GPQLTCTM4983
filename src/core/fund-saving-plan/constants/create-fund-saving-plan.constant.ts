@@ -11,15 +11,25 @@ export const createFundSavingPlanSchema = z.object({
     .string()
     .min(1)
     .refine((val) => !isNaN(Number(val.replace(/[^\d.-]/g, ''))) && Number(val.replace(/[^\d.-]/g, '')) > 0, {
-      message: 'amount_must_be_positive'
+      message: 'Target amount must be positive'
     }),
   trackerTypeId: z.string().min(1),
-  type: z.enum(['DAILY', 'WEEKLY', 'MONTHLY', 'ANNUAL'])
-  // expectedDate: z.date().optional(),
-  // dayOfWeek: z.string().optional(),
-  // month: z.string().optional(),
-  // day: z.string().optional(),
-  // notifyBefore: z.string().default('3')
+  type: z.enum(['DAILY', 'WEEKLY', 'MONTHLY', 'ANNUAL']),
+  expectedDate: z
+    .date()
+    .refine(
+      (date) => {
+        const today = new Date(new Date().setHours(0, 0, 0, 0))
+        return date >= today
+      },
+      {
+        message: 'Expected date must be greater than or equal to today'
+      }
+    )
+    .optional(),
+  dayOfWeek: z.string().optional(),
+  month: z.string().optional(),
+  day: z.string().optional()
 })
 
 export const defineCreatePlanFormBody = ({
@@ -35,7 +45,8 @@ export const defineCreatePlanFormBody = ({
   handleDeleteTrackerType,
   expenditureFund,
   directionCategoryMap,
-  onCategoryChange
+  onCategoryChange,
+  onFrequencyChange
 }: any) => {
   const t = translate(['spendingPlan'])
   return [
@@ -48,15 +59,7 @@ export const defineCreatePlanFormBody = ({
         autoComplete: 'name'
       }
     },
-    {
-      name: 'description',
-      type: EFieldType.Textarea,
-      label: t('spendingPlan:form.planFields.description'),
-      placeHolder: t('spendingPlan:form.planFields.descriptionPlaceholder'),
-      props: {
-        autoComplete: 'description'
-      }
-    },
+
     {
       name: 'targetAmount',
       type: EFieldType.MoneyInput,
@@ -100,12 +103,25 @@ export const defineCreatePlanFormBody = ({
       }
     },
     {
+      name: 'description',
+      type: EFieldType.Textarea,
+      label: t('spendingPlan:form.planFields.description'),
+      placeHolder: t('spendingPlan:form.planFields.descriptionPlaceholder'),
+      props: {
+        autoComplete: 'description'
+      }
+    },
+    {
       name: 'type',
       type: EFieldType.Select,
       label: t('spendingPlan:form.planFields.frequency'),
       placeHolder: t('spendingPlan:form.planFields.frequencyPlaceholder'),
       props: {
-        autoComplete: 'type'
+        autoComplete: 'type',
+        onchange: (value: string) => {
+          console.log('hus')
+          onFrequencyChange(value)
+        }
       },
       dataSelector: [
         { value: 'DAILY', label: t('spendingPlan:frequency.daily') },

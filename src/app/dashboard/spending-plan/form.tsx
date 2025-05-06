@@ -77,6 +77,7 @@ import { useUpdateModel } from '@/hooks/useQueryModel'
 import { GET_ADVANCED_EXPENDITURE_FUND_KEY } from '@/core/expenditure-fund/constants'
 import { useTrackerTransactionType } from '@/core/tracker-transaction-type/hooks'
 import { useExpenditureFund } from '@/core/expenditure-fund/hooks'
+import { useOverviewPage } from '@/core/overview/hooks'
 
 export default function SpendingPlanForm() {
   const { t } = useTranslation(['common', 'spendingPlan'])
@@ -139,14 +140,22 @@ export default function SpendingPlanForm() {
   const { getAllTrackerTransactionType, createTrackerTxType, updateTrackerTxType, deleteTrackerType } =
     useTrackerTransactionType()
   const { dataTrackerTransactionType, refetchTrackerTransactionType } = getAllTrackerTransactionType(fundId)
-    const { getAllExpenditureFund } = useExpenditureFund()
-    const { getAllExpenditureFundData } = getAllExpenditureFund()
+  const { getAllExpenditureFund } = useExpenditureFund()
+  const { getAllExpenditureFundData } = getAllExpenditureFund()
+  const { getStatisticOverviewPage } = useOverviewPage()
+  const { refetchGetStatisticOverviewPageData } = getStatisticOverviewPage(
+    {
+      daysToSubtract: 90
+    },
+    fundId
+  )
 
   const actionMap: Record<TSpendingPlanActions, () => void> = {
     getAllSpendingPlans: refetchAllDataPlant,
     getAllTargets: refetchAllDataTarget,
     getExpenditureFund: resetCacheExpenditureFund,
-    getAllTrackerTransactionType: refetchTrackerTransactionType
+    getAllTrackerTransactionType: refetchTrackerTransactionType,
+    getStatisticOverviewPage: refetchGetStatisticOverviewPageData
   }
 
   const callBackRefetchAPI = (actions: TSpendingPlanActions[]) => {
@@ -750,7 +759,7 @@ export default function SpendingPlanForm() {
           isDialogOpen,
           setIsDialogOpen,
           selectedPlan,
-          selectedTarget,
+          selectedTarget
         }}
         callBack={{
           handleCreateTrackerType: (

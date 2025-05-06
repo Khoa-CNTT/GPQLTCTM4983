@@ -1,6 +1,7 @@
 import { IGetAllDataFundSavingTarget, IDialogFlags, IPagination } from '@/core/fund-saving-target/models'
 import { IDataTableConfig } from '@/types/common.i'
 import { Dispatch, SetStateAction } from 'react'
+import { IExpectedDateParams } from '.'
 export interface ISpendingPlan {
   id: string
   fundId: string
@@ -22,12 +23,11 @@ export interface IGetAllFundSavingPlanResponse {
   statusCode: number
 }
 
-export interface ICreateFundSavingPlanRequest {
+export interface ICreateFundSavingPlanRequest extends IExpectedDateParams {
   name?: string
   description?: string
   targetAmount: number
   fundId: string
-  month: number
   day: number
   type: 'ANNUAL' | 'MONTHLY' | 'WEEKLY' | 'DAILY'
   trackerTypeId?: string
@@ -62,6 +62,7 @@ export type TSpendingPlanActions =
   | 'getAllTargets'
   | 'getExpenditureFund'
   | 'getAllTrackerTransactionType'
+  | 'getStatisticOverviewPage'
 
 export type GenericTypeSpendingPlan<T> = {
   data: T
