@@ -3,6 +3,7 @@ import { Separator } from '@radix-ui/react-select'
 import { Table, TableBody, TableCell, TableRow } from '@/components/ui/table'
 import { formatCurrency, translate } from '@/libraries/utils'
 import { EAccountSourceType, IAccountSource } from '@/core/account-source/models'
+import { HandCoins, Edit } from 'lucide-react'
 
 export default function DetailUpdateAccountSourceForm({
   detailAccountSource,
@@ -13,28 +14,47 @@ export default function DetailUpdateAccountSourceForm({
 }) {
   const t = translate(['accountSource', 'common'])
   return (
-    <div className='py-4'>
+    <div className='px-2 py-4 sm:px-4'>
       <div className='mb-6'>
-        <div className='mb-4 flex flex-col sm:flex-row sm:items-center sm:justify-between'>
-          <div className='mb-2 w-full sm:mb-0'>
+        <div className='mb-4 flex flex-col'>
+          <div className='mb-2 w-full'>
             <p className='text-sm text-muted-foreground'>{t('form.editAccountSource.currentAmount')}</p>
-            <div className='flex w-full items-center justify-between'>
-              <p className='text-2xl font-bold'>
-                {formatCurrency(detailAccountSource.currentAmount ?? 0, 'đ', 'vi-vn')}
-              </p>
-              <Button
-                variant={'destructive'}
-                type='button'
-                onClick={() => {
-                  sharedDialogElements.setIsDialogOpen((prev: { isDialogUpdateOpen: boolean }) => ({
-                    ...prev,
-                    isDialogUpdateOpen: true
-                  }))
-                }}
-              >
-                {t('form.button.edit_account_source')}
-              </Button>
-            </div>
+            <p className='text-2xl font-bold'>
+              {formatCurrency(detailAccountSource.currentAmount ?? 0, 'đ', 'vi-vn')}
+            </p>
+          </div>
+          
+          <div className='flex flex-wrap gap-2'>
+            <Button
+              variant="destructive"
+              type='button'
+              size="sm"
+              className="h-9 flex-1 max-w-[180px]"
+              onClick={() => {
+                sharedDialogElements.setIsDialogOpen((prev: any) => ({
+                  ...prev,
+                  isDialogTransferOpen: true
+                }))
+              }}
+            >
+              <HandCoins className="mr-1 h-4 w-4" />
+              {t('form.button.transfer_money')}
+            </Button>
+            <Button
+              variant='destructive'
+              type='button'
+              size="sm"
+              className="h-9 flex-1 max-w-[180px]"
+              onClick={() => {
+                sharedDialogElements.setIsDialogOpen((prev: any) => ({
+                  ...prev,
+                  isDialogUpdateOpen: true
+                }))
+              }}
+            >
+              <Edit className="mr-1 h-4 w-4" />
+              {t('form.button.edit_account_source')}
+            </Button>
           </div>
         </div>
 

@@ -5,6 +5,8 @@ import {
   IAccountSourceBody,
   IAccountSourceDataFormat,
   IAccountSourceResponse,
+  IAccountSourceTransfer,
+  IAccountSourceTransferResponse,
   IAdvancedAccountSourceResponse,
   IDialogAccountSource,
   TAccountSourceActions
@@ -181,6 +183,33 @@ export const handleSubmitAccountSource = ({
       callBackOnSuccess
     })
   }
+}
+
+export const handleTransferAccountSource = ({
+  payload,
+  setIsDialogOpen,
+  transferAccountSource,
+  callBackOnSuccess
+}: {
+  payload: IAccountSourceTransfer
+  setIsDialogOpen: React.Dispatch<React.SetStateAction<IDialogAccountSource>>
+  transferAccountSource: any
+  callBackOnSuccess: (actions: TAccountSourceActions[]) => void
+}) => {
+  transferAccountSource(payload, {
+    onSuccess(res: IAccountSourceTransferResponse) {
+      if (res.statusCode === 200) {
+        callBackOnSuccess([
+          'getAllAccountSource', 
+          'getStatisticAccountBalance', 
+          'getAdvancedAccountSource',
+          'getAllAccountSourceFromAllFunds'
+        ])
+        setIsDialogOpen((prev) => ({ ...prev, isDialogTransferOpen: false, isDialogDetailOpen: false }))
+        toast.success('Chuyển tiền thành công!')
+      }
+    }
+  })
 }
 
 export const handleDeleteMultipleAccountSource = ({

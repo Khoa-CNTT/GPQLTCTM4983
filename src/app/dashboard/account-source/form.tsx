@@ -14,6 +14,7 @@ import {
   filterDataAccountSource,
   handleDeleteMultipleAccountSource,
   handleSubmitAccountSource,
+  handleTransferAccountSource,
   initDataTable,
   updateCacheDataCreate,
   updateCacheDataUpdate
@@ -29,7 +30,8 @@ import {
   IAccountSourceDataFormat,
   IAdvancedAccountSourceResponse,
   IDialogAccountSource,
-  TAccountSourceActions
+  TAccountSourceActions,
+  IAccountSourceTransfer
 } from '@/core/account-source/models'
 import { initQueryOptions } from '@/constants/init-query-options'
 import AccountSourceDialog from '@/app/dashboard/account-source/dialog'
@@ -82,21 +84,26 @@ export default function AccountSourceForm() {
     deleteMultipleAccountSource,
     getStatisticAccountBalance,
     getAllAccountSource,
+    getAllAccountSourceFromAllFunds,
     isCreating,
     isUpdating,
     isDeletingOne,
-    isDeletingMultiple
+    isDeletingMultiple,
+    transferAccountSource,
+    isTransferring
   } = useAccountSource()
   const { setAccountSourceData, accountSourceData, fundId, viewportHeight } = useStoreLocal()
 
   const { refetchGetStatisticAccountBalanceData } = getStatisticAccountBalance(fundId)
   const { refetchAllData } = getAllAccountSource(fundId)
   const { getAdvancedData, refetchGetAdvanced } = getAdvancedAccountSource({ query: queryOptions, fundId })
+  const { refetchAllFundsData } = getAllAccountSourceFromAllFunds()
 
   const actionMap: Record<TAccountSourceActions, () => void> = {
     getAllAccountSource: refetchAllData,
     getStatisticAccountBalance: refetchGetStatisticAccountBalanceData,
-    getAdvancedAccountSource: refetchGetAdvanced
+    getAdvancedAccountSource: refetchGetAdvanced,
+    getAllAccountSourceFromAllFunds: refetchAllFundsData
   }
 
   const callBackRefetchAccountSourcePage = (actions: TAccountSourceActions[]) => {
@@ -338,6 +345,27 @@ export default function AccountSourceForm() {
   )
   const previousBalance = useMemo(() => totalBalance * 0.95, [totalBalance])
   const isIncreased = useMemo(() => totalBalance > previousBalance, [totalBalance, previousBalance])
+
+  const handleCallBackAccountSource = (payload: IAccountSourceBody) => {
+    handleSubmitAccountSource({
+      payload,
+      isDialogOpen,
+      setIsDialogOpen,
+      callBackOnSuccess: callBackRefetchAccountSourcePage,
+      hookUpdate: updateAccountSource,
+      hookCreate: createAccountSource,
+      fundId
+    })
+  }
+  
+  const handleTransferCallBack = (payload: IAccountSourceTransfer) => {
+    handleTransferAccountSource({
+      payload,
+      setIsDialogOpen,
+      transferAccountSource,
+      callBackOnSuccess: callBackRefetchAccountSourcePage
+    })
+  }
 
   return (
     <div className='grid h-full select-none grid-cols-1 gap-4 max-[1300px]:grid-cols-1 xl:grid-cols-3'>
@@ -613,24 +641,16 @@ export default function AccountSourceForm() {
       </div>
       <AccountSourceDialog
         fundId={fundId}
+        callBack={handleCallBackAccountSource}
+        transferCallBack={handleTransferCallBack}
         sharedDialogElements={{
           isDialogOpen,
           setIsDialogOpen,
           isCreating,
           isUpdating,
           isDeletingOne,
-          isDeletingMultiple
-        }}
-        callBack={(payload: IAccountSourceBody) => {
-          handleSubmitAccountSource({
-            payload: { ...payload },
-            setIsDialogOpen,
-            hookCreate: createAccountSource,
-            hookUpdate: updateAccountSource,
-            fundId,
-            isDialogOpen,
-            callBackOnSuccess: callBackRefetchAccountSourcePage
-          })
+          isDeletingMultiple,
+          isTransferring
         }}
         detailAccountSourceDialog={{
           dataDetail
