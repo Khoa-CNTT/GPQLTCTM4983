@@ -133,6 +133,16 @@ const SpendingPlanDialog: React.FC<ISpendingPlanDialogProps> = ({
         onUpdatePlan={callBack.onUpdatePlan}
         onClose={() => setIsDialogOpen((prev) => ({ ...prev, isDialogEditPlanOpen: false }))}
         isLoading={plansDialog.isLoading}
+        trackerTypeProps={{
+          incomeTrackerType,
+          expenseTrackerType,
+          setOpenEditTrackerTxTypeDialog,
+          openEditTrackerTxTypeDialog,
+          handleCreateTrackerType: callBack.handleCreateTrackerType,
+          handleUpdateTrackerType: callBack.handleUpdateTrackerType,
+          handleDeleteTrackerType: callBack.handleDeleteTrackerType,
+          expenditureFund
+        }}
       />
     ),
     className: 'w-full max-w-lg h-auto',

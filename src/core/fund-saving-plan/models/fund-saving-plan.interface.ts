@@ -7,14 +7,15 @@ export interface ISpendingPlan {
   fundId: string
   trackerTypeId: string
   name: string
-  description: string
+  description?: string | undefined
   targetAmount: number
   expectedDate: string
   type: 'ANNUAL' | 'MONTHLY' | 'WEEKLY' | 'DAILY'
   fundName: string
   trackerTypeName: string
   remainingDays: { day: number; month: number; year: number }
-  expiredDate: string
+  expiredDate: { day: number; month: number; year: number }
+  expectedDateParams: IExpectedDateParams
 }
 
 export interface IGetAllFundSavingPlanResponse {
@@ -33,12 +34,11 @@ export interface ICreateFundSavingPlanRequest extends IExpectedDateParams {
   trackerTypeId?: string
 }
 
-export interface IUpdateFundSavingPlanRequest {
+export interface IUpdateFundSavingPlanRequest extends IExpectedDateParams {
   id?: string
   name?: string
   description?: string
   targetAmount?: number
-  startDate?: string
   type: 'ANNUAL' | 'MONTHLY' | 'WEEKLY' | 'DAILY'
 }
 

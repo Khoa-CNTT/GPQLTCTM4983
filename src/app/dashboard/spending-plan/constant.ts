@@ -33,12 +33,12 @@ export const initDetailSpendingPlan: ISpendingPlan = {
   fundId: '',
   trackerTypeId: '',
   name: '',
-  description: '',
   targetAmount: 0,
   expectedDate: new Date().toISOString(),
   type: 'MONTHLY',
   fundName: '',
   trackerTypeName: '💼 Lương',
   remainingDays: { day: 0, month: 0, year: 0 },
-  expiredDate: new Date().toISOString()
+  expiredDate: new Date().toISOString(),
+  expectedDateParams: {}
 }

@@ -119,6 +119,8 @@ export const handleUpdateSpendingPlan = async ({
   callBackRefetchAPI,
   setDataTableConfig
 }: GenericTypeSpendingPlan<IUpdateFundSavingPlanRequest>) => {
+  console.log('update', data)
+
   hookUpdate(data, {
     onSuccess: (res: any) => {
       if (res.statusCode === 200 || res.statusCode === 201) {

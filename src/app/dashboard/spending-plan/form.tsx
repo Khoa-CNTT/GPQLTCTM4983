@@ -214,7 +214,6 @@ export default function SpendingPlanForm() {
           (plan) =>
             !searchQuery ||
             plan.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            plan.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
             plan.trackerTypeName?.toLowerCase().includes(searchQuery.toLowerCase())
         )
         .filter((plan) => {
