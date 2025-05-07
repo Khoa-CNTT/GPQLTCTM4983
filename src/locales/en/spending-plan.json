@@ -43,6 +43,7 @@
     "expirationDate": "Expiration Date",
     "frequency": "Repeat Frequency",
     "daysLeft": "Days Left",
+    "overdue": "Overdue",
     "daysRemaining": "{{count}} days",
     "undetermined": "Undetermined",
     "fundSource": "Fund Source",

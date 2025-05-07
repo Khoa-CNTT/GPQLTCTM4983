@@ -43,6 +43,7 @@
     "expirationDate": "Ngày hết hạn",
     "frequency": "Tần suất lặp lại",
     "daysLeft": "Số ngày còn lại",
+    "overdue": "Đã quá hạn",
     "daysRemaining": "{{count}} ngày",
     "undetermined": "Không xác định",
     "fundSource": "Nguồn tiền",

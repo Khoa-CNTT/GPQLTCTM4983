@@ -15,6 +15,8 @@ interface DetailPlanFormProps {
 }
 
 const DetailPlanForm: React.FC<DetailPlanFormProps> = ({ selectedPlan, setIsDialogOpen }) => {
+  console.log('DetailPlanForm render', selectedPlan)
+
   const { t } = useTranslation(['common', 'spendingPlan'])
 
   if (!selectedPlan) return null
@@ -83,20 +85,37 @@ const DetailPlanForm: React.FC<DetailPlanFormProps> = ({ selectedPlan, setIsDial
               {frequencyLabel}
             </Badge>
           </div>
-          <div>
-            <h4 className='text-sm font-medium text-muted-foreground'>{t('spendingPlan:planDetails.daysLeft')}</h4>
-            <p className='text-base font-medium'>
-              {selectedPlan.remainingDays.day > 0
-                ? selectedPlan.remainingDays.day + ' ' + t('spendingPlan:planDetails.remainingDays.days')
-                : ''}{' '}
-              {selectedPlan.remainingDays.month > 0
-                ? selectedPlan.remainingDays.month + ' ' + t('spendingPlan:planDetails.remainingDays.months')
-                : ''}
-              {selectedPlan.remainingDays.year > 0
-                ? selectedPlan.remainingDays.year + ' ' + t('spendingPlan:planDetails.remainingDays.years')
-                : ''}
-            </p>
-          </div>
+          {selectedPlan.remainingDays ? (
+            <div>
+              <h4 className='text-sm font-medium text-muted-foreground'>{t('spendingPlan:planDetails.daysLeft')}</h4>
+              <p className='text-base font-medium'>
+                {selectedPlan.remainingDays.day > 0
+                  ? selectedPlan.remainingDays.day + ' ' + t('spendingPlan:planDetails.remainingDays.days')
+                  : ''}{' '}
+                {selectedPlan.remainingDays.month > 0
+                  ? selectedPlan.remainingDays.month + ' ' + t('spendingPlan:planDetails.remainingDays.months')
+                  : ''}
+                {selectedPlan.remainingDays.year > 0
+                  ? selectedPlan.remainingDays.year + ' ' + t('spendingPlan:planDetails.remainingDays.years')
+                  : ''}
+              </p>
+            </div>
+          ) : (
+            <div>
+              <h4 className='text-sm font-medium text-muted-foreground'>{t('spendingPlan:planDetails.overdue')}</h4>
+              <p className='text-base font-medium'>
+                {selectedPlan.expiredDate.year > 0
+                  ? selectedPlan.expiredDate.year + ' ' + t('spendingPlan:planDetails.remainingDays.years')
+                  : ''}{' '}
+                {selectedPlan.expiredDate.month > 0
+                  ? selectedPlan.expiredDate.month + ' ' + t('spendingPlan:planDetails.remainingDays.months')
+                  : ''}{' '}
+                {selectedPlan.expiredDate.day > 0
+                  ? selectedPlan.expiredDate.day + ' ' + t('spendingPlan:planDetails.remainingDays.days')
+                  : ''}
+              </p>
+            </div>
+          )}
         </div>
 
         {selectedPlan.fundName && (
@@ -108,15 +127,6 @@ const DetailPlanForm: React.FC<DetailPlanFormProps> = ({ selectedPlan, setIsDial
       </div>
 
       <Separator />
-
-      <div className='flex items-center justify-between text-sm text-muted-foreground'>
-        <div className='flex items-center'>
-          <CalendarClock className='mr-1.5 h-4 w-4' />
-          <span>
-            {t('spendingPlan:planDetails.expirationDate')}: {formatDateTimeVN(selectedPlan.expiredDate, true)}
-          </span>
-        </div>
-      </div>
 
       <div className='flex justify-end gap-2 sm:gap-0'>
         <Button
@@ -149,8 +159,7 @@ const DetailPlanForm: React.FC<DetailPlanFormProps> = ({ selectedPlan, setIsDial
           onClick={() =>
             setIsDialogOpen((prev) => ({
               ...prev,
-              isDialogEditPlanOpen: true,
-              isDialogDetailPlanOpen: false
+              isDialogEditPlanOpen: true
             }))
           }
         >
