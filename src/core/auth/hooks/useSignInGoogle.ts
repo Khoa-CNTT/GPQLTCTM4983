@@ -28,6 +28,12 @@ export const useSignInGoogle = () => {
           sameSite: 'lax',
           expires: 1
         })
+        Cookies.set('refreshToken', data.data.refreshToken, {
+          path: '/',
+          secure: true,
+          sameSite: 'lax',
+          expires: 7
+        })
         setCountLogin(countLogin + 1)
         setAccessTokenToLocalStorage(data.data.accessToken)
         setRefreshTokenToLocalStorage(data.data.refreshToken)
