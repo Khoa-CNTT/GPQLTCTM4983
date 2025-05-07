@@ -13,7 +13,7 @@ export interface ISpendingPlan {
   type: 'ANNUAL' | 'MONTHLY' | 'WEEKLY' | 'DAILY'
   fundName: string
   trackerTypeName: string
-  remainingDays: number | null
+  remainingDays: { day: number; month: number; year: number }
   expiredDate: string
 }
 

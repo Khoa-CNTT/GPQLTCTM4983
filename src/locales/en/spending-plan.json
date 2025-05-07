@@ -13,7 +13,8 @@
     "remaining": "Remaining",
     "highSpendingRate": "High spending rate",
     "daysLeft": "days left",
-    "upcomingPlans": "upcoming plans"
+    "upcomingPlans": "upcoming plans",
+    "expectedDate": "Expected date"
   },
   "budgetSection": {
     "title": "Budget List",
@@ -46,7 +47,12 @@
     "undetermined": "Undetermined",
     "fundSource": "Fund Source",
     "today": "Today",
-    "upcoming": "Upcoming"
+    "upcoming": "Upcoming",
+    "remainingDays": {
+      "days": "days",
+      "months": "months",
+      "years": "years"
+    }
   },
   "planSection": {
     "title": "Upcoming Plans",

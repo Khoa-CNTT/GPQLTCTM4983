@@ -38,7 +38,7 @@ interface ISpendingPlanDialogProps {
     dataTableConfig: IDataTableConfig
     setDataTableConfig: React.Dispatch<React.SetStateAction<IDataTableConfig>>
     spendingPlans: ISpendingPlan[]
-    setSelectedPlan: (plan: ISpendingPlan | null) => void
+    setSelectedPlan: (plan: ISpendingPlan) => void
     isLoading: boolean
   }
   targetsDialog: {

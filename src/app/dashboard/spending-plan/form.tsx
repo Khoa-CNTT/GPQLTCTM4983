@@ -6,6 +6,7 @@ import { getColumns } from '@/components/dashboard/ColumnsTable'
 import {
   Banknote,
   CalendarDays,
+  CalendarIcon,
   CircleDollarSign,
   Clock,
   Coins,
@@ -61,7 +62,7 @@ import {
   TSpendingPlanActions
 } from '@/core/fund-saving-plan/models'
 import { useFundSavingPlan } from '@/core/fund-saving-plan/hooks'
-import { initIsDialogOpenState } from './constant'
+import { initIsDialogOpenState, initDetailSpendingPlan } from './constant'
 import {
   ITrackerTransactionType,
   ITrackerTransactionTypeBody
@@ -84,7 +85,7 @@ export default function SpendingPlanForm() {
 
   // states
   const [spendingPlans, setSpendingPlans] = useState<ISpendingPlan[]>([])
-  const [selectedPlan, setSelectedPlan] = useState<ISpendingPlan | null>(null)
+  const [selectedPlan, setSelectedPlan] = useState<ISpendingPlan>(initDetailSpendingPlan)
   const [selectedTarget, setSelectedTarget] = useState<IBudgetTarget | null>(null)
   const [targets, setTargets] = useState<IBudgetTarget[]>([])
   const [totalBudgetTarget, setTotalBudgetTarget] = useState<ITotalBudgetTarget | null>(null)
@@ -577,125 +578,54 @@ export default function SpendingPlanForm() {
                 <CardContent className='p-4'>
                   {upcomingPlans.length > 0 ? (
                     <div className='space-y-6'>
-                      {/* Today's Plans */}
-                      {upcomingPlans.some((plan) => {
-                        const today = new Date()
-                        const planDate = new Date(plan.expectedDate)
-                        return (
-                          planDate.getDate() === today.getDate() &&
-                          planDate.getMonth() === today.getMonth() &&
-                          planDate.getFullYear() === today.getFullYear()
-                        )
-                      }) && (
-                        <div>
-                          <div className='space-y-3'>
-                            {upcomingPlans
-                              .filter((plan) => {
-                                const today = new Date()
-                                const planDate = new Date(plan.expectedDate)
-                                return (
-                                  planDate.getDate() === today.getDate() &&
-                                  planDate.getMonth() === today.getMonth() &&
-                                  planDate.getFullYear() === today.getFullYear()
-                                )
-                              })
-                              .map((plan) => (
-                                <div
-                                  key={plan.id}
-                                  onClick={() => openDialog('isDialogDetailPlanOpen', plan)}
-                                  className='cursor-pointer rounded-lg border border-blue-100 bg-white bg-gradient-to-r from-blue-50 to-white p-3 shadow-sm transition-all hover:border-blue-300 hover:shadow-md dark:border-blue-800/30 dark:bg-gray-950/50 dark:from-blue-900/10 dark:to-transparent'
-                                >
-                                  <div className='mb-1.5 flex justify-between'>
-                                    <div className='font-medium'>{plan.name}</div>
+                      <div className='space-y-3'>
+                        {upcomingPlans.map((plan) => {
+                          const isNearDate =
+                            new Date(plan.expectedDate).getTime() - new Date().getTime() < 3 * 24 * 60 * 60 * 1000
+
+                          return (
+                            <div
+                              key={plan.id}
+                              onClick={() => openDialog('isDialogDetailPlanOpen', plan)}
+                              className='hover:from-gray-850 cursor-pointer rounded-lg border border-gray-800 bg-gradient-to-b from-gray-900 to-gray-950 p-4 shadow-sm transition-all hover:border-gray-700 hover:to-gray-900 hover:shadow-md'
+                            >
+                              {/* First row: Name, Tracker name, and Upcoming badge */}
+                              <div className='mb-4 flex items-center justify-between'>
+                                <div className='max-w-[60%] truncate text-base font-medium text-white'>{plan.name}</div>
+
+                                <div className='flex flex-shrink-0 items-center gap-2.5'>
+                                  <div className='flex items-center gap-1 rounded-md border border-gray-700/50 bg-gray-800/70 px-2 py-1'>
+                                    <span className='text-xs font-medium text-gray-300'>{plan.trackerTypeName}</span>
+                                  </div>
+
+                                  {isNearDate && (
                                     <Badge
                                       variant='outline'
-                                      className='border-blue-200 bg-blue-50 text-xs font-normal text-blue-600 dark:border-blue-800 dark:bg-blue-900/20'
+                                      className='rounded-full border-orange-600/50 bg-orange-950/30 px-2.5 py-0.5 text-xs text-orange-400'
                                     >
-                                      <Clock className='mr-1.5 h-3.5 w-3.5' />
-                                      {t('spendingPlan:planDetails.today')}
+                                      {t('spendingPlan:planDetails.upcoming')}
                                     </Badge>
-                                  </div>
-                                  {plan.description && (
-                                    <div className='mb-2 line-clamp-2 text-xs text-muted-foreground'>
-                                      {plan.description}
-                                    </div>
                                   )}
-                                  <div className='mt-1 flex justify-between text-sm'>
-                                    <span className='flex items-center text-muted-foreground'>
-                                      <Hourglass className='mr-1 h-3.5 w-3.5' />
-                                      <span className='text-xs'>{formatDateTimeVN(plan.expectedDate, false)}</span>
-                                    </span>
-                                    <span className='font-medium text-teal-600'>
-                                      {formatCurrency(plan.targetAmount, 'VND')}
-                                    </span>
-                                  </div>
                                 </div>
-                              ))}
-                          </div>
-                        </div>
-                      )}
+                              </div>
 
-                      {/* This Week's Plans */}
-                      <div>
-                        <div className='space-y-3'>
-                          {upcomingPlans
-                            .filter((plan) => {
-                              const today = new Date()
-                              const planDate = new Date(plan.expectedDate)
-                              // Exclude today's plans (already shown above)
-                              return !(
-                                planDate.getDate() === today.getDate() &&
-                                planDate.getMonth() === today.getMonth() &&
-                                planDate.getFullYear() === today.getFullYear()
-                              )
-                            })
-                            .map((plan) => {
-                              const isNearDate =
-                                new Date(plan.expectedDate).getTime() - new Date().getTime() < 3 * 24 * 60 * 60 * 1000
-
-                              return (
-                                <div
-                                  key={plan.id}
-                                  onClick={() => openDialog('isDialogDetailPlanOpen', plan)}
-                                  className={`cursor-pointer rounded-lg border bg-white p-3 shadow-sm transition-all hover:border-blue-200 hover:bg-blue-50/50 hover:shadow-md dark:bg-gray-950/50 dark:hover:bg-blue-950/20 ${
-                                    isNearDate
-                                      ? 'border-amber-100 bg-gradient-to-r from-amber-50 to-white dark:border-amber-800/30 dark:from-amber-900/10 dark:to-transparent'
-                                      : ''
-                                  }`}
-                                >
-                                  <div className='mb-1.5 flex justify-between'>
-                                    <div className='font-medium'>{plan.name}</div>
-                                    {isNearDate && (
-                                      <Badge
-                                        variant='outline'
-                                        className='border-amber-200 text-xs font-normal text-amber-600 dark:border-amber-800'
-                                      >
-                                        {t('spendingPlan:planDetails.upcoming')}
-                                      </Badge>
-                                    )}
-                                  </div>
-                                  <div className='mb-2 flex items-center justify-between'>
-                                    <div className='rounded bg-slate-100 px-1.5 py-0.5 text-xs text-slate-700 dark:bg-slate-800 dark:text-slate-300'>
-                                      {plan.trackerTypeName}
-                                    </div>
-                                    <div className='text-xs text-muted-foreground'>
-                                      {formatDateTimeVN(plan.expectedDate, false)}
-                                    </div>
-                                  </div>
-                                  <div className='flex items-center justify-between'>
-                                    {plan.description && (
-                                      <div className='mr-2 line-clamp-1 text-xs text-muted-foreground'>
-                                        {plan.description}
-                                      </div>
-                                    )}
-                                    <span className='whitespace-nowrap font-medium text-blue-600'>
-                                      {formatCurrency(plan.targetAmount, 'VND')}
-                                    </span>
-                                  </div>
+                              {/* Second row: Expected date and Amount */}
+                              <div className='flex items-center justify-between'>
+                                <div className='flex items-center gap-1.5 rounded-md bg-gray-800/30 px-2.5 py-1.5 text-sm text-gray-400'>
+                                  <CalendarIcon className='h-3 w-3 text-gray-500' />
+                                  <span className='text-gray-400'>{t('spendingPlan:cardDetails.expectedDate')}:</span>
+                                  <span className='font-medium text-gray-300'>
+                                    {formatDateTimeVN(plan.expectedDate, false)}
+                                  </span>
                                 </div>
-                              )
-                            })}
-                        </div>
+
+                                <div className='text-2xl font-semibold tracking-wide text-blue-400'>
+                                  {formatCurrency(plan.targetAmount, 'đ')}
+                                </div>
+                              </div>
+                            </div>
+                          )
+                        })}
                       </div>
                     </div>
                   ) : (

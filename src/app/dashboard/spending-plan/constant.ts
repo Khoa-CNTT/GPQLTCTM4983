@@ -1,3 +1,5 @@
+import { ISpendingPlan } from '@/core/fund-saving-plan/models'
+
 export const mockDataTrackerType = [
   { value: 'db25e663-a02e-48ef-a831-b6eaaa710c15', label: '⏰ Làm thêm' },
   { value: '972cf894-420f-4f4a-a227-15c52854545c', label: '🎉 Tiền thưởng' },
@@ -24,4 +26,19 @@ export const initIsDialogOpenState = {
   isDialogChangeStatusTargetOpen: false,
   isDialogViewAllPlansOpen: false,
   isDialogChangeStatusPlanOpen: false
+}
+
+export const initDetailSpendingPlan: ISpendingPlan = {
+  id: '',
+  fundId: '',
+  trackerTypeId: '',
+  name: '',
+  description: '',
+  targetAmount: 0,
+  expectedDate: new Date().toISOString(),
+  type: 'MONTHLY',
+  fundName: '',
+  trackerTypeName: '💼 Lương',
+  remainingDays: { day: 0, month: 0, year: 0 },
+  expiredDate: new Date().toISOString()
 }

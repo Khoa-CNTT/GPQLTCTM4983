@@ -13,7 +13,8 @@
     "remaining": "Còn lại",
     "highSpendingRate": "Tốc độ chi tiêu cao",
     "daysLeft": "ngày",
-    "upcomingPlans": "kế hoạch sắp tới"
+    "upcomingPlans": "kế hoạch sắp tới",
+    "expectedDate": "Ngày dự kiến"
   },
   "budgetSection": {
     "title": "Danh sách ngân sách",
@@ -46,7 +47,12 @@
     "undetermined": "Không xác định",
     "fundSource": "Nguồn tiền",
     "today": "Hôm nay",
-    "upcoming": "Sắp tới"
+    "upcoming": "Sắp tới",
+    "remainingDays": {
+      "days": "ngày",
+      "months": "tháng",
+      "years": "năm"
+    }
   },
   "planSection": {
     "title": "Kế hoạch sắp tới",
