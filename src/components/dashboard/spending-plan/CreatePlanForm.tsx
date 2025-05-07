@@ -80,7 +80,7 @@ const CreatePlanForm: React.FC<ICreatePlanFormProps> = ({
     setCurrentDirection(value)
 
     // const currentForm = form
-    if (form && typeof formCreateRef.current?.getValues === 'function') {
+    if (formCreateRef && typeof formCreateRef.current?.getValues === 'function') {
       const formValues = formCreateRef.current?.getValues()
 
       if (formValues.trackerTypeId) {
@@ -91,7 +91,7 @@ const CreatePlanForm: React.FC<ICreatePlanFormProps> = ({
       }
 
       setTimeout(() => {
-        if (form && typeof formCreateRef.current?.setValue === 'function') {
+        if (formCreateRef && typeof formCreateRef.current?.setValue === 'function') {
           formCreateRef.current?.setValue('trackerTypeId', directionCategoryMap[value] || '')
         }
       }, 0)
@@ -101,24 +101,6 @@ const CreatePlanForm: React.FC<ICreatePlanFormProps> = ({
   useEffect(() => {
     setTypeOfEditTrackerType(currentDirection)
   }, [currentDirection])
-
-  const defaultValues = {
-    name: '',
-    description: '',
-    targetAmount: '',
-    trackerTypeId: '',
-    month: (new Date().getMonth() + 1).toString(),
-    day: new Date().getDate().toString(),
-    type: 'MONTHLY' as RecurringFrequency,
-    dayOfWeek: '1',
-    expectedDate: new Date()
-  }
-
-  const form = useForm({
-    resolver: zodResolver(createFundSavingPlanSchema),
-    defaultValues,
-    mode: 'onSubmit'
-  })
 
   const daysInMonth = useMemo(() => {
     return getDaysForMonth(expectedDateParams.month ?? now.getMonth(), now.getFullYear()).map((d) => ({
