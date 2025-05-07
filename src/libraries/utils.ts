@@ -5,7 +5,7 @@ import { KNamespace, KPrefix } from '@/types/i18n'
 import { type ClassValue, clsx } from 'clsx'
 import i18next, { Namespace, TFunction, TOptions } from 'i18next'
 import { twMerge } from 'tailwind-merge'
-import { addDays } from "date-fns"
+import { addDays } from 'date-fns'
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -155,8 +155,8 @@ export function getTranslatedFormBody(formBody: IBodyFormField[], t: Function): 
 export const getDaysInMonth = (month: number, year: number) => {
   return new Date(year, month, 0).getDate()
 }
-export const getDaysForMonth = (month: string, year: number) => {
-  const numberOfDays = getDaysInMonth(parseInt(month), year)
+export const getDaysForMonth = (month: number, year: number) => {
+  const numberOfDays = getDaysInMonth(month, year)
   return Array.from({ length: numberOfDays }, (_, i) => i + 1)
 }
 

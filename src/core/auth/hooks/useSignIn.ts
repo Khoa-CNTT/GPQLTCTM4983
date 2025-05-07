@@ -30,6 +30,12 @@ export const useSignIn = (isRememberMe: boolean, opts?: IUseQueryHookOptions) =>
             sameSite: 'lax',
             expires: 1
           })
+          Cookies.set('refreshToken', data.data.refreshToken, {
+            path: '/',
+            secure: true,
+            sameSite: 'lax',
+            expires: 7
+          })
           setAccessTokenToLocalStorage(data.data.accessToken)
           setRefreshTokenToLocalStorage(data.data.refreshToken)
           if (redirectUrl === '/dashboard/tracker-transaction?loggedIn=true') setExecuteGetMe(true)
