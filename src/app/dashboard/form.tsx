@@ -280,23 +280,23 @@ export default function DashboardForm() {
                     <div className="rounded-md bg-blue-100 dark:bg-blue-900/30 p-1.5">
                       <Target className="h-3.5 w-3.5 text-blue-500" />
                     </div>
-                    <h3 className="text-xs font-bold">{t('dashboard.recent_transactions.title', 'Recent Transactions')}</h3>
+                    <h3 className="text-xs font-bold">{t('dashboard.recent_transactions.title')}</h3>
                   </div>
                   <span className="text-[10px] bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 px-2 py-0.5 rounded-full">
-                    {recentTransactionsCount} {t('dashboard.recent_transactions.total', 'Total')}
+                    {recentTransactionsCount} {t('dashboard.recent_transactions.total')}
                   </span>
                 </div>
 
                 <div className="flex flex-col justify-between flex-1 gap-3">
                   <div className="grid grid-cols-2 gap-2">
                     <div>
-                      <p className="text-[10px] text-muted-foreground">{t('dashboard.recent_transactions.incoming', 'Incoming')}</p>
+                      <p className="text-[10px] text-muted-foreground">{t('dashboard.recent_transactions.incoming')}</p>
                       <p className="text-xl font-bold">
                         {getStatisticOverviewPageData?.data.recentTransactions?.filter(t => t.direction === 'INCOMING').length || 0}
                       </p>
                     </div>
                     <div className="text-right">
-                      <p className="text-[10px] text-muted-foreground">{t('dashboard.recent_transactions.expense', 'Expense')}</p>
+                      <p className="text-[10px] text-muted-foreground">{t('dashboard.recent_transactions.expense')}</p>
                       <p className="text-xl font-bold">
                         {getStatisticOverviewPageData?.data.recentTransactions?.filter(t => t.direction === 'EXPENSE').length || 0}
                       </p>

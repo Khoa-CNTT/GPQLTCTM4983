@@ -9,7 +9,9 @@
     "balance_chart": {
       "no_data": "Không có dữ liệu",
       "title": "Tổng số dư",
-      "distribution": "Phân bổ tài khoản"
+      "distribution": "Phân bổ tài khoản",
+      "accounts": "Tổng số tài khoản",
+      "largest": "Tài khoản lớn nhất"
     },
     "income_card": {
       "title": "Tổng thu nhập",
@@ -30,11 +32,13 @@
       "current_amount": "Số tiền hiện tại",
       "no_target": "Chưa thiết lập mục tiêu ngân sách",
       "targets": "Mục tiêu ngân sách",
-      "active_targets": "Mục tiêu đang hoạt động"
+      "active_targets": "Mục tiêu đang hoạt động",
+      "success_rate": "Tỷ lệ thành công"
     },
     "plans": {
       "title": "Kế hoạch chi tiêu",
-      "active": "Kế hoạch đang hoạt động"
+      "active": "Kế hoạch đang hoạt động",
+      "success_rate": "Tỷ lệ thành công"
     },
     "cash_flow": {
       "title": "Phân tích dòng tiền",
@@ -51,6 +55,28 @@
       "transactions": "Giao dịch",
       "incoming": "Thu vào",
       "outgoing": "Chi ra"
+    },
+    "recent_transactions": {
+      "title": "Giao dịch gần đây",
+      "total": "Tổng",
+      "incoming": "Thu vào",
+      "expense": "Chi ra"
+    },
+    "balance": {
+      "title": "Số dư hiện tại",
+      "accounts": "Tài khoản"
+    },
+    "income": {
+      "title": "Tổng thu nhập",
+      "growth": "Tăng trưởng"
+    },
+    "expenses": {
+      "title": "Tổng chi tiêu",
+      "change": "Biến động"
+    },
+    "funds": {
+      "title": "Tổng quỹ",
+      "active": "Đang hoạt động"
     }
   }
 }
