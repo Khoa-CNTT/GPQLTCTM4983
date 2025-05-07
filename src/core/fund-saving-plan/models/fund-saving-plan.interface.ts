@@ -39,6 +39,7 @@ export interface IUpdateFundSavingPlanRequest extends IExpectedDateParams {
   name?: string
   description?: string
   targetAmount?: number
+  trackerTypeId?: number
   type: 'ANNUAL' | 'MONTHLY' | 'WEEKLY' | 'DAILY'
 }
 

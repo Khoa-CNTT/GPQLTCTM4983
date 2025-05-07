@@ -34,8 +34,7 @@ export const useAuth = (opts?: IUseQueryHookOptions) => {
     signInGoogle,
     isSigningInGoogle,
     resendVerifyEmail: useResendVerifyEmail,
-    useVerifyToken
-    resendVerifyEmail: useResendVerifyEmail,
+    useVerifyToken,
     signInFacebook,
     isSigningInFacebook
   }

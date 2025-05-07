@@ -24,6 +24,10 @@ import { MoneyInput } from '@/components/core/MoneyInput'
 import { mockDataTrackerType } from '@/app/dashboard/spending-plan/constant'
 import { getDaysInMonth } from '@/core/fund-saving-plan/constants/create-fund-saving-plan.constant'
 import { z } from 'zod'
+import { Combobox } from '@/components/core/Combobox'
+import EditTrackerTypeDialog from '../EditTrackerType'
+import { ETypeOfTrackerTransactionType } from '@/core/tracker-transaction-type/models/tracker-transaction-type.enum'
+import { modifiedTrackerTypeForComboBox } from '@/app/dashboard/tracker-transaction/handlers'
 
 interface EditPlanFormProps {
   selectedPlan: ISpendingPlan | null
@@ -31,9 +35,27 @@ interface EditPlanFormProps {
   onUpdatePlan: (updatedPlan: IUpdateFundSavingPlanRequest) => void
   isLoading: boolean
   isOpen: boolean
+  trackerTypeProps: any
 }
 
-const EditPlanForm: React.FC<EditPlanFormProps> = ({ selectedPlan, onClose, onUpdatePlan, isLoading, isOpen }) => {
+const EditPlanForm: React.FC<EditPlanFormProps> = ({
+  selectedPlan,
+  onClose,
+  onUpdatePlan,
+  isLoading,
+  isOpen,
+  trackerTypeProps
+}) => {
+  const {
+    incomeTrackerType,
+    expenseTrackerType,
+    setOpenEditTrackerTxTypeDialog,
+    openEditTrackerTxTypeDialog,
+    handleCreateTrackerType,
+    handleUpdateTrackerType,
+    handleDeleteTrackerType,
+    expenditureFund
+  } = trackerTypeProps
   const { t } = useTranslation(['common', 'spendingPlan'])
   const [year] = useState<number>(new Date().getFullYear())
   const [currentMonth, setCurrentMonth] = useState<string>((new Date().getMonth() + 1).toString())
@@ -42,6 +64,52 @@ const EditPlanForm: React.FC<EditPlanFormProps> = ({ selectedPlan, onClose, onUp
     (selectedPlan?.type as RecurringFrequency) || 'MONTHLY'
   )
   const [key, setKey] = useState(0)
+  const [currentDirection, setCurrentDirection] = useState<ETypeOfTrackerTransactionType>(
+    incomeTrackerType.find((item: any) => selectedPlan?.trackerTypeId === item.id)
+      ? ETypeOfTrackerTransactionType.INCOMING
+      : ETypeOfTrackerTransactionType.EXPENSE || ETypeOfTrackerTransactionType.INCOMING
+  )
+  const [directionCategoryMap, setDirectionCategoryMap] = useState<Record<ETypeOfTrackerTransactionType, string>>({
+    [ETypeOfTrackerTransactionType.INCOMING]: incomeTrackerType.find(
+      (item: any) => selectedPlan?.trackerTypeId === item.id
+    )
+      ? (selectedPlan?.trackerTypeId as string)
+      : '',
+    [ETypeOfTrackerTransactionType.EXPENSE]: expenseTrackerType.find(
+      (item: any) => selectedPlan?.trackerTypeId === item.id
+    )
+      ? (selectedPlan?.trackerTypeId as string)
+      : ''
+  })
+  const [typeOfEditTrackerType, setTypeOfEditTrackerType] = useState<ETypeOfTrackerTransactionType>(
+    incomeTrackerType.find((item: any) => selectedPlan?.trackerTypeId === item.id)
+      ? ETypeOfTrackerTransactionType.INCOMING
+      : ETypeOfTrackerTransactionType.EXPENSE || ETypeOfTrackerTransactionType.INCOMING
+  )
+
+  const handleDirectionChange = (value: ETypeOfTrackerTransactionType) => {
+    const oldDirection = currentDirection
+
+    setCurrentDirection(value)
+
+    const currentForm = form
+    if (currentForm && typeof currentForm.getValues === 'function') {
+      const formValues = currentForm.getValues()
+
+      if (formValues.trackerTypeId) {
+        setDirectionCategoryMap((prev) => ({
+          ...prev,
+          [oldDirection]: formValues.trackerTypeId
+        }))
+      }
+
+      setTimeout(() => {
+        if (currentForm && typeof currentForm.setValue === 'function') {
+          currentForm.setValue('trackerTypeId', directionCategoryMap[value] || '')
+        }
+      }, 0)
+    }
+  }
 
   const defaultValues = selectedPlan
     ? {
@@ -54,7 +122,7 @@ const EditPlanForm: React.FC<EditPlanFormProps> = ({ selectedPlan, onClose, onUp
         day: selectedPlan.expectedDateParams.day?.toString(),
         month: selectedPlan.expectedDateParams.month?.toString(),
         dayOfMonth: selectedPlan.expectedDateParams.dayOfMonth?.toString(),
-        trackerTypeId: selectedPlan.trackerTypeId
+        trackerTypeId: directionCategoryMap?.[currentDirection] || ''
       }
     : {
         name: '',
@@ -82,6 +150,10 @@ const EditPlanForm: React.FC<EditPlanFormProps> = ({ selectedPlan, onClose, onUp
       label: d.toString()
     }))
   }, [currentMonth, year])
+
+  useEffect(() => {
+    setTypeOfEditTrackerType(currentDirection)
+  }, [currentDirection])
 
   // Force re-render the form when selectedPlan changes
   useEffect(() => {
@@ -177,6 +249,7 @@ const EditPlanForm: React.FC<EditPlanFormProps> = ({ selectedPlan, onClose, onUp
           ;(planData.id = selectedPlan.id),
             (planData.name = data.name),
             (planData.description = data.description),
+            (planData.trackerTypeId = data.trackerTypeId),
             (planData.targetAmount = parseFloat(data.targetAmount)),
             console.log('planData', planData)
 
@@ -246,6 +319,58 @@ const EditPlanForm: React.FC<EditPlanFormProps> = ({ selectedPlan, onClose, onUp
                     placeholder={t('spendingPlan:form.planFields.amountPlaceholder')}
                     value={field.value}
                     onChange={(e) => field.onChange(e.target.value)}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name='trackerTypeId'
+            render={({ field }) => (
+              <FormItem className='col-span-2 mb-4'>
+                <div className='flex justify-between'>
+                  <FormLabel className='text-muted-foreground'>{t('spendingPlan:form.planFields.category')}</FormLabel>
+                  <FormMessage />
+                </div>
+                <FormControl>
+                  <Combobox
+                    setOpenEditDialog={setOpenEditTrackerTxTypeDialog}
+                    dataArr={modifiedTrackerTypeForComboBox(
+                      currentDirection === ETypeOfTrackerTransactionType.INCOMING
+                        ? incomeTrackerType
+                        : expenseTrackerType
+                    )}
+                    value={directionCategoryMap?.[currentDirection] || ''}
+                    dialogEdit={EditTrackerTypeDialog({
+                      openEditDialog: openEditTrackerTxTypeDialog,
+                      setOpenEditDialog: setOpenEditTrackerTxTypeDialog,
+                      dataArr: modifiedTrackerTypeForComboBox(
+                        typeOfEditTrackerType === ETypeOfTrackerTransactionType.INCOMING
+                          ? incomeTrackerType
+                          : expenseTrackerType
+                      ),
+                      typeDefault: currentDirection || ETypeOfTrackerTransactionType.INCOMING,
+                      type: typeOfEditTrackerType,
+                      setType: setTypeOfEditTrackerType,
+                      handleCreateTrackerType,
+                      handleUpdateTrackerType,
+                      handleDeleteTrackerType,
+                      expenditureFund
+                    })}
+                    defaultValue={field.value}
+                    value={field.value}
+                    onValueSelect={(value) => {
+                      ;(value: string) => {
+                        setDirectionCategoryMap((prev) => ({
+                          ...prev,
+                          [currentDirection]: value
+                        }))
+                      }
+                      field.onChange(value)
+                    }}
                   />
                 </FormControl>
                 <FormMessage />
