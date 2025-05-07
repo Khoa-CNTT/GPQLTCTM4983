@@ -117,7 +117,6 @@ export default function SpendingPlanForm() {
     updateFundSavingPlan,
     deleteFundSavingPlan,
     restoreFundSavingPlan,
-    updateFundSavingPlanStatus
   } = useFundSavingPlan()
   const {
     getAllFundSavingTarget,
@@ -125,7 +124,6 @@ export default function SpendingPlanForm() {
     updateFundSavingTarget,
     deleteFundSavingTarget,
     restoreFundSavingTarget,
-    updateFundSavingTargetStatus
   } = useFundSavingTarget()
   const {
     getAllData: getAllDataTarget,
@@ -302,7 +300,7 @@ export default function SpendingPlanForm() {
               <Banknote className='h-8 w-8 flex-shrink-0 animate-pulse text-white opacity-75 md:h-12 md:w-12' />
               <div className='ml-2 text-right'>
                 <p className='truncate text-lg font-bold text-white md:text-xl lg:text-2xl'>
-                  {formatCurrency(totalBudgetTarget?.currentAmount || 0, 'VND')}
+                  {formatCurrency(totalBudgetTarget ? (totalBudgetTarget.targetAmount - totalBudgetTarget.remain) : 0, 'VND')}
                 </p>
                 <p className='line-clamp-1 text-xs text-rose-100 md:text-sm'>
                   {t('spendingPlan:cardDetails.used')} {totalBudgetTarget ? Math.round(totalBudgetTarget.progress) : 0}%
@@ -619,7 +617,7 @@ export default function SpendingPlanForm() {
                                 </div>
 
                                 <div className='text-2xl font-semibold tracking-wide text-blue-400'>
-                                  {formatCurrency(plan.targetAmount, 'đ')}
+                                  {formatCurrency(plan.targetAmount, 'VND')}
                                 </div>
                               </div>
                             </div>
