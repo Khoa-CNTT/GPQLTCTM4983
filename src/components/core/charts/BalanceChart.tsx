@@ -6,7 +6,6 @@ import { formatCurrency } from '@/libraries/utils'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
 
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart'
 import { ITotalBalanceChart } from '@/core/overview/models/overview.interface'
 
@@ -43,10 +42,10 @@ export function BalanceChart({
   }, [])
 
   return (
-    <Card className='flex flex-col'>
-      <CardContent className='flex-1 pb-0 h-full'>
-        <ChartContainer config={chartConfig} className='mx-auto aspect-square' ref={chartRef}>
-          <PieChart>
+    <div className="flex flex-col h-full w-full">
+      <div className="flex-1 flex items-center justify-center w-full">
+        <ChartContainer config={chartConfig} className="h-full w-full flex items-center justify-center" ref={chartRef}>
+          <PieChart width={220} height={220}>
             <Tooltip
               wrapperStyle={{ outline: 'none' }}
               content={({ payload }) => {
@@ -59,8 +58,8 @@ export function BalanceChart({
                       exit={{ opacity: 0 }}
                       className='rounded-lg border bg-background p-2 shadow-md'
                     >
-                      <p className='font-medium'>{data.account}</p>
-                      <p className='text-sm text-muted-foreground'>{formatCurrency(data.amount, 'đ', 'vi-VN')}</p>
+                      <p className='font-medium text-xs'>{data.account}</p>
+                      <p className='text-[10px] text-muted-foreground'>{formatCurrency(data.amount, 'đ', 'vi-VN')}</p>
                     </motion.div>
                   )
                 }
@@ -71,8 +70,9 @@ export function BalanceChart({
               data={chartData}
               dataKey='amount'
               nameKey='account'
-              innerRadius={100}
-              strokeWidth={10}
+              innerRadius={70}
+              outerRadius={140}
+              strokeWidth={8}
               onClick={(data) =>
                 setSelected({
                   account: data.account,
@@ -99,15 +99,15 @@ export function BalanceChart({
                           >
                             <tspan
                               x={viewBox.cx}
-                              y={viewBox.cy ? viewBox.cy - 12 : 0}
-                              className='fill-muted-foreground text-sm'
+                              y={viewBox.cy ? viewBox.cy - 8 : 0}
+                              className='fill-muted-foreground text-[10px]'
                             >
                               {selected ? selected.account : t('dashboard.balance_chart.title', 'Total Balance')}
                             </tspan>
                             <tspan
                               x={viewBox.cx}
-                              y={(viewBox.cy ?? 0) + 12}
-                              className='fill-foreground text-2xl font-bold'
+                              y={(viewBox.cy ?? 0) + 8}
+                              className='fill-foreground text-sm font-bold'
                             >
                               {formatCurrency(selected ? selected.amount : totalAmount, 'đ', 'vi-VN')}
                             </tspan>
@@ -121,7 +121,7 @@ export function BalanceChart({
             </Pie>
           </PieChart>
         </ChartContainer>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   )
 }
