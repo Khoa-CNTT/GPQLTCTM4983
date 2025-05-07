@@ -10,16 +10,17 @@ import { ETypeOfTrackerTransactionType } from '@/core/tracker-transaction-type/m
 export const createFundSavingTargetSchema = z
   .object({
     name: z.string().min(3).max(100),
-    description: z.string().min(5).max(500),
+    description: z.string().min(5).max(500).optional(),
     targetAmount: z
       .string()
       .min(1)
       .refine((val) => !isNaN(Number(val)) && Number(val) > 0, {
-        message: 'amount_must_be_positive'
+        message: 'Amount must be positive'
       }),
     trackerTypeId: z.string().min(1),
     startDate: z.date(),
-    endDate: z.date()
+    endDate: z.date(),
+    direction: z.any()
   })
   .refine((data) => data.endDate > data.startDate, {
     message: 'end_date_after_start_date',
@@ -56,9 +57,10 @@ export const defineCreateFundSavingTargetFormBody = ({
   handleDeleteTrackerType,
   expenditureFund,
   directionCategoryMap,
-  onCategoryChange
+  onCategoryChange,
+  setCurrentDirection
 }: any) => {
-  const t = translate(['spendingPlan', 'common'])
+  const t = translate(['spendingPlan', 'common', 'trackerTransaction'])
 
   return [
     {
@@ -71,23 +73,45 @@ export const defineCreateFundSavingTargetFormBody = ({
       }
     },
     {
-      name: 'description',
-      label: t('targetForm.fields.description'),
-      type: EFieldType.Textarea,
-      placeHolder: t('targetForm.fields.descriptionPlaceholder'),
-      props: {
-        className: 'col-span-2 mb-4',
-        rows: 3
-      }
-    },
-    {
       name: 'targetAmount',
       label: t('targetForm.fields.targetAmount'),
       type: EFieldType.MoneyInput,
       placeHolder: t('targetForm.fields.targetAmountPlaceholder'),
       props: {
-        className: 'mb-4'
+        className: 'col-span-2'
       }
+    },
+    {
+      name: 'description',
+      label: t('targetForm.fields.description'),
+      type: EFieldType.Textarea,
+      placeHolder: t('targetForm.fields.descriptionPlaceholder'),
+      props: {
+        className: 'col-span-2'
+      }
+    },
+    {
+      name: 'direction',
+      type: EFieldType.Select,
+      label: t('form.defineCreateTrackerTransactionFormBody.direction.label'),
+      placeHolder: t('form.defineCreateTrackerTransactionFormBody.direction.placeholder'),
+      props: {
+        autoComplete: 'direction',
+        onchange: (value: any) => {
+          const previousDirection = currentDirection
+          setCurrentDirection(value as ETypeOfTrackerTransactionType)
+        }
+      },
+      dataSelector: [
+        {
+          value: 'INCOMING',
+          label: t('form.defineCreateTrackerTransactionFormBody.direction.options.incoming')
+        },
+        {
+          value: 'EXPENSE',
+          label: t('form.defineCreateTrackerTransactionFormBody.direction.options.expense')
+        }
+      ]
     },
     {
       name: 'trackerTypeId',
@@ -126,19 +150,13 @@ export const defineCreateFundSavingTargetFormBody = ({
       name: 'startDate',
       label: t('targetForm.fields.startDate'),
       type: EFieldType.DatePicker,
-      placeHolder: t('targetForm.fields.startDatePlaceholder'),
-      props: {
-        className: 'mb-4'
-      }
+      placeHolder: t('targetForm.fields.startDatePlaceholder')
     },
     {
       name: 'endDate',
       label: t('targetForm.fields.endDate'),
       type: EFieldType.DatePicker,
-      placeHolder: t('targetForm.fields.endDatePlaceholder'),
-      props: {
-        className: 'mb-4'
-      }
+      placeHolder: t('targetForm.fields.endDatePlaceholder')
     }
   ]
 }

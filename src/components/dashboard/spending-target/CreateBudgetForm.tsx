@@ -94,16 +94,6 @@ const CreateBudgetForm: React.FC<CreateBudgetFormProps> = ({
     setTypeOfEditTrackerType(currentDirection)
   }, [currentDirection])
 
-  const defaultValues = {
-    name: '',
-    description: '',
-    targetAmount: '',
-    fundId: fundId || '',
-    trackerTypeId: '',
-    startDate: new Date(),
-    endDate: new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0)
-  }
-
   return (
     <div className='py-4'>
       <div className='mb-4 text-sm text-muted-foreground'>
@@ -135,7 +125,6 @@ const CreateBudgetForm: React.FC<CreateBudgetFormProps> = ({
         })}
         onSubmit={handleCreateBudget}
         submitRef={formSubmitRef}
-        defaultValues={defaultValues}
         classNameForm='grid grid-cols-2 gap-x-4 gap-y-2'
       />
 
