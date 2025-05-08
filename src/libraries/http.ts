@@ -11,6 +11,7 @@ import { IMutateData } from '@/types/common.i'
 import toast from 'react-hot-toast'
 import { useTranslation } from 'react-i18next'
 import i18n from 'i18next'
+import Cookies from 'js-cookie'
 
 export class HttpError extends Error {
   status: number
@@ -40,6 +41,21 @@ const axiosInstance = axios.create({
   },
   withCredentials: true
 })
+
+// Thêm biến để kiểm soát việc chuyển hướng
+let isRedirecting = false
+
+// Hàm xóa tất cả thông tin phiên đăng nhập
+const clearAllAuthData = () => {
+  // Xóa tokens từ localStorage
+  removeTokensFromLocalStorage()
+  // Xóa cookie xác thực
+  Cookies.remove('authTokenVerify', { path: '/' })
+  // Xóa các cookie liên quan khác nếu có
+  Cookies.remove('next-auth.session-token', { path: '/' })
+  Cookies.remove('next-auth.csrf-token', { path: '/' })
+  Cookies.remove('next-auth.callback-url', { path: '/' })
+}
 
 axiosInstance.interceptors.request.use((config) => {
   if (isClient) {
@@ -89,14 +105,28 @@ axiosInstance.interceptors.response.use(
           }
         } catch (refreshError) {
           // Nếu không thể refresh token, xóa token và chuyển hướng đến trang đăng nhập
-          if (window.location.pathname !== '/sign-in') {
-            removeTokensFromLocalStorage()
+          if (window.location.pathname !== '/sign-in' && !isRedirecting) {
+            isRedirecting = true
+            clearAllAuthData()
+            // Hiển thị thông báo lỗi
+            toast.error('Phiên làm việc đã hết hạn. Vui lòng đăng nhập lại.')
+            // Chuyển hướng đến trang đăng nhập sau một khoảng thời gian nhỏ
+            setTimeout(() => {
+              window.location.replace('/sign-in')
+            }, 100)
           }
         }
       } else {
         // Nếu chính API verify-token trả về lỗi, xóa token và chuyển hướng đến trang đăng nhập
-        if (window.location.pathname !== '/sign-in') {
-          removeTokensFromLocalStorage()
+        if (window.location.pathname !== '/sign-in' && !isRedirecting) {
+          isRedirecting = true
+          clearAllAuthData()
+          // Hiển thị thông báo lỗi
+          toast.error('Phiên làm việc đã hết hạn. Vui lòng đăng nhập lại.')
+          // Chuyển hướng đến trang đăng nhập sau một khoảng thời gian nhỏ
+          setTimeout(() => {
+            window.location.replace('/sign-in')
+          }, 100)
         }
       }
     }
