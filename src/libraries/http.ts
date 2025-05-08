@@ -57,11 +57,50 @@ axiosInstance.interceptors.response.use(
   (response) => response,
   async (error: AxiosError) => {
     const { response } = error
-    if (error.response?.status === 401 || error.response?.status === 403) {
-      if (window.location.pathname !== '/sign-in') {
-        removeTokensFromLocalStorage()
+    
+    // Kiểm tra nếu lỗi là do token hết hạn
+    if (response?.status === 401 || 
+        (response?.data && (response?.data as any).errorCode === 112)) {
+      
+      // Kiểm tra xem request hiện tại có phải là request verify-token không
+      const originalRequest = error.config as AxiosRequestConfig
+      if (originalRequest && !originalRequest.url?.includes('auth/verify-token')) {
+        try {
+          // Gọi API verify-token để lấy token mới
+          const refreshResponse = await axiosInstance.get('auth/verify-token/')
+          
+          if (refreshResponse.data && refreshResponse.data.data && refreshResponse.data.data.accessToken) {
+            const { accessToken } = refreshResponse.data.data
+            
+            // Lưu token mới vào localStorage
+            setAccessTokenToLocalStorage(accessToken)
+            
+            // Cập nhật token trong header của request cũ
+            if (!originalRequest.headers) {
+              originalRequest.headers = {}
+            }
+            originalRequest.headers = {
+              ...originalRequest.headers,
+              Authorization: `Bearer ${accessToken}`
+            }
+            
+            // Thực hiện lại request ban đầu với token mới
+            return axiosInstance(originalRequest)
+          }
+        } catch (refreshError) {
+          // Nếu không thể refresh token, xóa token và chuyển hướng đến trang đăng nhập
+          if (window.location.pathname !== '/sign-in') {
+            removeTokensFromLocalStorage()
+          }
+        }
+      } else {
+        // Nếu chính API verify-token trả về lỗi, xóa token và chuyển hướng đến trang đăng nhập
+        if (window.location.pathname !== '/sign-in') {
+          removeTokensFromLocalStorage()
+        }
       }
     }
+    
     return Promise.reject(
       new HttpError({
         status: response?.status || 0,
