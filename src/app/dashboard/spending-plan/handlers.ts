@@ -124,7 +124,7 @@ export const handleUpdateSpendingPlan = async ({
   hookUpdate(data, {
     onSuccess: (res: any) => {
       if (res.statusCode === 200 || res.statusCode === 201) {
-        callBackRefetchAPI(['getAllSpendingPlans'])
+        callBackRefetchAPI(['getAllSpendingPlans', 'getStatisticOverviewPage'])
         setDataTableConfig((prev) => ({ ...prev, currentPage: 1 }))
         setIsDialogOpen((prev) => ({ ...prev, isDialogEditPlanOpen: false }))
         toast.success('Spending plan updated successfully!')
@@ -144,7 +144,7 @@ export const handleCreateTarget = async ({
   hookCreate(data, {
     onSuccess: (res: any) => {
       if (res.statusCode === 200 || res.statusCode === 201) {
-        callBackRefetchAPI(['getAllTargets'])
+        callBackRefetchAPI(['getAllTargets', 'getStatisticOverviewPage'])
         setDataTableConfig((prev) => ({ ...prev, currentPage: 1 }))
         setIsDialogOpen((prev) => ({ ...prev, isDialogCreateTargetOpen: false }))
         toast.success('Target created successfully!')
@@ -164,7 +164,7 @@ export const handleUpdateTarget = async ({
   hookUpdate(data, {
     onSuccess: (res: any) => {
       if (res.statusCode === 200 || res.statusCode === 201) {
-        callBackRefetchAPI(['getAllTargets'])
+        callBackRefetchAPI(['getAllTargets', 'getStatisticOverviewPage'])
         setDataTableConfig((prev) => ({ ...prev, currentPage: 1 }))
         setIsDialogOpen((prev) => ({ ...prev, isDialogEditTargetOpen: false }))
         toast.success('Target updated successfully!')
@@ -183,7 +183,7 @@ export const handleDeleteItem = async ({
   hookDelete(data, {
     onSuccess: (res: any) => {
       if (res.statusCode === 200 || res.statusCode === 201) {
-        callBackRefetchAPI(['getAllSpendingPlans', 'getAllTargets'])
+        callBackRefetchAPI(['getAllSpendingPlans', 'getAllTargets', 'getStatisticOverviewPage'])
         setDataTableConfig((prev) => ({ ...prev, currentPage: 1 }))
         setIsDialogOpen((prev) => ({ ...prev, isDialogDeletePlanOpen: false }))
         toast.success('Item deleted successfully!')
@@ -201,7 +201,7 @@ export const handleRestoreSpendingPlan = async ({
   hookRestore(data, {
     onSuccess: (res: any) => {
       if (res.statusCode === 200 || res.statusCode === 201) {
-        callBackRefetchAPI(['getAllSpendingPlans'])
+        callBackRefetchAPI(['getAllSpendingPlans', 'getStatisticOverviewPage'])
         setDataTableConfig((prev) => ({ ...prev, currentPage: 1 }))
         toast.success('Spending plan restored successfully!')
       }
@@ -218,7 +218,7 @@ export const handleRestoreTarget = async ({
   hookRestore(data, {
     onSuccess: (res: any) => {
       if (res.statusCode === 200 || res.statusCode === 201) {
-        callBackRefetchAPI(['getAllTargets'])
+        callBackRefetchAPI(['getAllTargets', 'getStatisticOverviewPage'])
         setDataTableConfig((prev) => ({ ...prev, currentPage: 1 }))
         toast.success('Target restored successfully!')
       }
@@ -235,7 +235,7 @@ export const handleUpdateSpendingPlanStatus = async ({
   hookUpdateStatus(data, {
     onSuccess: (res: any) => {
       if (res.statusCode === 200 || res.statusCode === 201) {
-        callBackRefetchAPI(['getAllSpendingPlans'])
+        callBackRefetchAPI(['getAllSpendingPlans', 'getStatisticOverviewPage'])
         setDataTableConfig((prev) => ({ ...prev, currentPage: 1 }))
         toast.success('Spending plan status updated successfully!')
       }
@@ -252,7 +252,7 @@ export const handleUpdateTargetStatus = async ({
   hookUpdateStatus(data, {
     onSuccess: (res: any) => {
       if (res.statusCode === 200 || res.statusCode === 201) {
-        callBackRefetchAPI(['getAllTargets'])
+        callBackRefetchAPI(['getAllTargets', 'getStatisticOverviewPage'])
         setDataTableConfig((prev) => ({ ...prev, currentPage: 1 }))
         toast.success('Target status updated successfully!')
       }
