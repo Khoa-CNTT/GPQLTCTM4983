@@ -21,7 +21,6 @@ export default function FundToggle() {
   const { t } = useTranslation(['common'])
   useEffect(() => {
     setFundArr(fundOfUserData?.data || [])
-    if (fundId !== fundOfUserData?.data?.[0]?.id) setFundId(fundOfUserData?.data?.[0]?.id || '')
   }, [fundOfUserData])
 
   const selectedFund = fundArr?.find((fund) => fund.id === fundId) ?? fundArr?.[0]

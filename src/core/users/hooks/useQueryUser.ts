@@ -11,7 +11,7 @@ const userApi = apiService.user
 
 export const useGetMeUser = (execute: boolean) => {
   const router = useRouter()
-  const { setUser } = useStoreLocal()
+  const { setUser, setFundId } = useStoreLocal()
   const {
     isPending: isGetMeUserPending,
     data: userGetMeData,
@@ -29,6 +29,13 @@ export const useGetMeUser = (execute: boolean) => {
   useEffect(() => {
     if (!isGetMeUserPending && userGetMeData) {
       setUserInfoToLocalStorage(userGetMeData.data)
+      console.log(
+        '🚀 ~ file: useQueryUser.ts:20 ~ useEffect ~ userGetMeData:',
+        userGetMeData.data.defaultExpenditureFundId
+      )
+
+      setDefaultFundIdToLocalStorage(userGetMeData.data.defaultExpenditureFundId)
+      setFundId(userGetMeData.data.defaultExpenditureFundId)
       setUser(userGetMeData.data)
       if (userGetMeData?.data?.provider !== null && userGetMeData?.data?.isChangeNewPassword)
         router.push('/dashboard/profile?openTab=password')
