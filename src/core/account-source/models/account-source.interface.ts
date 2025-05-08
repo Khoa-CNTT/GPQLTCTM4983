@@ -68,4 +68,8 @@ export interface IAccountBalanceStatistic {
   currentAmount: number
 }
 
-export type TAccountSourceActions = 'getAllAccountSource' | 'getStatisticAccountBalance' | 'getAdvancedAccountSource'
+export type TAccountSourceActions =
+  | 'getAllAccountSource'
+  | 'getStatisticAccountBalance'
+  | 'getAdvancedAccountSource'
+  | 'getStatisticOverviewPage'

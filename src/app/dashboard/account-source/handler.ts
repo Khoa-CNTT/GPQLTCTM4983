@@ -46,7 +46,12 @@ export const handleCreateAccountSource = ({
     onSuccess: (res: IAccountSourceResponse) => {
       if (res.statusCode === 200 || res.statusCode === 201) {
         setIsDialogOpen((prev) => ({ ...prev, isDialogCreateOpen: false }))
-        callBackOnSuccess(['getAllAccountSource', 'getStatisticAccountBalance', 'getAdvancedAccountSource'])
+        callBackOnSuccess([
+          'getAllAccountSource',
+          'getStatisticAccountBalance',
+          'getAdvancedAccountSource',
+          'getStatisticOverviewPage'
+        ])
         toast.success('Create account source successfully!')
       }
     }
@@ -67,7 +72,12 @@ export const handleUpdateAccountSource = ({
   updateAccountSource(payload, {
     onSuccess(res: IAccountSourceResponse) {
       if (res.statusCode === 200 || res.statusCode === 201) {
-        callBackOnSuccess(['getAllAccountSource', 'getStatisticAccountBalance', 'getAdvancedAccountSource'])
+        callBackOnSuccess([
+          'getAllAccountSource',
+          'getStatisticAccountBalance',
+          'getAdvancedAccountSource',
+          'getStatisticOverviewPage'
+        ])
         setIsDialogOpen((prev) => ({ ...prev, isDialogUpdateOpen: false, isDialogDetailOpen: false }))
         toast.success('Update account source successfully!')
       }
@@ -235,7 +245,12 @@ export const handleDeleteAnAccountSource = ({
     {
       onSuccess: (res: any) => {
         if (res.statusCode === 200 || res.statusCode === 201) {
-          callBackOnSuccess(['getAllAccountSource', 'getStatisticAccountBalance', 'getAdvancedAccountSource'])
+          callBackOnSuccess([
+            'getAllAccountSource',
+            'getStatisticAccountBalance',
+            'getAdvancedAccountSource',
+            'getStatisticOverviewPage'
+          ])
           setDataTableConfig((prev) => ({ ...prev, currentPage: 1 }))
           setIsDialogOpen((prev) => ({ ...prev, isDialogDeleteOpen: false }))
           setIdDeletes([])

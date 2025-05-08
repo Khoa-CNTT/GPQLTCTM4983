@@ -57,6 +57,7 @@ import { Badge } from '@/components/ui/badge'
 import DonutChart from '@/components/core/charts/DonutChart'
 import { Checkbox } from '@/components/ui/checkbox'
 import { ArrowUpDown, HandCoins, Landmark, Wallet2 } from 'lucide-react'
+import { useOverviewPage } from '@/core/overview/hooks'
 
 export default function AccountSourceForm() {
   const { t, i18n } = useTranslation(['common', 'accountSource'])
@@ -92,11 +93,19 @@ export default function AccountSourceForm() {
   const { refetchGetStatisticAccountBalanceData } = getStatisticAccountBalance(fundId)
   const { refetchAllData } = getAllAccountSource(fundId)
   const { getAdvancedData, refetchGetAdvanced } = getAdvancedAccountSource({ query: queryOptions, fundId })
+  const { getStatisticOverviewPage } = useOverviewPage()
+  const { refetchGetStatisticOverviewPageData } = getStatisticOverviewPage(
+    {
+      daysToSubtract: 90
+    },
+    fundId
+  )
 
   const actionMap: Record<TAccountSourceActions, () => void> = {
     getAllAccountSource: refetchAllData,
     getStatisticAccountBalance: refetchGetStatisticAccountBalanceData,
-    getAdvancedAccountSource: refetchGetAdvanced
+    getAdvancedAccountSource: refetchGetAdvanced,
+    getStatisticOverviewPage: refetchGetStatisticOverviewPageData
   }
 
   const callBackRefetchAccountSourcePage = (actions: TAccountSourceActions[]) => {
