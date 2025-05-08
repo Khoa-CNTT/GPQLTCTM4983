@@ -11,6 +11,7 @@ import { IMutateData } from '@/types/common.i'
 import toast from 'react-hot-toast'
 import { useTranslation } from 'react-i18next'
 import i18n from 'i18next'
+import Cookies from 'js-cookie'
 
 export class HttpError extends Error {
   status: number
@@ -41,6 +42,21 @@ const axiosInstance = axios.create({
   withCredentials: true
 })
 
+// Thêm biến để kiểm soát việc chuyển hướng
+let isRedirecting = false
+
+// Hàm xóa tất cả thông tin phiên đăng nhập
+const clearAllAuthData = () => {
+  // Xóa tokens từ localStorage
+  removeTokensFromLocalStorage()
+  // Xóa cookie xác thực
+  Cookies.remove('authTokenVerify', { path: '/' })
+  // Xóa các cookie liên quan khác nếu có
+  Cookies.remove('next-auth.session-token', { path: '/' })
+  Cookies.remove('next-auth.csrf-token', { path: '/' })
+  Cookies.remove('next-auth.callback-url', { path: '/' })
+}
+
 axiosInstance.interceptors.request.use((config) => {
   if (isClient) {
     const currentLanguage = i18n.language || 'vi'
@@ -57,11 +73,64 @@ axiosInstance.interceptors.response.use(
   (response) => response,
   async (error: AxiosError) => {
     const { response } = error
-    if (error.response?.status === 401 || error.response?.status === 403) {
-      if (window.location.pathname !== '/sign-in') {
-        removeTokensFromLocalStorage()
+    
+    // Kiểm tra nếu lỗi là do token hết hạn
+    if (response?.status === 401 || 
+        (response?.data && (response?.data as any).errorCode === 112)) {
+      
+      // Kiểm tra xem request hiện tại có phải là request verify-token không
+      const originalRequest = error.config as AxiosRequestConfig
+      if (originalRequest && !originalRequest.url?.includes('auth/verify-token')) {
+        try {
+          // Gọi API verify-token để lấy token mới
+          const refreshResponse = await axiosInstance.get('auth/verify-token/')
+          
+          if (refreshResponse.data && refreshResponse.data.data && refreshResponse.data.data.accessToken) {
+            const { accessToken } = refreshResponse.data.data
+            
+            // Lưu token mới vào localStorage
+            setAccessTokenToLocalStorage(accessToken)
+            
+            // Cập nhật token trong header của request cũ
+            if (!originalRequest.headers) {
+              originalRequest.headers = {}
+            }
+            originalRequest.headers = {
+              ...originalRequest.headers,
+              Authorization: `Bearer ${accessToken}`
+            }
+            
+            // Thực hiện lại request ban đầu với token mới
+            return axiosInstance(originalRequest)
+          }
+        } catch (refreshError) {
+          // Nếu không thể refresh token, xóa token và chuyển hướng đến trang đăng nhập
+          if (window.location.pathname !== '/sign-in' && !isRedirecting) {
+            isRedirecting = true
+            clearAllAuthData()
+            // Hiển thị thông báo lỗi
+            toast.error('Phiên làm việc đã hết hạn. Vui lòng đăng nhập lại.')
+            // Chuyển hướng đến trang đăng nhập sau một khoảng thời gian nhỏ
+            setTimeout(() => {
+              window.location.replace('/sign-in')
+            }, 100)
+          }
+        }
+      } else {
+        // Nếu chính API verify-token trả về lỗi, xóa token và chuyển hướng đến trang đăng nhập
+        if (window.location.pathname !== '/sign-in' && !isRedirecting) {
+          isRedirecting = true
+          clearAllAuthData()
+          // Hiển thị thông báo lỗi
+          toast.error('Phiên làm việc đã hết hạn. Vui lòng đăng nhập lại.')
+          // Chuyển hướng đến trang đăng nhập sau một khoảng thời gian nhỏ
+          setTimeout(() => {
+            window.location.replace('/sign-in')
+          }, 100)
+        }
       }
     }
+    
     return Promise.reject(
       new HttpError({
         status: response?.status || 0,
