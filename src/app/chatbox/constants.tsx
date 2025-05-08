@@ -119,9 +119,6 @@ export interface IPropsHandleConfirm {
   editedTransactions: any[]
   fundId: string
   postTrackerTransactions: any
-  setIsDialogOpen: Dispatch<SetStateAction<boolean>>
-  setIsDisabled: Dispatch<SetStateAction<boolean>>
-  setEditedTransactions: Dispatch<SetStateAction<any[]>>
 }
 
 export const messageVariants = {
@@ -155,7 +152,8 @@ export const quickActions: ActionItem[] = [
   {
     id: 'expense-entry',
     title: 'Ghi chép nhanh các khoản chi tiêu',
-    description: 'Mua cafe 30k ví momo, Ăn trưa 100k',
+    // description: 'Mua đồ ăn sáng 20k ví mb, Ăn trưa 35k',
+    description: '',
     icon: NotebookPen,
     iconBgColor: 'bg-emerald-600/20',
     iconColor: 'text-emerald-500',
@@ -164,7 +162,8 @@ export const quickActions: ActionItem[] = [
   {
     id: 'financial-stats',
     title: 'Thống kê tài chính tháng này',
-    description: 'Xem báo cáo chi tiết về thu chi trong tháng',
+    // description: 'Xem báo cáo chi tiết về thu chi trong tháng',
+    description: '',
     icon: LineChart,
     iconBgColor: 'bg-blue-600/20',
     iconColor: 'text-blue-500',

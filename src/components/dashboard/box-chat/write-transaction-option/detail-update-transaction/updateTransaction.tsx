@@ -11,7 +11,7 @@ import { ETypeOfTrackerTransactionType } from '@/core/tracker-transaction-type/m
 import { handleCancelEdit } from '@/app/chatbox/handler'
 import { IAccountSource } from '@/core/account-source/models'
 import { Transaction } from '@/app/chatbox/constants'
-import { initEmptyAccountSource } from '@/app/dashboard/account-source/constants'
+import toast from 'react-hot-toast'
 
 interface IUpdateTransactionProps {
   transaction: Transaction
@@ -20,20 +20,23 @@ interface IUpdateTransactionProps {
   trackerType: ITrackerTransactionType[]
   setEditingId: React.Dispatch<React.SetStateAction<string | null>>
   accountSources: IAccountSource[]
+  editedTransaction: any[]
+  setEditedTransaction: React.Dispatch<React.SetStateAction<any[]>>
+  setTransaction: React.Dispatch<React.SetStateAction<Transaction[]>>
 }
 
 export const UpdateTransaction = (props: IUpdateTransactionProps) => {
-  const { incomeTrackerType, expenseTrackerType, trackerType, setEditingId, accountSources, transaction } = props
-  const accountSourceData = useMemo(() => {
-    return [
-      ...accountSources,
-      {
-        ...initEmptyAccountSource,
-        id: transaction.wallet?.id || 'unknown',
-        name: transaction.walletName
-      }
-    ]
-  }, [accountSources, transaction.wallet])
+  const {
+    incomeTrackerType,
+    expenseTrackerType,
+    trackerType,
+    setEditingId,
+    accountSources,
+    transaction,
+    setEditedTransaction,
+    editedTransaction,
+    setTransaction
+  } = props
   const formRef = useRef<HTMLFormElement>(null)
   console.log('🚀 ~ UpdateTransaction ~ transaction:', transaction)
 
@@ -55,13 +58,13 @@ export const UpdateTransaction = (props: IUpdateTransactionProps) => {
           reasonName: transaction.description,
           amount: transaction.amount,
           trackerTypeId: transaction.categoryId,
-          accountSourceId: transaction.wallet?.id || 'unknown'
+          accountSourceId: transaction.accountSourceId || 'unknown'
         }}
         formFieldBody={defineUpdateTransactionFormBody({
           incomeTrackerType,
           expenseTrackerType,
           currentDirection: typeOfEditTrackerType,
-          accountSourceData: accountSourceData,
+          accountSourceData: accountSources,
           typeOfEditTrackerType,
           setTypeOfEditTrackerType,
           openEditDialog: isOpenEditDialog,
@@ -78,10 +81,68 @@ export const UpdateTransaction = (props: IUpdateTransactionProps) => {
           }
         })}
         formSchema={updateTransactionSchema}
-        onSubmit={(data) => console.log(data)}
+        onSubmit={(data) => {
+          const isExist = editedTransaction.find((item) => item.id === transaction.id)
+          if (isExist) {
+            setEditedTransaction((prev) =>
+              prev.map((item) => {
+                if (item.id === transaction.id) {
+                  return {
+                    ...item,
+                    ...data,
+                    accountSourceId: data.accountSourceId,
+                    accountSourceName: accountSources.find((source) => source.id === data.accountSourceId)
+                      ?.name as string,
+                    categoryId: data.trackerTypeId,
+                    categoryName: trackerType.find((type) => type.id === data.trackerTypeId)?.name as string,
+                    type: incomeTrackerType.find((type) => type.id === data.trackerTypeId)
+                      ? ETypeOfTrackerTransactionType.INCOMING
+                      : ETypeOfTrackerTransactionType.EXPENSE
+                  }
+                }
+                return item
+              })
+            )
+          } else {
+            setEditedTransaction((prev) => [
+              ...prev,
+              {
+                ...data,
+                id: transaction.id,
+                accountSourceId: data.accountSourceId,
+                accountSourceName: accountSources.find((source) => source.id === data.accountSourceId)?.name as string,
+                categoryId: data.trackerTypeId,
+                categoryName: trackerType.find((type) => type.id === data.trackerTypeId)?.name as string,
+                type: incomeTrackerType.find((type) => type.id === data.trackerTypeId)
+                  ? ETypeOfTrackerTransactionType.INCOMING
+                  : ETypeOfTrackerTransactionType.EXPENSE
+              }
+            ])
+          }
+          setTransaction((prev) =>
+            prev.map((item) => {
+              if (item.id === transaction.id) {
+                return {
+                  ...item,
+                  ...data,
+                  description: data.reasonName,
+                  type: incomeTrackerType.find((type) => type.id === data.trackerTypeId)
+                    ? ETypeOfTrackerTransactionType.INCOMING
+                    : ETypeOfTrackerTransactionType.EXPENSE,
+                  categoryId: data.trackerTypeId,
+                  accountSourceName: accountSources.find((source) => source.id === data.accountSourceId)
+                    ?.name as string,
+                  categoryName: trackerType.find((type) => type.id === data.trackerTypeId)?.name as string
+                }
+              }
+              return item
+            })
+          )
+          toast.success('Cập nhật giao dịch thành công')
+        }}
         submitRef={formRef}
       />
-      <div className='mt-2 flex items-center justify-end gap-2'>
+      <div className='mt-4 flex items-center justify-end gap-2'>
         <Button
           variant='outline'
           size='sm'

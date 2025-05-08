@@ -34,7 +34,10 @@ import {
   TTrackerTransactionActions
 } from '@/core/tracker-transaction/models/tracker-transaction.interface'
 import { updateCacheDataTransactionForClassify } from '@/app/dashboard/transaction/handler'
-import { GET_ADVANCED_TRACKER_TRANSACTION_KEY } from '@/core/tracker-transaction/constants'
+import {
+  GET_ADVANCED_TRACKER_TRANSACTION_KEY,
+  STATISTIC_TRACKER_TRANSACTION_KEY
+} from '@/core/tracker-transaction/constants'
 import { initTrackerTypeData, updateCacheDataCreateClassify } from '@/app/dashboard/tracker-transaction/handlers'
 import toast from 'react-hot-toast'
 import { initQueryOptions } from '@/constants/init-query-options'
@@ -53,7 +56,7 @@ import {
   Transaction,
   typeCallBack
 } from '@/app/chatbox/constants'
-import { handleConfirm, handleSaveEdit, handleSend, handleStartEdit } from '@/app/chatbox/handler'
+import { confirmChange, handleConfirm, handleSaveEdit, handleSend, handleStartEdit } from '@/app/chatbox/handler'
 import { Card } from '@/components/ui/card'
 import { DetailTransaction } from './write-transaction-option/detail-update-transaction/detailTransaction'
 import { UpdateTransaction } from './write-transaction-option/detail-update-transaction/updateTransaction'
@@ -89,11 +92,12 @@ export function ChatBox() {
   const { getAllTrackerTransactionType, createTrackerTxType, updateTrackerTxType } = useTrackerTransactionType()
   const { dataTrackerTransactionType, refetchTrackerTransactionType } = getAllTrackerTransactionType(fundId)
   const { getAllAccountSource } = useAccountSource()
-  // const { getAllAccountSourceData } = getAllAccountSource(fundId)
+  const { getAllData: accountSourceData } = getAllAccountSource(fundId)
+
   const { getAllExpenditureFund } = useExpenditureFund()
   const { getAllExpenditureFundData } = getAllExpenditureFund()
   const [typesState, setTypesState] = useState<Record<string, ETypeOfTrackerTransactionType>>({})
-  const { resetData: resetAccountSource } = useUpdateModel([GET_ADVANCED_ACCOUNT_SOURCE_KEY], () => { })
+  const { resetData: resetAccountSource } = useUpdateModel([GET_ADVANCED_ACCOUNT_SOURCE_KEY], () => {})
   const { resetData: resetCacheTransaction } = useUpdateModel<IGetTransactionResponse>(
     [GET_ADVANCED_TRANSACTION_KEY],
     updateCacheDataTransactionForClassify
@@ -109,26 +113,28 @@ export function ChatBox() {
   })
   const { resetData: resetCacheTodayTxs } = useUpdateModel(
     [GET_TODAY_TRANSACTION_KEY, mergeQueryParams(initQueryOptions)],
-    () => { }
+    () => {}
   )
-  const { resetData: resetCacheUnclassifiedTxs } = useUpdateModel([GET_UNCLASSIFIED_TRANSACTION_KEY], () => { })
+  const { resetData: resetCacheUnclassifiedTxs } = useUpdateModel([GET_UNCLASSIFIED_TRANSACTION_KEY], () => {})
   const { resetData: resetCacheStatisticExpenditureFund } = useUpdateModel(
     [GET_STATISTIC_EXPENDITURE_FUND_KEY],
-    () => { }
+    () => {}
   )
+  const { resetData: resetCacheStatistic } = useUpdateModel([STATISTIC_TRACKER_TRANSACTION_KEY], () => {})
 
-  const { resetData: resetCacheExpenditureFund } = useUpdateModel([GET_ADVANCED_EXPENDITURE_FUND_KEY], () => { })
-  const actionMap: Partial<Record<TTrackerTransactionActions, () => void>> = {
+  const { resetData: resetCacheExpenditureFund } = useUpdateModel([GET_ADVANCED_EXPENDITURE_FUND_KEY], () => {})
+  const actionMap: Partial<Record<any, () => void>> = {
     getTransactions: resetCacheTransaction,
     getTodayTransactions: resetCacheTodayTxs,
     getUnclassifiedTransactions: resetCacheUnclassifiedTxs,
     getAllAccountSource: resetAccountSource,
     getAllTrackerTransactionType: refetchTrackerTransactionType,
     getTrackerTransaction: resetCacheTrackerTx,
+    getStatistic: resetCacheStatistic,
     getStatisticExpenditureFund: resetCacheStatisticExpenditureFund,
     getExpenditureFund: resetCacheExpenditureFund
   }
-  const callBackRefetchTrackerTransactionPage = (actionMaps: TTrackerTransactionActions[]) => {
+  const callBackRefetchTrackerTransactionPage = (actionMaps: any[]) => {
     actionMaps.forEach((action) => {
       if (actionMap[action]) {
         actionMap[action]()
@@ -232,10 +238,7 @@ export function ChatBox() {
     return handleConfirm({
       editedTransactions,
       fundId,
-      postTrackerTransactions,
-      setIsDialogOpen,
-      setEditedTransactions,
-      setIsDisabled
+      postTrackerTransactions
     })
   }
 
@@ -243,15 +246,19 @@ export function ChatBox() {
     for (const item of payload) {
       createTrackerTransaction(item, {
         onSuccess: () => {
-          console.log(`Successfully created transaction: ${JSON.stringify(item)}`)
+          toast.success(`Successfully created transaction`)
+          setIsDialogOpen(false)
+          setEditedTransactions([])
+          setIsDisabled(true)
+          refetchGetAdvancedTrackerTransaction()
+          callBackRefetchTrackerTransactionPage(typeCallBack)
         },
         onError: (error) => {
           toast.error(`Failed to create transaction`)
+          console.log('🚀 ~ postTrackerTransactions ~ error:', error)
         }
       })
     }
-    refetchGetAdvancedTrackerTransaction()
-    callBackRefetchTrackerTransactionPage(typeCallBack)
   }
 
   // useEffect
@@ -358,8 +365,9 @@ export function ChatBox() {
                       className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'} mb-3`}
                     >
                       <div
-                        className={`relative flex ${message.sender === 'user' ? 'flex-row-reverse' : 'flex-row'
-                          } items-end gap-2`}
+                        className={`relative flex ${
+                          message.sender === 'user' ? 'flex-row-reverse' : 'flex-row'
+                        } items-end gap-2`}
                       >
                         {/* Avatar */}
                         <Avatar className='h-8 w-8'>
@@ -377,11 +385,7 @@ export function ChatBox() {
                               <AvatarImage src='/user-avatar.png' alt='User' />
                             )
                           ) : (
-                            <AvatarImage
-                              src={Robot.src}
-                              alt='Uniko'
-                              className='bg-transparent scale-x-[-1]'
-                            />
+                            <AvatarImage src={Robot.src} alt='Uniko' className='scale-x-[-1] bg-transparent' />
                           )}
                           <AvatarFallback>
                             {message.sender === 'user' ? user?.fullName?.charAt(0) || 'U' : 'UN'}
@@ -392,10 +396,11 @@ export function ChatBox() {
                             initial={{ height: 0, opacity: 0 }}
                             animate={{ height: 'auto', opacity: 1 }}
                             transition={{ duration: 0.2 }}
-                            className={`overflow-hidden rounded-md px-3 py-2 text-sm ${message.sender === 'user'
-                              ? 'bg-primary text-white'
-                              : 'bg-slate-200 text-slate-800 dark:bg-slate-700 dark:text-slate-200'
-                              }`}
+                            className={`overflow-hidden rounded-md px-3 py-2 text-sm ${
+                              message.sender === 'user'
+                                ? 'bg-primary text-white'
+                                : 'bg-slate-200 text-slate-800 dark:bg-slate-700 dark:text-slate-200'
+                            }`}
                           >
                             <motion.div
                               initial={{ opacity: 0 }}
@@ -412,8 +417,9 @@ export function ChatBox() {
                                   className='overflow-hidden whitespace-nowrap'
                                 >
                                   <span
-                                    className={`text-sm font-medium ${message.sender === 'user' ? 'text-white/90' : 'text-slate-700 dark:text-slate-200'
-                                      } `}
+                                    className={`text-sm font-medium ${
+                                      message.sender === 'user' ? 'text-white/90' : 'text-slate-700 dark:text-slate-200'
+                                    } `}
                                   >
                                     Đợi tui chút
                                   </span>
@@ -423,8 +429,9 @@ export function ChatBox() {
                                   {Array.from({ length: 3 }).map((_, index) => (
                                     <motion.div
                                       key={index}
-                                      className={`h-1.5 w-1.5 rounded-full ${message.sender === 'user' ? 'bg-white/80' : 'bg-slate-600 dark:bg-slate-300'
-                                        } `}
+                                      className={`h-1.5 w-1.5 rounded-full ${
+                                        message.sender === 'user' ? 'bg-white/80' : 'bg-slate-600 dark:bg-slate-300'
+                                      } `}
                                       animate={{
                                         scale: [0.6, 1, 0.6],
                                         opacity: [0.3, 1, 0.3]
@@ -450,10 +457,11 @@ export function ChatBox() {
                             initial={{ height: 0, opacity: 0 }}
                             animate={{ height: 'auto', opacity: 1 }}
                             transition={{ duration: 0.2 }}
-                            className={`max-w-[70%] overflow-hidden rounded-md px-3 py-2 text-sm ${message.sender === 'user'
-                              ? 'bg-primary text-white'
-                              : 'bg-slate-200 text-slate-800 dark:bg-slate-700 dark:text-slate-200'
-                              }`}
+                            className={`max-w-[70%] overflow-hidden rounded-md px-3 py-2 text-sm ${
+                              message.sender === 'user'
+                                ? 'bg-primary text-white'
+                                : 'bg-slate-200 text-slate-800 dark:bg-slate-700 dark:text-slate-200'
+                            }`}
                           >
                             <motion.div
                               initial={{ opacity: 0 }}
@@ -565,6 +573,7 @@ export function ChatBox() {
               {error && <p className='mb-2 text-sm font-semibold text-green-600'>{error}</p>}
               <div className='flex items-center gap-2'>
                 <motion.div className='flex-grow' whileFocus={{ scale: 1.01 }} variants={inputVariants}>
+                  {/* xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx */}
                   <Input
                     ref={inputRef}
                     value={input}
@@ -595,17 +604,17 @@ export function ChatBox() {
             transition={{ type: 'spring', stiffness: 300, damping: 25 }}
           >
             <Button
-              className='h-16 w-16 rounded-full p-0 shadow-lg bg-transparent hover:bg-white/5 backdrop-blur-[2px] border border-white/10 dark:border-slate-700/30'
+              className='h-16 w-16 rounded-full border border-white/10 bg-transparent p-0 shadow-lg backdrop-blur-[2px] hover:bg-white/5 dark:border-slate-700/30'
               size='icon'
               onClick={() => setIsOpen(true)}
             >
-              <div className="relative w-full h-full p-1.5 overflow-hidden rounded-full">
+              <div className='relative h-full w-full overflow-hidden rounded-full p-1.5'>
                 <Image
                   src={Robot}
-                  alt="Robot assistant"
+                  alt='Robot assistant'
                   width={48}
                   height={48}
-                  className="h-full w-full object-contain animate-bounce-slow drop-shadow-[0_0_5px_rgba(255,255,255,0.5)]"
+                  className='animate-bounce-slow h-full w-full object-contain drop-shadow-[0_0_5px_rgba(255,255,255,0.5)]'
                   priority
                 />
               </div>
@@ -630,11 +639,9 @@ export function ChatBox() {
           <DialogDescription>Uniko-chan</DialogDescription>
           <Accordion type='single' collapsible className='w-full'>
             {selectedTransactions.map((transaction: Transaction) => {
-              // console.log("🚀 ~ {editForms.map ~ transaction:", editForms[transaction.id] ?? transaction.categoryName)
               const currentType = transaction.id ? (typesState[transaction.id] ?? transaction.type) : transaction.type
               const trackerType =
                 transaction.type === ETypeOfTrackerTransactionType.INCOMING ? incomingTrackerType : expenseTrackerType
-              console.log('trackerType[0].name : ', trackerType[0].id)
 
               return (
                 <AccordionItem key={transaction.id} value={`item-${transaction.id}`}>
@@ -648,7 +655,7 @@ export function ChatBox() {
                         className={`font-medium ${transaction.type === 'EXPENSE' ? 'text-red-500' : 'text-green-500'}`}
                       >
                         {transaction.type === 'EXPENSE' ? '-' : '+'}
-                        {formatCurrency(transaction.amount ?? 0, 'VND')}
+                        {formatCurrency(transaction.amount ?? 0, 'đ')}
                       </div>
                     </div>
                   </AccordionTrigger>
@@ -656,12 +663,15 @@ export function ChatBox() {
                   <AccordionContent>
                     {editingId === transaction.id ? (
                       <UpdateTransaction
+                        editedTransaction={editedTransactions}
+                        setEditedTransaction={setEditedTransactions}
                         setEditingId={setEditingId}
                         incomeTrackerType={incomingTrackerType}
                         expenseTrackerType={expenseTrackerType}
                         trackerType={trackerType}
-                        accountSources={[]}
+                        accountSources={accountSourceData?.data ?? []}
                         transaction={transaction}
+                        setTransaction={setSelectedTransactions}
                       />
                     ) : (
                       <DetailTransaction
@@ -689,7 +699,7 @@ export function ChatBox() {
               <Dialog open={isOpenConfirm} onOpenChange={setIsOpenConfirm}>
                 <DialogTrigger asChild>
                   <Button
-                    disabled={!isDisabled}
+                    disabled={!isDisabled || selectedTransactions.length === 0}
                     variant='destructive'
                     onClick={() =>
                       handleStartEdit({ transaction: selectedTransactions[0], setEditForms, setEditingId })
@@ -716,16 +726,9 @@ export function ChatBox() {
                       </Button>
                       <Button
                         onClick={() => {
-                          handleSaveEdit({
-                            transactionId: selectedTransactions[0].id,
-                            editForms,
-                            selectedTransactions,
-                            setSelectedTransactions,
-                            setEditedTransactions,
-                            setEditingId
-                          }),
-                            setIsDisabled(false),
-                            setIsOpenConfirm(false)
+                          confirmChange(selectedTransactions, editedTransactions, setEditedTransactions)
+                          setIsOpenConfirm(false)
+                          setIsDisabled(false)
                         }}
                       >
                         Thay đổi
@@ -738,7 +741,7 @@ export function ChatBox() {
                 variant={'secondary'}
                 onClick={onclickConfirm}
                 isLoading={isGetAdvancedPending}
-                disabled={isDisabled}
+                disabled={isDisabled || selectedTransactions.length === 0}
               >
                 Thêm mới
               </Button>
