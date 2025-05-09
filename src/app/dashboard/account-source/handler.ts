@@ -213,7 +213,12 @@ export const handleDeleteMultipleAccountSource = ({
     {
       onSuccess: (res: any) => {
         if (res.statusCode === 200 || res.statusCode === 201) {
-          callBackOnSuccess(['getAdvancedAccountSource', 'getAllAccountSource', 'getStatisticAccountBalance'])
+          callBackOnSuccess([
+            'getAllAccountSource',
+            'getStatisticAccountBalance',
+            'getAdvancedAccountSource',
+            'getStatisticOverviewPage'
+          ])
           setDataTableConfig((prev) => ({ ...prev, currentPage: 1 }))
           setIsDialogOpen((prev) => ({ ...prev, isDialogDeleteOpen: false }))
           setIdDeletes([])

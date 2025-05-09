@@ -472,7 +472,16 @@ export default function AccountSourceForm() {
                               refetchPage()
                               resetCacheStatistic()
                               setDataTableConfig((prev) => ({ ...prev, currentPage: 1 }))
-                              setIsDialogOpen((prev) => ({ ...prev, isDialogDeleteOpen: false }))
+                              setIsDialogOpen((prev) => ({
+                                ...prev,
+                                isDialogDeleteOpen: false,
+                              }))
+                               callBackRefetchAccountSourcePage([
+                                'getAllAccountSource',
+                                'getStatisticAccountBalance',
+                                'getAdvancedAccountSource',
+                                'getStatisticOverviewPage'
+                              ])
                               setIdDeletes([])
                               toast.success('Delete account source successfully')
                             }

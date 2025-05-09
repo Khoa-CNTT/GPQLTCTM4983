@@ -44,6 +44,7 @@ export default function DashboardForm() {
 
   const [timeRange, setTimeRange] = useState<string>("30d")
   const [daysToSubtract, setDaysToSubtract] = useState(30)
+  const [timestamp, setTimestamp] = useState(Date.now())
 
   // Chart data state
   const [cashFlowAnalysisChartData, setCashFlowAnalysisChartData] = useState<ICashFlowAnalysisStatistic[]>([])
@@ -56,7 +57,8 @@ export default function DashboardForm() {
   const [currentBalance, setCurrentBalance] = useState(0)
 
   const { getStatisticAccountBalanceData } = getStatisticAccountBalance(fundId)
-  const { getStatisticOverviewPageData } = getStatisticOverviewPage({ daysToSubtract }, fundId)
+  const { getStatisticOverviewPageData } = getStatisticOverviewPage({ daysToSubtract, _t: timestamp }, fundId)
+
 
   useEffect(() => {
     if (timeRange === "30d") {
@@ -68,7 +70,6 @@ export default function DashboardForm() {
     }
   }, [timeRange])
 
-  // Cash flow data effect
   useEffect(() => {
     if (getStatisticOverviewPageData) {
       setTotalIncome(getStatisticOverviewPageData.data.totalIncome || initEmptyTotalAmount)
@@ -82,9 +83,8 @@ export default function DashboardForm() {
         setTotalExpenses,
       })
     }
-  }, [getStatisticOverviewPageData])
+  }, [getStatisticOverviewPageData, daysToSubtract])
 
-  // Balance chart data effect
   useEffect(() => {
     if (getStatisticAccountBalanceData && getStatisticAccountBalanceData.data.length > 0) {
       initDataStatisticAccountBalance({
@@ -93,7 +93,7 @@ export default function DashboardForm() {
         setBalanceChartData,
       })
     }
-  }, [getStatisticAccountBalanceData])
+  }, [getStatisticAccountBalanceData, daysToSubtract])
 
   const totalTargets = getStatisticOverviewPageData?.data.statisticBudgetTargetAndPlan?.reduce((acc, curr) => acc + curr.targetStatistic.total, 0) || 0
   const successfulTargets = getStatisticOverviewPageData?.data.statisticBudgetTargetAndPlan?.reduce((acc, curr) => acc + curr.targetStatistic.successed, 0) || 0

@@ -31,9 +31,9 @@ export const handleCreateExpenditureFund = async ({
   hookCreate(data, {
     onSuccess: (res: any) => {
       if (res.statusCode === 200 || res.statusCode === 201) {
-        callBackRefetchAPI(['getAllExpendingFund', 'getExpenditureFund', 'getStatisticExpenditureFund'])
         setDataTableConfig((prev) => ({ ...prev, currentPage: 1 }))
         setIsDialogOpen((prev) => ({ ...prev, isDialogCreateOpen: false }))
+        callBackRefetchAPI(['getAllExpendingFund', 'getExpenditureFund', 'getStatisticExpenditureFund', 'getStatisticOverviewPage'])
         toast.success('Create expenditure fund successfully!')
       }
     }
@@ -51,11 +51,11 @@ export const handleUpdateExpenditureFund = async ({
   hookUpdate(data, {
     onSuccess: (res: any) => {
       if (res.statusCode === 200 || res.statusCode === 201) {
-        callBackRefetchAPI(['getAllExpendingFund', 'getExpenditureFund', 'getStatisticExpenditureFund'])
         setDetailData((prev) => ({ ...prev, ...res.data }))
         setDataTableConfig((prev) => ({ ...prev, currentPage: 1 }))
-        toast.success('Update expenditure fund successfully!')
         setIsDialogOpen((prev) => ({ ...prev, isDialogUpdateOpen: false }))
+        callBackRefetchAPI(['getAllExpendingFund', 'getExpenditureFund', 'getStatisticExpenditureFund', 'getStatisticOverviewPage'])
+        toast.success('Update expenditure fund successfully!')
       }
     }
   })
@@ -88,7 +88,6 @@ export const handleDeleteAnExpenditureFund = async ({
   fundId
 }: IHandleDeleteAnExpenditureFundProps) => {
   if (id === fundId) {
-    //  toast.error('Không thể xoá quỹ đang được chọn! Vui lòng chọn quỹ khác trước khi thử lại.')
     toast.error('Cannot delete the currently selected fund! Please choose a different fund before trying again.')
     return
   }
@@ -97,10 +96,10 @@ export const handleDeleteAnExpenditureFund = async ({
     {
       onSuccess: (res: any) => {
         if (res.statusCode === 200 || res.statusCode === 201) {
-          callBackRefetchAPI(['getAllExpendingFund', 'getExpenditureFund', 'getStatisticExpenditureFund'])
           setDataTableConfig((prev) => ({ ...prev, currentPage: 1 }))
           setIsDialogOpen((prev) => ({ ...prev, isDialogDeleteOpen: false }))
           setIdDeletes([])
+          callBackRefetchAPI(['getAllExpendingFund', 'getExpenditureFund', 'getStatisticExpenditureFund', 'getStatisticOverviewPage'])
           toast.success('Delete expenditure fund successfully')
         }
       }
@@ -118,7 +117,6 @@ export const handleDeleteMultipleExpenditureFund = async ({
   fundId
 }: IHandleDeleteMultipleExpenditureFundProps) => {
   if (ids.includes(fundId)) {
-    //  toast.error('Không thể xoá quỹ đang được chọn! Vui lòng chọn quỹ khác trước khi thử lại.')
     toast.error('Cannot delete the currently selected fund! Please choose a different fund before trying again.')
     return
   }
@@ -127,10 +125,10 @@ export const handleDeleteMultipleExpenditureFund = async ({
     {
       onSuccess: (res: any) => {
         if (res.statusCode === 200 || res.statusCode === 201) {
-          callBackRefetchAPI(['getAllExpendingFund', 'getExpenditureFund', 'getStatisticExpenditureFund'])
           setDataTableConfig((prev) => ({ ...prev, currentPage: 1 }))
           setIsDialogOpen((prev) => ({ ...prev, isDialogDeleteAllOpen: false }))
           setIdDeletes([])
+          callBackRefetchAPI(['getAllExpendingFund', 'getExpenditureFund', 'getStatisticExpenditureFund', 'getStatisticOverviewPage'])
           toast.success('Delete all expenditure fund successfully')
         }
       }
