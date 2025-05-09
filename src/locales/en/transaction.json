@@ -16,7 +16,7 @@
     },
     "transactionsTodayDialog": {
       "title": "Transaction Today",
-      "description": "Overview of today’s transactions."
+      "description": "Overview of today's transactions."
     },
     "unclassifiedTransactionsDialog": {
       "title": "Unclassified Transaction",
@@ -84,7 +84,7 @@
     "toast": "Cannot edit transactions fetched from bank accounts!",
     "classify": "Classify"
   },
-  "table  ": {
+  "table": {
     "amount": "Amount",
     "direction": "Direction",
     "accountSource": "Account Source",

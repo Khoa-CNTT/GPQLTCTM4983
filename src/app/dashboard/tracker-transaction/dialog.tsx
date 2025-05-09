@@ -19,6 +19,8 @@ export default function TrackerTransactionDialog({
   detailUpdateTrackerTransactionDialog,
   setTransactionIdClassifying
 }: ITrackerTransactionDialogProps) {
+  console.log('>>>>>>>>>>unclassifiedTxDialog.unclassifiedTxTableData: ', unclassifiedTxDialog.unclassifiedTxTableData)
+
   const formClassifyRef = useRef<HTMLFormElement>(null)
   const formCreateRef = useRef<HTMLFormElement>(null)
   const { t } = useTranslation(['trackerTransaction', 'common'])
