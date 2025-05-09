@@ -321,7 +321,7 @@ export default function DetailUpdateTransaction({
               })}
               formSchema={updateTransactionSchema}
               onSubmit={(data) => {
-                const currentTrackerTypeid = formUpdateTrackerTransactionRef.current.getValues().trackerTypeId
+                const currentTrackerTypeid = formUpdateTrackerTransactionRef.current?.getValues?.()?.trackerTypeId || ''
 
                 const payload: IUpdateTransactionBody = {
                   accountSourceId: data.accountSourceId,
