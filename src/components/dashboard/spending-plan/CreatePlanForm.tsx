@@ -138,8 +138,6 @@ const CreatePlanForm: React.FC<ICreatePlanFormProps> = ({
             }))
           },
           onFrequencyChange: (value: RecurringFrequency) => {
-            console.log('onFrequencyChange', value)
-
             setSelectedFrequency(value)
           }
         })}

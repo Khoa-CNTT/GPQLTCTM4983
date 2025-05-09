@@ -54,11 +54,17 @@ export const editFundSavingPlanSchema = z.object({
       message: 'Day of month must be between 1 and 31'
     }),
   expectedDate: z
-    .string()
+    .date()
+    .refine(
+      (date) => {
+        const today = new Date(new Date().setHours(0, 0, 0, 0))
+        return date >= today
+      },
+      {
+        message: 'Expected date must be greater than or equal to today'
+      }
+    )
     .optional()
-    .refine((val) => val === undefined || !val || !isNaN(new Date(val).getTime()), {
-      message: 'Expected date must be a valid date'
-    })
 })
 
 // Form fields definition
@@ -140,24 +146,5 @@ export const defineEditPlanFormBody = ({
         autoComplete: 'description'
       }
     }
-    // {
-    //   name: 'type',
-    //   type: EFieldType.Select,
-    //   label: t('spendingPlan:form.planFields.frequency'),
-    //   placeHolder: t('spendingPlan:form.planFields.frequencyPlaceholder'),
-    //   props: {
-    //     autoComplete: 'type',
-    //     onchange: (value: string) => {
-    //       console.log('onChange', value)
-    //       onFrequencyChange(value)
-    //     }
-    //   },
-    //   dataSelector: [
-    //     { value: 'DAILY', label: t('spendingPlan:frequency.daily') },
-    //     { value: 'WEEKLY', label: t('spendingPlan:frequency.weekly') },
-    //     { value: 'MONTHLY', label: t('spendingPlan:frequency.monthly') },
-    //     { value: 'ANNUAL', label: t('spendingPlan:frequency.annual') }
-    //   ]
-    // }
   ]
 }

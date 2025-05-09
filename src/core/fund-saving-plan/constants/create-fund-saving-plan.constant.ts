@@ -119,7 +119,6 @@ export const defineCreatePlanFormBody = ({
       props: {
         autoComplete: 'type',
         onchange: (value: string) => {
-          console.log('hus')
           onFrequencyChange(value)
         }
       },
