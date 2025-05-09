@@ -83,5 +83,12 @@
     "noNote": "Không có ghi chú",
     "toast": "Không thể chỉnh sửa giao dịch lấy từ tài khoản ngân hàng!",
     "classify": "Phân loại"
+  },
+  "table": {
+    "amount": "Số tiền",
+    "direction": "Loại giao dịch",
+    "accountSource": "Nguồn tài khoản",
+    "accountNo": "Số tài khoản",
+    "date": "Ngày"
   }
 }

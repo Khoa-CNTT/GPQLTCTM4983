@@ -304,7 +304,8 @@ export default function DetailUpdateTransaction({
             <FormZod
               formRef={formUpdateTransactionRef}
               submitRef={submitUpdateTransactionRef}
-              formFieldBody={defineUpdateTransactionFormBody({
+                formFieldBody={defineUpdateTransactionFormBody({
+                updateTrackerTransactionProps,
                 accountSourceData: commonProps.accountSourceData,
                 handleSetTrackerTypeDefault: (value: string) => {
                   setTransactionState((prevState) => ({

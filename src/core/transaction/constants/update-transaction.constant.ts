@@ -1,7 +1,8 @@
 import { modifiedTrackerTypeForComboBox } from '@/app/dashboard/tracker-transaction/handlers'
-import EditTrackerTypeDialog from '@/components/dashboard/EditTrackerType'
 import { IAccountSource } from '@/core/account-source/models'
 import { ETypeOfTrackerTransactionType } from '@/core/tracker-transaction-type/models/tracker-transaction-type.enum'
+import { IEditTrackerTypeDialogProps, ITrackerTransactionType } from '@/core/tracker-transaction-type/models/tracker-transaction-type.interface'
+import { ITrackerTransaction, IUpdateTrackerTransactionBody } from '@/core/tracker-transaction/models/tracker-transaction.interface'
 import { translate } from '@/libraries/utils'
 import { EFieldType, IBodyFormField } from '@/types/formZod.interface'
 import React from 'react'
@@ -10,14 +11,37 @@ import { z } from 'zod'
 interface IUpdateTransactionFormBody {
   accountSourceData: IAccountSource[]
   handleSetTrackerTypeDefault: (value: string) => void
+  updateTrackerTransactionProps?: {
+    trackerTransaction: Omit<ITrackerTransaction, 'Transaction'>
+    statusUpdateTrackerTransaction: 'error' | 'success' | 'pending' | 'idle'
+    handleUpdateTrackerTransaction: (
+      data: IUpdateTrackerTransactionBody,
+      setIsEditing: React.Dispatch<React.SetStateAction<boolean>>
+    ) => void
+    isEditing: boolean
+    setIsEditing: React.Dispatch<React.SetStateAction<boolean>>
+    editTrackerTransactionTypeProps: {
+      incomeTrackerType: ITrackerTransactionType[]
+      expenseTrackerType: ITrackerTransactionType[]
+      editTrackerTypeDialogProps: Omit<
+        IEditTrackerTypeDialogProps,
+        'dataArr' | 'type' | 'setType' | 'setOpenEditDialog' | 'openEditDialog'
+      >
+    }
+    typeOfEditTrackerType: ETypeOfTrackerTransactionType
+    setTypeOfEditTrackerType: React.Dispatch<React.SetStateAction<ETypeOfTrackerTransactionType>>
+    setOpenEditDialog: React.Dispatch<React.SetStateAction<boolean>>
+    openEditDialog: boolean
+  }
 }
 
 export const defineUpdateTransactionFormBody = ({
+  updateTrackerTransactionProps,
   accountSourceData,
   handleSetTrackerTypeDefault
 }: IUpdateTransactionFormBody): any[] => {
   const t = translate(['transaction'])
-  return [
+  const formFields: IBodyFormField[] = [
     {
       name: 'amount',
       type: EFieldType.MoneyInput,
@@ -33,8 +57,11 @@ export const defineUpdateTransactionFormBody = ({
       label: t('IUpdateTransactionFormBody.accountSource.label'),
       placeHolder: t('IUpdateTransactionFormBody.accountSource.placeholder'),
       dataSelector: modifiedTrackerTypeForComboBox(accountSourceData)
-    },
-    {
+    }
+  ]
+
+  if (updateTrackerTransactionProps) {
+    formFields.push({
       name: 'direction',
       type: EFieldType.Select,
       label: t('IUpdateTransactionFormBody.direction.label'),
@@ -43,7 +70,7 @@ export const defineUpdateTransactionFormBody = ({
         onchange: (value: string) => {
           handleSetTrackerTypeDefault(value)
         }
-      },
+      } as any,
       dataSelector: [
         {
           value: 'INCOMING',
@@ -54,8 +81,10 @@ export const defineUpdateTransactionFormBody = ({
           label: t('IUpdateTransactionFormBody.direction.options.expense', 'EXPENSE')
         }
       ]
-    }
-  ]
+    })
+  }
+
+  return formFields
 }
 
 export const updateTransactionSchema = z

@@ -83,5 +83,12 @@
     "noNote": "No comments",
     "toast": "Cannot edit transactions fetched from bank accounts!",
     "classify": "Classify"
+  },
+  "table  ": {
+    "amount": "Amount",
+    "direction": "Direction",
+    "accountSource": "Account Source",
+    "accountNo": "Account No",
+    "date": "Date"
   }
 }
