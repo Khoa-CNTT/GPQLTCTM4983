@@ -66,7 +66,7 @@ const DetailPlanForm: React.FC<DetailPlanFormProps> = ({ selectedPlan, setIsDial
         <div className='mt-4 grid grid-cols-2 gap-4'>
           <div>
             <h4 className='text-sm font-medium text-muted-foreground'>{t('spendingPlan:planDetails.amount')}</h4>
-            <p className='text-base font-medium text-emerald-600'>{formatCurrency(selectedPlan.targetAmount, 'VND')}</p>
+            <p className='text-base font-medium text-emerald-600'>{formatCurrency(selectedPlan.targetAmount, 'đ')}</p>
           </div>
           <div>
             <h4 className='text-sm font-medium text-muted-foreground'>{t('spendingPlan:planDetails.expectedDate')}</h4>

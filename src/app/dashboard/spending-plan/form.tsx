@@ -278,7 +278,7 @@ export default function SpendingPlanForm() {
               <PiggyBank className='h-8 w-8 flex-shrink-0 animate-pulse text-white opacity-75 md:h-12 md:w-12' />
               <div className='ml-2 text-right'>
                 <p className='truncate text-lg font-bold text-white md:text-xl lg:text-2xl'>
-                  {totalBudgetTarget ? formatCurrency(totalBudgetTarget.targetAmount, 'VND') : 'N/A'}
+                  {totalBudgetTarget ? formatCurrency(totalBudgetTarget.targetAmount, 'đ') : 'N/A'}
                 </p>
                 <p className='line-clamp-1 text-xs text-blue-100 md:text-sm'>
                   {t('spendingPlan:cardDetails.totalBudgetPlan')}
@@ -300,7 +300,7 @@ export default function SpendingPlanForm() {
               <Banknote className='h-8 w-8 flex-shrink-0 animate-pulse text-white opacity-75 md:h-12 md:w-12' />
               <div className='ml-2 text-right'>
                 <p className='truncate text-lg font-bold text-white md:text-xl lg:text-2xl'>
-                  {formatCurrency(totalBudgetTarget ? (totalBudgetTarget.targetAmount - totalBudgetTarget.remain) : 0, 'VND')}
+                  {formatCurrency(totalBudgetTarget ? (totalBudgetTarget.targetAmount - totalBudgetTarget.remain) : 0, 'đ')}
                 </p>
                 <p className='line-clamp-1 text-xs text-rose-100 md:text-sm'>
                   {t('spendingPlan:cardDetails.used')} {totalBudgetTarget ? Math.round(totalBudgetTarget.progress) : 0}%
@@ -341,7 +341,7 @@ export default function SpendingPlanForm() {
               <Coins className='h-8 w-8 flex-shrink-0 animate-pulse text-white opacity-75 md:h-12 md:w-12' />
               <div className='ml-2 text-right'>
                 <p className='truncate text-lg font-bold text-white md:text-xl lg:text-2xl'>
-                  {formatCurrency(totalBudgetTarget?.remain || 0, 'VND')}
+                  {formatCurrency(totalBudgetTarget?.remain || 0, 'đ')}
                 </p>
                 <p className='line-clamp-1 text-xs text-emerald-100 md:text-sm'>
                   {t('spendingPlan:cardDetails.remaining')} {Math.round(100 - (totalBudgetTarget?.progress ?? 0))}%
@@ -373,7 +373,7 @@ export default function SpendingPlanForm() {
               <CalendarDays className='h-8 w-8 flex-shrink-0 animate-pulse text-white opacity-75 md:h-12 md:w-12' />
               <div className='ml-2 text-right'>
                 <p className='truncate text-lg font-bold text-white md:text-xl lg:text-2xl'>
-                  {formatCurrency(totalPlannedAmount, 'VND')}
+                  {formatCurrency(totalPlannedAmount, 'đ')}
                 </p>
               </div>
             </div>
@@ -475,20 +475,20 @@ export default function SpendingPlanForm() {
                                     <p className='text-xs text-muted-foreground'>
                                       {t('spendingPlan:targetDetails.target')}
                                     </p>
-                                    <p className='font-medium'>{formatCurrency(target.targetAmount, 'VND')}</p>
+                                    <p className='font-medium'>{formatCurrency(target.targetAmount, 'đ')}</p>
                                   </div>
                                   <div>
                                     <p className='text-xs text-muted-foreground'>
                                       {t('spendingPlan:targetDetails.spent')}
                                     </p>
-                                    <p className='font-medium'>{formatCurrency(target.currentAmount, 'VND')}</p>
+                                    <p className='font-medium'>{formatCurrency(target.currentAmount, 'đ')}</p>
                                   </div>
                                   <div>
                                     <p className='text-xs text-muted-foreground'>
                                       {t('spendingPlan:targetDetails.remaining')}
                                     </p>
                                     <p className='font-medium text-emerald-600'>
-                                      {formatCurrency(target.remain, 'VND')}
+                                      {formatCurrency(target.remain, 'đ')}
                                     </p>
                                   </div>
                                 </div>
@@ -617,7 +617,7 @@ export default function SpendingPlanForm() {
                                 </div>
 
                                 <div className='text-2xl font-semibold tracking-wide text-blue-400'>
-                                  {formatCurrency(plan.targetAmount, 'VND')}
+                                  {formatCurrency(plan.targetAmount, 'đ')}
                                 </div>
                               </div>
                             </div>
