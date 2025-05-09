@@ -27,7 +27,8 @@ export const modifyTransactionHandler = (payload: ITransaction[]): IDataTransact
       accountNo: item.ofAccount ? item.ofAccount.accountNo : 'N/A',
       description: item.description,
       date: formatDateTimeVN(item.transactionDateTime, true),
-      TrackerTransaction: item.TrackerTransaction
+      TrackerTransaction: item.TrackerTransaction,
+      agentSuggest: item.agentSuggest
     }
   })
 }
