@@ -360,8 +360,8 @@ const EditPlanForm: React.FC<EditPlanFormProps> = ({
                       handleDeleteTrackerType,
                       expenditureFund
                     })}
-                    defaultValue={field.value}
-                    value={field.value}
+                    // defaultValue={field.value}
+                    // value={field.value}
                     onValueSelect={(value) => {
                       ;(value: string) => {
                         setDirectionCategoryMap((prev) => ({
