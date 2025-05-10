@@ -6,13 +6,7 @@ import { useTranslation } from 'react-i18next'
 
 export const transactionHeaders = () => {
   const t = translate(['transaction', 'common'])
-  return [
-    t('table.amount', 'Amount'),
-    t('table.direction', 'Direction'),
-    t('table.accountSource', 'Account Source'),
-    t('table.accountNo', 'Account No'),
-    t('table.date', 'Date')
-  ]
+  return [t('table.amount'), t('table.direction'), t('table.accountSource'), t('table.accountNo'), t('table.date')]
 }
 
 export const initButtonInDataTableHeader = ({
@@ -106,7 +100,8 @@ export const initEmptyDetailTransactionData = {
   accountBank: {
     id: '',
     type: ''
-  }
+  },
+  agentSuggest: []
 }
 
 export const initEmptyTransactionSummaryData = {

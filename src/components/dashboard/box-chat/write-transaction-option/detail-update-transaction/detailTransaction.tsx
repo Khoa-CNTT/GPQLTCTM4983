@@ -27,7 +27,7 @@ export const DetailTransaction = ({
         </div>
         <div className='flex items-center justify-between'>
           <span className='text-muted-foreground'>Ví:</span>
-          <span>{transaction?.walletName ?? ''}</span>
+          <span>{transaction?.accountSourceName ?? ''}</span>
         </div>
         <div className='flex items-center justify-between'>
           <span className='text-muted-foreground'>Loại:</span>

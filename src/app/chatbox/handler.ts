@@ -1,7 +1,15 @@
-import { IPropsHandleConfirm, IPropsHandleSaveEdit, IPropsHandleSend, IPropsStartEdit } from '@/app/chatbox/constants'
+import {
+  IPropsHandleConfirm,
+  IPropsHandleSaveEdit,
+  IPropsHandleSend,
+  IPropsStartEdit,
+  Transaction
+} from '@/app/chatbox/constants'
 import { getAccessTokenFromLocalStorage } from '@/libraries/helpers'
 import { Dispatch, SetStateAction } from 'react'
 import { v4 as uuidv4 } from 'uuid'
+
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3002'
 
 export const handleStartEdit = ({ transaction, setEditingId, setEditForms }: IPropsStartEdit) => {
   setEditingId(transaction.id)
@@ -17,8 +25,36 @@ export const handleStartEdit = ({ transaction, setEditingId, setEditForms }: IPr
         accountSourceName: transaction.walletName
       }
     }
+    console.log('🚀 ~ updatedForm:', updatedForm)
+
     return updatedForm
   })
+}
+
+export const confirmChange = (
+  transactions: Transaction[],
+  changedTransaction: any[],
+  setChangedTransaction: React.Dispatch<React.SetStateAction<any[]>>
+) => {
+  const existingIds = new Set(changedTransaction.map((item) => item.id))
+
+  const newTransactions = transactions.filter((transaction) => !existingIds.has(transaction.id))
+
+  if (newTransactions.length > 0) {
+    setChangedTransaction((prev) => [
+      ...prev,
+      ...newTransactions.map((transaction) => ({
+        id: transaction.id,
+        reasonName: transaction.description,
+        amount: transaction.amount,
+        categoryId: transaction.categoryId,
+        categoryName: transaction.categoryName,
+        accountSourceId: transaction?.accountSourceId ?? '',
+        accountSourceName: transaction.walletName,
+        type: transaction.type
+      }))
+    ])
+  }
 }
 
 export const handleSend = async ({
@@ -57,7 +93,7 @@ export const handleSend = async ({
   setTimeout(scrollToBottom, 100)
 
   try {
-    const response = await fetch('http://localhost:3003/chat', {
+    const response = await fetch(`${API_URL}/chat`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -221,19 +257,14 @@ export const handleSaveEdit = async (data: any) => {
 //   }
 // }
 
-export const handleConfirm = async ({
-  editedTransactions,
-  fundId,
-  postTrackerTransactions,
-  setIsDialogOpen,
-  setEditedTransactions,
-  setIsDisabled
-}: IPropsHandleConfirm) => {
+export const handleConfirm = async ({ editedTransactions, fundId, postTrackerTransactions }: IPropsHandleConfirm) => {
+  console.log('🚀 ~ editedTransactions123:', editedTransactions)
+
   const payload = editedTransactions.map((item) => {
     return {
-      trackerTypeId: item?.categoryId ?? 'd215514a-9dae-4293-b3f5-d0e08ce36a82',
+      trackerTypeId: item?.categoryId,
       accountSourceId: item.accountSourceId,
-      reasonName: item.description,
+      reasonName: item.reasonName,
       direction: item.type,
       amount: item.amount,
       fundId
@@ -241,7 +272,4 @@ export const handleConfirm = async ({
   })
   console.log('🚀 ~ payload ~ payload:', payload)
   await postTrackerTransactions(payload)
-  setIsDialogOpen(false)
-  setEditedTransactions([])
-  setIsDisabled(true)
 }

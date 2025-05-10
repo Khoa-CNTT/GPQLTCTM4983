@@ -1,4 +1,4 @@
-import { IClassiFyFormProps, IClassifyTransactionBody } from '@/core/transaction/models'
+import { IClassiFyFormProps, IClassifyTransactionBody, ITransaction } from '@/core/transaction/models'
 import { useEffect, useState } from 'react'
 import { ETypeOfTrackerTransactionType } from '@/core/tracker-transaction-type/models/tracker-transaction-type.enum'
 import FormZod from '@/components/core/FormZod'
@@ -10,6 +10,7 @@ import { IEditTrackerTypeDialogProps } from '@/core/tracker-transaction-type/mod
 
 export default function ClassifyForm({
   transactionId,
+  transaction,
   incomeTrackerType,
   expenseTrackerType,
   formClassifyRef,
@@ -20,10 +21,15 @@ export default function ClassifyForm({
     IEditTrackerTypeDialogProps,
     'dataArr' | 'type' | 'setType' | 'setOpenEditDialog' | 'openEditDialog'
   >
+  transaction: ITransaction
 }) {
   const [typeOfEditTrackerType, setTypeOfEditTrackerType] = useState<ETypeOfTrackerTransactionType>(
     editTrackerTypeDialogProps.typeDefault || ETypeOfTrackerTransactionType.INCOMING
   )
+
+  useEffect(() => {
+    console.log('111111111111111', transaction)
+  }, [transaction])
 
   const [isOpenDialogEditTrackerType, setIsOpenDialogEditTrackerType] = useState<boolean>(false)
   useEffect(() => {
@@ -39,7 +45,8 @@ export default function ClassifyForm({
         typeOfEditTrackerType,
         setTypeOfEditTrackerType,
         setOpenEditDialog: setIsOpenDialogEditTrackerType,
-        openEditDialog: isOpenDialogEditTrackerType
+        openEditDialog: isOpenDialogEditTrackerType,
+        transaction
       })}
       onSubmit={(data) => handleClassify({ ...data, transactionId } as IClassifyTransactionBody)}
       submitRef={formClassifyRef}

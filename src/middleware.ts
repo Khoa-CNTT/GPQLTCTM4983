@@ -4,6 +4,15 @@ import type { NextRequest } from 'next/server'
 export function middleware(req: NextRequest) {
   const { pathname, searchParams } = req.nextUrl
 
+  if (
+    pathname.startsWith('/_next') ||
+    pathname.includes('/api/') ||
+    pathname.includes('favicon.ico') ||
+    pathname.startsWith('/auth/facebook-callback')
+  ) {
+    return NextResponse.next()
+  }
+
   // Cho phép truy cập các tài nguyên tĩnh và API
   if (pathname.startsWith('/_next') || pathname.includes('/api/') || pathname.includes('favicon.ico')) {
     return NextResponse.next()

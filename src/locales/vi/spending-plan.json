@@ -13,7 +13,8 @@
     "remaining": "Còn lại",
     "highSpendingRate": "Tốc độ chi tiêu cao",
     "daysLeft": "ngày",
-    "upcomingPlans": "kế hoạch sắp tới"
+    "upcomingPlans": "kế hoạch sắp tới",
+    "expectedDate": "Ngày dự kiến"
   },
   "budgetSection": {
     "title": "Danh sách ngân sách",
@@ -28,7 +29,9 @@
     "target": "Mục tiêu",
     "spent": "Đã chi",
     "remaining": "Còn lại",
-    "uncategorized": "Không phân loại"
+    "uncategorized": "Không phân loại",
+    "active": "Đang hoạt động",
+    "inactive": "Ngừng hoạt động"
   },
   "planDetails": {
     "title": "Tiêu đề",
@@ -40,11 +43,17 @@
     "expirationDate": "Ngày hết hạn",
     "frequency": "Tần suất lặp lại",
     "daysLeft": "Số ngày còn lại",
+    "overdue": "Đã quá hạn",
     "daysRemaining": "{{count}} ngày",
     "undetermined": "Không xác định",
     "fundSource": "Nguồn tiền",
     "today": "Hôm nay",
-    "upcoming": "Sắp tới"
+    "upcoming": "Sắp tới",
+    "remainingDays": {
+      "days": "ngày",
+      "months": "tháng",
+      "years": "năm"
+    }
   },
   "planSection": {
     "title": "Kế hoạch sắp tới",
@@ -85,8 +94,15 @@
       "categoryPlaceholder": "Chọn phân loại",
       "frequency": "Tần suất lặp lại",
       "frequencyPlaceholder": "Chọn tần suất lặp lại",
+      "startDate": "Ngày bắt đầu",
+      "startDatePlaceholder": "Chọn ngày bắt đầu",
+      "weekday": "Ngày trong tuần",
+      "weekdayPlaceholder": "Chọn ngày trong tuần",
       "notifyBefore": "Thông báo trước (ngày)",
       "notifyBeforePlaceholder": "Chọn thời gian thông báo",
+      "dayOfWeek": "Ngày trong tuần",
+      "expectedDate": "Ngày thực hiện",
+      "dayOfWeekPlaceholder": "Chọn ngày trong tuần",
       "notifyOptions": {
         "none": "Không thông báo",
         "oneDay": "1 ngày",

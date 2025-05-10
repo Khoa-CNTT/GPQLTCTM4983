@@ -108,20 +108,54 @@ const FormFieldComponent = React.memo(
     }
 
     if (fieldItem.type === EFieldType.Combobox) {
+      console.log('fieldItem:', fieldItem.subItems)
+
       return (
-        <Combobox
-          {...(fieldItem.props as IComboboxProps)}
-          {...field}
-          disabled={disabled}
-          defaultValue={field.value as string}
-          value={fieldItem.props?.value !== undefined ? fieldItem.props.value : (field.value as string)}
-          onValueSelect={(value) => {
-            if (fieldItem.props?.onValueChange) {
-              fieldItem.props.onValueChange(value)
-            }
-            field.onChange(value)
-          }}
-        />
+        <>
+          <Combobox
+            {...(fieldItem.props as IComboboxProps)}
+            {...field}
+            disabled={disabled}
+            defaultValue={field.value as string}
+            value={fieldItem.props?.value !== undefined ? fieldItem.props.value : (field.value as string)}
+            onValueSelect={(value) => {
+              if (fieldItem.props?.onValueChange) {
+                fieldItem.props.onValueChange(value)
+              }
+              field.onChange(value)
+            }}
+          />
+          {fieldItem.subItems && fieldItem.subItems?.length > 0
+            ? fieldItem.subItems.map(
+                (
+                  item: {
+                    content: string
+                    suggestCategory: {
+                      trackerTypeId: string
+                      trackerTypeName: string
+                      reasonName: string
+                    }[]
+                  },
+                  index: number
+                ) => {
+                  console.log(index + 1, '>>>>>', item.suggestCategory)
+
+                  return (
+                    <div key={index} className='mt-2 rounded-md p-2'>
+                      <p className='text-sm text-muted-foreground'>{item.content}</p>
+                      {item.suggestCategory?.map((category, catIndex) => (
+                        <div key={catIndex} className='mt-1 flex items-center'>
+                          <span className='rounded-full bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary'>
+                            {category.trackerTypeName}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  )
+                }
+              )
+            : ''}
+        </>
       )
     }
 
@@ -192,9 +226,15 @@ export default function FormZod<T extends z.ZodRawShape>({
   const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     e.stopPropagation()
-    form.handleSubmit((data) => {
-      onSubmit(data)
-    })()
+
+    try {
+      form.handleSubmit((data) => {
+        console.log('FormZod submit data:', data)
+        onSubmit(data)
+      })()
+    } catch (error) {
+      console.error('FormZod submission error:', error)
+    }
   }
 
   const memoizedFormFieldBody = useMemo(() => formFieldBody, [formFieldBody])

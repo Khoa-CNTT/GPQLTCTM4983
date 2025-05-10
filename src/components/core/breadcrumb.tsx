@@ -46,7 +46,8 @@ export default function BreadcrumbHeader() {
       '/dashboard/transaction': 'common:breadcrumb.transaction',
       '/dashboard/tracker-transaction': 'common:breadcrumb.tracker_transaction',
       '/dashboard/account-source': 'common:breadcrumb.account_source',
-      '/dashboard/expenditure-fund': 'common:breadcrumb.expenditure_fund'
+      '/dashboard/expenditure-fund': 'common:breadcrumb.expenditure_fund',
+      '/dashboard/spending-plan': 'common:breadcrumb.spending_plan',
     }
 
     // Nếu path được định nghĩa trong map, trả về bản dịch tương ứng
@@ -60,6 +61,7 @@ export default function BreadcrumbHeader() {
   const breadcrumbItems = useMemo(() => {
     const segments = path.split('/').filter((seg) => seg)
     const paths = segments.map((segment, index) => `/${segments.slice(0, index + 1).join('/')}`)
+  console.log('paths', paths);
 
     return paths.map((path, index) => {
       const navItem = findNavItem(path)
@@ -70,7 +72,7 @@ export default function BreadcrumbHeader() {
         isLast: index === paths.length - 1
       }
     })
-  }, [path, t])
+  }, [path, t ])
 
   return (
     <div className='select-none'>

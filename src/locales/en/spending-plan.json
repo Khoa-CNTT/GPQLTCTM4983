@@ -13,7 +13,8 @@
     "remaining": "Remaining",
     "highSpendingRate": "High spending rate",
     "daysLeft": "days left",
-    "upcomingPlans": "upcoming plans"
+    "upcomingPlans": "upcoming plans",
+    "expectedDate": "Expected date"
   },
   "budgetSection": {
     "title": "Budget List",
@@ -28,7 +29,9 @@
     "target": "Target",
     "spent": "Spent",
     "remaining": "Remaining",
-    "uncategorized": "Uncategorized"
+    "uncategorized": "Uncategorized",
+    "active": "Active",
+    "inactive": "Inactive"
   },
   "planDetails": {
     "title": "Title",
@@ -40,11 +43,17 @@
     "expirationDate": "Expiration Date",
     "frequency": "Repeat Frequency",
     "daysLeft": "Days Left",
+    "overdue": "Overdue",
     "daysRemaining": "{{count}} days",
     "undetermined": "Undetermined",
     "fundSource": "Fund Source",
     "today": "Today",
-    "upcoming": "Upcoming"
+    "upcoming": "Upcoming",
+    "remainingDays": {
+      "days": "days",
+      "months": "months",
+      "years": "years"
+    }
   },
   "planSection": {
     "title": "Upcoming Plans",
@@ -71,8 +80,8 @@
     "planFields": {
       "title": "Plan Title",
       "titlePlaceholder": "Enter plan title",
-      "description": "Description (Optional)",
-      "descriptionPlaceholder": "Enter detailed description",
+      "description": "Description",
+      "descriptionPlaceholder": "Enter description",
       "amount": "Amount",
       "amountPlaceholder": "Enter spending amount",
       "date": "Execution Date",
@@ -85,6 +94,11 @@
       "categoryPlaceholder": "Select category",
       "frequency": "Repeat Frequency",
       "frequencyPlaceholder": "Select repeat frequency",
+      "startDate": "Start Date",
+      "startDatePlaceholder": "Select start date",
+      "dayOfWeek": "Day of Week",
+      "expectedDate": "Expected date",
+      "dayOfWeekPlaceholder": "Select day of week",
       "notifyBefore": "Notify Before (days)",
       "notifyBeforePlaceholder": "Select notification time",
       "notifyOptions": {

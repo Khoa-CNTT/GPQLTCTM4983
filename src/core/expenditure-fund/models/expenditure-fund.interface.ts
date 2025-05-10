@@ -250,3 +250,4 @@ export type TExpenditureFundActions =
   | 'getAllTrackerTransactionType'
   | 'getAllStatisticDetailOfFund'
   | 'getAllExpendingFund'
+  | 'getStatisticOverviewPage'

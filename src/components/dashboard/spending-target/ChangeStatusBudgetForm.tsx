@@ -22,7 +22,7 @@ const ChangeStatusBudgetForm: React.FC<ChangeStatusBudgetFormProps> = ({
     onChangeStatus,
     isLoading
 }) => {
-    const { t } = useTranslation(['common', 'spendingPlan']);
+    const { t } = useTranslation(['common', 'spendingPlan'])
     const [status, setStatus] = React.useState<string>(selectedBudget?.status || "ACTIVE")
 
     const handleChangeStatus = () => {

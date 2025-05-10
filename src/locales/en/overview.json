@@ -5,9 +5,13 @@
     "overview": "Overview"
   },
   "dashboard": {
+    "financial_overview": "Financial Overview",
     "balance_chart": {
       "no_data": "No data available",
-      "title": "Total Balance"
+      "title": "Total Balance",
+      "distribution": "Account Distribution",
+      "accounts": "Total Accounts",
+      "largest": "Largest Account"
     },
     "income_card": {
       "title": "Total Income",
@@ -16,6 +20,25 @@
     "expenses_card": {
       "title": "Total Expenses",
       "trend": "from last week"
+    },
+    "savings": {
+      "title": "Net Savings",
+      "rate": "Savings Rate"
+    },
+    "budget": {
+      "overview": "Budget Overview",
+      "complete": "Complete",
+      "target_amount": "Target Amount",
+      "current_amount": "Current Amount",
+      "no_target": "No budget target set",
+      "targets": "Budget Targets",
+      "active_targets": "Active Targets",
+      "success_rate": "Success Rate"
+    },
+    "plans": {
+      "title": "Spending Plans",
+      "active": "Active Plans",
+      "success_rate": "Success Rate"
     },
     "cash_flow": {
       "title": "Cash Flow Analysis",
@@ -30,8 +53,30 @@
     },
     "chart": {
       "transactions": "Transactions",
+      "incoming": "Income",
+      "outgoing": "Expenses"
+    },
+    "recent_transactions": {
+      "title": "Recent Transactions",
+      "total": "Total",
       "incoming": "Incoming",
-      "outgoing": "Outgoing"
+      "expense": "Expense"
+    },
+    "balance": {
+      "title": "Current Balance",
+      "accounts": "Accounts"
+    },
+    "income": {
+      "title": "Total Income",
+      "growth": "Growth"
+    },
+    "expenses": {
+      "title": "Total Expenses",
+      "change": "Change"
+    },
+    "funds": {
+      "title": "Total Funds",
+      "active": "Active"
     }
   }
 }

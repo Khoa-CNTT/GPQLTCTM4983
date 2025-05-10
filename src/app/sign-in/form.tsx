@@ -17,17 +17,17 @@ import toast from 'react-hot-toast'
 import { motion } from 'framer-motion'
 import { Spotlight } from '@/components/homepage/Spotlight'
 import ResendEmailVerifyDialog from './dialog'
+import { FacebookIcon } from 'lucide-react'
 
 export default function SignInForm() {
   const [isDialogResendEmailOpen, setIsDialogResendEmailOpen] = useState(false)
   const [enableResend, setEnableResend] = useState(false)
   const [emailLogin, setEmailLogin] = useState('')
-  const { signIn, isSigningIn, isRememberMe, setIsRememberMe, resendVerifyEmail } = useAuth()
+  const { signIn, isSigningIn, isRememberMe, setIsRememberMe, resendVerifyEmail, signInGoogle } = useAuth()
   const { isSending, isSuccess } = resendVerifyEmail(emailLogin, enableResend)
   const formRef = useRef<HTMLFormElement>(null)
   const router = useRouter()
   if (isSigningIn) router.push('/dashboard')
-  const { signInGoogle } = useAuth()
   const loginGoogle = useGoogleLogin({
     onSuccess: (credentialResponse) => {
       signInGoogle({
@@ -186,13 +186,19 @@ export default function SignInForm() {
                   </div>
                 </div>
                 <div className='mt-4 flex flex-col sm:flex-row sm:space-x-2'>
-                  <Button onClick={() => loginGoogle()} variant='greenPastel1' className='mb-2 me-5 w-full'>
+                  <Button onClick={() => loginGoogle()} variant='greenPastel1' className='mb-2 w-full'>
                     <Icons.google className='mr-2 h-5 w-5' />
                     Sign in with Google
                   </Button>
-                  <Button variant='blueVin' className='w-full'>
-                    <Icons.gitHub className='mr-2 h-5 w-5' />
-                    Sign in with GitHub
+                  <Button
+                    onClick={() => {
+                      window.location.href = `${process.env.NEXT_PUBLIC_BACKEND}/api/auth/login/facebook`
+                    }}
+                    variant='blueVin'
+                    className='w-full'
+                  >
+                    <FacebookIcon className='mr-2 h-5 w-5' />
+                    Sign in with Facebook
                   </Button>
                 </div>
                 <div className='relative mt-6'>

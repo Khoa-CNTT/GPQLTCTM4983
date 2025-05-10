@@ -236,10 +236,8 @@ export default function TrackerTransactionForm() {
     })
   }
 
-  // Define original English headers to maintain correct accessorKey
   const headerKeys = ['Reason Name', 'Category', 'Amount', 'Transaction Date', 'Account Source']
 
-  // Use i18n for display only
   const getDisplayHeaders = () => {
     return [
       t('table.reasonName'),

@@ -35,6 +35,11 @@ export interface ITransaction {
     id: string
     type: string
   }
+  agentSuggest: {
+    trackerTypeId: string
+    trackerTypeName: string
+    reasonName: string
+  }[]
 }
 
 export type IGetTransactionResponse = IBaseResponseData<ITransaction[]>
@@ -95,6 +100,7 @@ export interface IUpdateTransactionBody {
   amount: number
   accountSourceId: string
   direction: ETypeOfTrackerTransactionType
+  trackerTransactionTypeId?: string
 }
 
 export interface IClassiFyFormProps {
@@ -115,6 +121,7 @@ export interface IClassifyTransactionFormProps
     IClassiFyFormProps,
     'handleClassify' | 'formClassifyRef' | 'transactionId' | 'editTrackerTypeDialogProps'
   > {
+  transaction: ITransaction
   typeOfEditTrackerType: ETypeOfTrackerTransactionType
   setTypeOfEditTrackerType: React.Dispatch<React.SetStateAction<ETypeOfTrackerTransactionType>>
   setOpenEditDialog: React.Dispatch<React.SetStateAction<boolean>>

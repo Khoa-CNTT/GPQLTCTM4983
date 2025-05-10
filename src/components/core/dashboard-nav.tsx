@@ -30,9 +30,10 @@ export function DashboardNav({ items, setOpen, isMobileNav = false }: DashboardN
       'Expenditure Fund': 'sidebar.expenditure_fund',
       Transaction: 'sidebar.transaction',
       'Account Source': 'sidebar.account_source',
-      Profile: 'sidebar.profile',
+      Profile: 'sidebar.profile', 
       Detail: 'sidebar.detail',
-      'Account Detail': 'sidebar.account_detail'
+      'Account Detail': 'sidebar.account_detail',
+      'Planning & Budgeting': 'sidebar.spending_plan' // Updated to match routes.ts title
     }
     return titleMap[title] || title
   }

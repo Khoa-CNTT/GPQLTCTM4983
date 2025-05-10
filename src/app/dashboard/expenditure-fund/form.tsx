@@ -55,6 +55,7 @@ import { useTranslation } from 'react-i18next'
 import DeleteDialog from '@/components/dashboard/DeleteDialog'
 import { Checkbox } from '@/components/ui/checkbox'
 import { ArrowUpDown } from 'lucide-react'
+import { useOverviewPage } from '@/core/overview/hooks'
 
 export default function ExpenditureFundForm() {
   // states
@@ -214,13 +215,22 @@ export default function ExpenditureFundForm() {
   }, [getAllExpenditureFundData])
 
   const { resetData: resetCacheTrackerTxType } = useUpdateModel([GET_ADVANCED_TRACKER_TRANSACTION_KEY], () => {})
+  const { getStatisticOverviewPage } = useOverviewPage()
+
+  const { refetchGetStatisticOverviewPageData } = getStatisticOverviewPage(
+    {
+      daysToSubtract: 90
+    },
+    fundId
+  )
 
   const actionMap: Record<TExpenditureFundActions, () => void> = {
     getExpenditureFund: refetchAdvancedExpendingFund,
     getStatisticExpenditureFund: refetchGetStatisticExpendingFund,
     getAllTrackerTransactionType: resetCacheTrackerTxType,
     getAllStatisticDetailOfFund: refetchGetStatisticDetailOfFund,
-    getAllExpendingFund: refetchAllExpendingFund
+    getAllExpendingFund: refetchAllExpendingFund,
+    getStatisticOverviewPage: refetchGetStatisticOverviewPageData
   }
 
   const callBackRefetchExpenditureFundPage = (actions: TExpenditureFundActions[]) => {
