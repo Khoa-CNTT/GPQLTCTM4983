@@ -7,6 +7,7 @@ import expenditureFund from './expenditure-fund.json'
 import expenditureFundDetails from './expenditureFundDetails.json'
 import overview from './overview.json'
 import spendingPlan from './spending-plan.json'
+import prenium from './prenium.json'
 
 const vietnameseTranslations = {
   common,
@@ -17,7 +18,8 @@ const vietnameseTranslations = {
   expenditureFund,
   expenditureFundDetails,
   overview,
-  spendingPlan
+  spendingPlan,
+  prenium
 }
 
 export default vietnameseTranslations

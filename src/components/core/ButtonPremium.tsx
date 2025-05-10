@@ -36,8 +36,10 @@ import { IAgentSubscriptionStatus } from '@/core/agent/models/agent.interface'
 import { initQueryOptions } from '@/constants/init-query-options'
 import { IQueryOptions } from '@/types/query.interface'
 import { motion } from 'framer-motion'
+import { useTranslation } from 'react-i18next'
 
 export default function ButtonPremium() {
+  const { t } = useTranslation(['prenium'])
   const [open, setOpen] = useState(false)
   const [bankAccounts, setBankAccounts] = useState<IAccountSource[]>([])
   const [subscriptions, setSubscriptions] = useState<IAgentSubscriptionStatus[]>([])
@@ -132,7 +134,7 @@ export default function ButtonPremium() {
         >
           <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className='flex items-center gap-2'>
             <Sparkles className='mr-2 h-4 w-4' />
-            AI Agent
+            {t('title')}
           </motion.div>
         </Button>
       </DialogTrigger>
@@ -140,10 +142,10 @@ export default function ButtonPremium() {
         <DialogHeader>
           <DialogTitle className='flex items-center text-xl'>
             <Sparkles className='mr-2 h-5 w-5 text-indigo-500' />
-            Quản lý dịch vụ AI Agent
+            {t('title')}
           </DialogTitle>
           <DialogDescription className='pt-2 text-base'>
-            Quản lý cài đặt và đăng ký dịch vụ AI Agent premium.
+            {t('description')}
           </DialogDescription>
         </DialogHeader>
 
@@ -153,7 +155,7 @@ export default function ButtonPremium() {
               <div className='mb-4 rounded-lg bg-indigo-50 p-4 dark:bg-indigo-900/20'>
                 <h3 className='mb-4 flex items-center font-medium text-lg'>
                   <Clock1 className='mr-2 h-5 w-5 text-indigo-500' />
-                  Lịch trình đã đăng ký
+                  {t('registered')}
                 </h3>
                 <div className='space-y-3'>
                   {registeredAccounts.map(acc => (
@@ -165,7 +167,7 @@ export default function ButtonPremium() {
                         </div>
                         <div className='flex items-center gap-2 text-indigo-600 dark:text-indigo-400 whitespace-nowrap'>
                           <Clock1 className='h-4 w-4 flex-shrink-0' />
-                          <span>Hàng ngày lúc {acc.hour.toString().padStart(2, '0')}:{acc.minute.toString().padStart(2, '0')}</span>
+                          <span>{t('dailyAt', { hour: acc.hour.toString().padStart(2, '0'), minute: acc.minute.toString().padStart(2, '0') })}</span>
                         </div>
                       </div>
                       <Button
@@ -173,7 +175,7 @@ export default function ButtonPremium() {
                         onClick={() => handleUnsubscribe(acc.id)}
                         className='gap-2 whitespace-nowrap flex-shrink-0 w-full sm:w-auto mt-2 sm:mt-0'
                       >
-                        Hủy đăng ký
+                        {t('cancel')}
                       </Button>
                     </div>
                   ))}
@@ -182,7 +184,7 @@ export default function ButtonPremium() {
               <p className='mb-4 rounded-md border border-yellow-200 bg-yellow-50 p-4 text-sm text-gray-500 dark:border-yellow-800 dark:bg-yellow-900/20 dark:text-gray-400'>
                 <span className='flex items-start gap-3'>
                   <AlertTriangle className='mt-0.5 h-5 w-5 flex-shrink-0 text-yellow-500' />
-                  <span>Bạn có thể hủy đăng ký bất kỳ lúc nào. Dịch vụ sẽ tiếp tục cho đến khi bạn hủy đăng ký.</span>
+                  <span>{t('confirmCancel')}</span>
                 </span>
               </p>
             </div>
@@ -199,40 +201,78 @@ export default function ButtonPremium() {
                       </div>
                       <div className='flex-1 min-w-0'>
                         <h4 className='mb-2 text-base font-medium text-blue-800 dark:text-blue-200'>
-                          Thông tin về dịch vụ
+                          {t('featureList.title')}
                         </h4>
-                        <p className='text-sm text-blue-800 dark:text-blue-200'>
-                          AI Agent sẽ phân tích tài chính của bạn và cung cấp thông tin chi tiết hàng ngày vào thời gian đã lên lịch.
-                        </p>
+                        <ul className='list-disc pl-5 text-sm text-blue-800 dark:text-blue-200'>
+                          <li>{t('featureList.item1')}</li>
+                          <li>{t('featureList.item2')}</li>
+                          <li>{t('featureList.item3')}</li>
+                          <li>{t('featureList.item4')}</li>
+                        </ul>
                       </div>
                     </div>
                   </div>
 
                   <div className='space-y-6'>
+                    <FormField
+                      control={form.control}
+                      name='accountBankId'
+                      render={({ field }) => (
+                        <FormItem>
+                          <div className='flex justify-between mb-2'>
+                            <FormLabel className='flex items-center text-base text-muted-foreground'>
+                              <CreditCard className='mr-2 h-5 w-5 text-indigo-500' />
+                              {t('accountLabel')}
+                            </FormLabel>
+                            <FormMessage />
+                          </div>
+                          <FormControl>
+                            <Select onValueChange={field.onChange} value={field.value} disabled={availableAccounts.length === 0}>
+                              <FormControl>
+                                <SelectTrigger className='w-full h-11 border-indigo-100 focus:ring-indigo-200 dark:border-indigo-800'>
+                                  <SelectValue placeholder={t('accountPlaceholder')} />
+                                </SelectTrigger>
+                              </FormControl>
+                              <SelectContent>
+                                {availableAccounts.map((acc) => (
+                                  <SelectItem key={acc.accountNo} value={acc.accountBankId}>
+                                    {acc.bankName} - {acc.accountNo}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                          </FormControl>
+                        </FormItem>
+                      )}
+                    />
+
                     <div className='flex flex-col lg:flex-row items-start lg:items-center gap-4 w-full min-w-0'>
                       <FormField
                         control={form.control}
-                        name='accountBankId'
+                        name='hour'
                         render={({ field }) => (
-                          <FormItem className='flex-1 w-full min-w-0'>
+                          <FormItem className='flex-1 min-w-0'>
                             <div className='flex justify-between mb-2'>
                               <FormLabel className='flex items-center text-base text-muted-foreground'>
-                                <CreditCard className='mr-2 h-5 w-5 text-indigo-500' />
-                                Số tài khoản
+                                <Clock1 className='mr-2 h-5 w-5 text-indigo-500' />
+                                {t('hourLabel')}
                               </FormLabel>
                               <FormMessage />
                             </div>
                             <FormControl>
-                              <Select onValueChange={field.onChange} value={field.value} disabled={availableAccounts.length === 0}>
+                              <Select
+                                onValueChange={(value) => field.onChange(parseInt(value))}
+                                value={field.value?.toString()}
+                              >
                                 <FormControl>
                                   <SelectTrigger className='w-full h-11 border-indigo-100 focus:ring-indigo-200 dark:border-indigo-800'>
-                                    <SelectValue placeholder='Chọn số tài khoản' />
+                                    <SelectValue placeholder={t('hourPlaceholder')} />
                                   </SelectTrigger>
                                 </FormControl>
                                 <SelectContent>
-                                  {availableAccounts.map((acc) => (
-                                    <SelectItem key={acc.accountNo} value={acc.accountBankId}>
-                                      {acc.bankName} - {acc.accountNo}
+                                  {hours.map((hour) => (
+                                    <SelectItem key={hour} value={hour.toString()}>
+                                      {hour.toString().padStart(2, '0')}
                                     </SelectItem>
                                   ))}
                                 </SelectContent>
@@ -241,77 +281,40 @@ export default function ButtonPremium() {
                           </FormItem>
                         )}
                       />
-
-                      <div className='flex items-center gap-2 flex-1 w-full min-w-0'>
-                        <FormField
-                          control={form.control}
-                          name='hour'
-                          render={({ field }) => (
-                            <FormItem className='flex-1 min-w-0'>
-                              <div className='flex justify-between mb-2'>
-                                <FormLabel className='flex items-center text-base text-muted-foreground'>
-                                  <Clock1 className='mr-2 h-5 w-5 text-indigo-500' />
-                                  Giờ
-                                </FormLabel>
-                                <FormMessage />
-                              </div>
-                              <FormControl>
-                                <Select
-                                  onValueChange={(value) => field.onChange(parseInt(value))}
-                                  value={field.value?.toString()}
-                                >
-                                  <FormControl>
-                                    <SelectTrigger className='w-full h-11 border-indigo-100 focus:ring-indigo-200 dark:border-indigo-800'>
-                                      <SelectValue placeholder='Chọn giờ' />
-                                    </SelectTrigger>
-                                  </FormControl>
-                                  <SelectContent>
-                                    {hours.map((hour) => (
-                                      <SelectItem key={hour} value={hour.toString()}>
-                                        {hour.toString().padStart(2, '0')}
-                                      </SelectItem>
-                                    ))}
-                                  </SelectContent>
-                                </Select>
-                              </FormControl>
-                            </FormItem>
-                          )}
-                        />
-                        <FormField
-                          control={form.control}
-                          name='minute'
-                          render={({ field }) => (
-                            <FormItem className='flex-1 min-w-0'>
-                              <div className='flex justify-between mb-2'>
-                                <FormLabel className='flex items-center text-base text-muted-foreground'>
-                                  <Clock1 className='mr-2 h-5 w-5 text-indigo-500' />
-                                  Phút
-                                </FormLabel>
-                                <FormMessage />
-                              </div>
-                              <FormControl>
-                                <Select
-                                  onValueChange={(value) => field.onChange(parseInt(value))}
-                                  value={field.value?.toString()}
-                                >
-                                  <FormControl>
-                                    <SelectTrigger className='w-full h-11 border-indigo-100 focus:ring-indigo-200 dark:border-indigo-800'>
-                                      <SelectValue placeholder='Chọn phút' />
-                                    </SelectTrigger>
-                                  </FormControl>
-                                  <SelectContent>
-                                    {minutes.map((minute) => (
-                                      <SelectItem key={minute} value={minute.toString()}>
-                                        {minute.toString().padStart(2, '0')}
-                                      </SelectItem>
-                                    ))}
-                                  </SelectContent>
-                                </Select>
-                              </FormControl>
-                            </FormItem>
-                          )}
-                        />
-                      </div>
+                      <FormField
+                        control={form.control}
+                        name='minute'
+                        render={({ field }) => (
+                          <FormItem className='flex-1 min-w-0'>
+                            <div className='flex justify-between mb-2'>
+                              <FormLabel className='flex items-center text-base text-muted-foreground'>
+                                <Clock1 className='mr-2 h-5 w-5 text-indigo-500' />
+                                {t('minuteLabel')}
+                              </FormLabel>
+                              <FormMessage />
+                            </div>
+                            <FormControl>
+                              <Select
+                                onValueChange={(value) => field.onChange(parseInt(value))}
+                                value={field.value?.toString()}
+                              >
+                                <FormControl>
+                                  <SelectTrigger className='w-full h-11 border-indigo-100 focus:ring-indigo-200 dark:border-indigo-800'>
+                                    <SelectValue placeholder={t('minutePlaceholder')} />
+                                  </SelectTrigger>
+                                </FormControl>
+                                <SelectContent>
+                                  {minutes.map((minute) => (
+                                    <SelectItem key={minute} value={minute.toString()}>
+                                      {minute.toString().padStart(2, '0')}
+                                    </SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+                            </FormControl>
+                          </FormItem>
+                        )}
+                      />
                     </div>
                   </div>
 
@@ -323,10 +326,10 @@ export default function ButtonPremium() {
                         </div>
                         <div className='flex-1 min-w-0'>
                           <h4 className='mb-1 text-base font-medium text-yellow-800 dark:text-yellow-200'>
-                            Tất cả các số tài khoản của bạn đã đăng ký dịch vụ
+                            {t('notRegistered')}
                           </h4>
                           <p className='text-sm text-yellow-800 dark:text-yellow-200'>
-                            Không thể đăng ký thêm.
+                            {t('cannotRegisterMore')}
                           </p>
                         </div>
                       </div>
@@ -345,7 +348,7 @@ export default function ButtonPremium() {
                     ) : (
                       <Sparkles className='h-5 w-5' />
                     )}
-                    Đăng ký ngay
+                    {t('register')}
                   </Button>
                 </div>
               </form>

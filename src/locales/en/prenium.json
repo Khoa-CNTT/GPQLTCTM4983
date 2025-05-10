@@ -1,0 +1,31 @@
+{
+  "title": "AI Agent",
+  "description": "Upgrade your account to access premium features.",
+  "register": "Register Premium",
+  "cancel": "Cancel Premium",
+  "registered": "You have registered for Premium.",
+  "notRegistered": "No more account to register.",
+  "success": "Premium registration successful!",
+  "cancelSuccess": "Premium cancellation successful!",
+  "error": "An error occurred. Please try again.",
+  "featureList": {
+    "title": "Outstanding Features",
+    "item1": "Unlimited access to AI tools",
+    "item2": "24/7 priority support",
+    "item3": "Advanced financial reports",
+    "item4": "Custom reminder scheduling"
+  },
+  "confirmCancel": "You can cancel your subscription at any time. The service will continue until you cancel.",
+  "status": {
+    "active": "Active",
+    "inactive": "Not registered"
+  },
+  "dailyAt": "Daily at {{hour}}:{{minute}}",
+  "accountLabel": "Account number",
+  "accountPlaceholder": "Select account number",
+  "hourLabel": "Hour",
+  "hourPlaceholder": "Select hour",
+  "minuteLabel": "Minute",
+  "minutePlaceholder": "Select minute",
+  "cannotRegisterMore": "Cannot register more."
+}

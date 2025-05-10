@@ -1,0 +1,31 @@
+{
+  "title": "AI Agent",
+  "description": "Nâng cấp tài khoản để sử dụng các tính năng cao cấp.",
+  "register": "Đăng ký Premium",
+  "cancel": "Hủy Premium",
+  "registered": "Bạn đã đăng ký Premium.",
+  "notRegistered": "Đã hết tài khoản đăng ký Premium.",
+  "success": "Đăng ký Premium thành công!",
+  "cancelSuccess": "Hủy Premium thành công!",
+  "error": "Đã xảy ra lỗi. Vui lòng thử lại.",
+  "featureList": {
+    "title": "Tính năng nổi bật",
+    "item1": "Truy cập không giới hạn các công cụ AI",
+    "item2": "Hỗ trợ ưu tiên 24/7",
+    "item3": "Báo cáo tài chính nâng cao",
+    "item4": "Tùy chỉnh lịch nhắc nhở"
+  },
+  "confirmCancel": "Bạn có thể hủy đăng ký bất kỳ lúc nào. Dịch vụ sẽ tiếp tục cho đến khi bạn hủy đăng ký.",
+  "status": {
+    "active": "Đang sử dụng",
+    "inactive": "Chưa đăng ký"
+  },
+  "dailyAt": "Hàng ngày lúc {{hour}}:{{minute}}",
+  "accountLabel": "Số tài khoản",
+  "accountPlaceholder": "Chọn số tài khoản",
+  "hourLabel": "Giờ",
+  "hourPlaceholder": "Chọn giờ",
+  "minuteLabel": "Phút",
+  "minutePlaceholder": "Chọn phút",
+  "cannotRegisterMore": "Không thể đăng ký thêm."
+}
