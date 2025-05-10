@@ -3,8 +3,9 @@ import { AGENT_MODEL_RETRY, AGENT_SUBSCRIPTION_KEY } from '../constants'
 import { agentRoutes } from '../configs'
 import { IAgentSubscriptionStatus } from '../models/agent.interface'
 import { IBaseResponseData } from '@/types/common.i'
+import { IUseGetAdvancedProps } from '@/types/query.interface'
 
-export const useGetAgentSubscription = () => {
+export const useGetAgentSubscription = (props: IUseGetAdvancedProps) => {
   const {
     data: getAllDataAgent,
     status: isCheckingSubscription,
@@ -13,7 +14,12 @@ export const useGetAgentSubscription = () => {
     AGENT_SUBSCRIPTION_KEY,
     agentRoutes.checkSubscription,
     {
-      retry: AGENT_MODEL_RETRY
+      retry: AGENT_MODEL_RETRY,
+      query: props.query,
+      enable: !!props.fundId,
+      params: {
+        fundId: props.fundId
+      }
     }
   )
 

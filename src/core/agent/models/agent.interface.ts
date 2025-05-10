@@ -25,6 +25,25 @@ export interface IAgentSubscriptionStatus {
       sessionId: string | null
       deviceId: string | null
       userId: string
-      AccountSource: any | null
+      AccountSource: {
+        id: string
+        name: string
+        type: string
+        initAmount: number
+        accountBankId: string
+        currency: string
+        currentAmount: number
+        userId: string
+        fundId: string
+        participantId: string | null
+        fund: {
+          id: string
+          name: string
+          description: string | null
+          status: string
+          currentAmount: number
+          currency: string
+        }
+      }
     }
 }
