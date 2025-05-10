@@ -93,7 +93,6 @@ export default function TransactionDialog(params: ITransactionDialogProps) {
         classifyDialogProps={{
           ClassifyForm: () => (
             <ClassifyForm
-              transaction={dialogDetailUpdate.dataDetail}
               transactionId={dialogDetailUpdate.dataDetail.id}
               incomeTrackerType={classifyDialog.incomeTrackerTransactionType}
               expenseTrackerType={classifyDialog.expenseTrackerTransactionType}
@@ -189,7 +188,7 @@ export default function TransactionDialog(params: ITransactionDialogProps) {
   }
   return (
     <div>
-      <CustomDialog config={detailsConfigDialog} /> {/* Dialog detail và classify tại đây */}
+      <CustomDialog config={detailsConfigDialog} />
       <CustomDialog config={transactionsTodayConfigDialog} />
       <CustomDialog config={unclassifiedTransactionsConfigDialog} />
     </div>

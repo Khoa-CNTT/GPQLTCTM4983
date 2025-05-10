@@ -228,10 +228,6 @@ export default function TransactionForm() {
     }
   }
 
-  useEffect(() => {
-    console.log('transactionSummary.unclassifiedTransaction.data', transactionSummary.unclassifiedTransaction.data)
-  }, [transactionSummary.unclassifiedTransaction.data])
-
   // effects
   useEffect(() => {
     if (dataUnclassifiedTxs) {

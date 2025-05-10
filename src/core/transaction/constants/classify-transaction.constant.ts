@@ -13,11 +13,9 @@ export const defineClassifyTransactionFormBody = ({
   typeOfEditTrackerType,
   setTypeOfEditTrackerType,
   setOpenEditDialog,
-  openEditDialog,
-  transaction
+  openEditDialog
 }: IClassifyTransactionFormProps): IBodyFormField[] => {
   const t = translate(['transaction', 'common'])
-  console.log('transaction', transaction)
 
   return [
     {
@@ -53,15 +51,7 @@ export const defineClassifyTransactionFormBody = ({
           openEditDialog
         }),
         label: t('TransactionType.defineClassifyTransactionFormBody.trackerTypeId.labelTrackerTransactionType')
-      },
-      subItems: [
-        {
-          // content: `<span className="suggestion-text font-medium"><strong className="font-bold text-gray-800">Agent có vài gợi ý cho bạn:</strong>${selectedTransaction.agentSuggest.map((item, index) => `${index !== selectedTransaction.agentSuggest.length - 1 ? item.trackerTypeName + ',' : item.trackerTypeName}`)}</span>`
-          content: 'Agent có vài gợi ý cho bạn',
-          suggestCategory:
-            transaction.agentSuggest && transaction.agentSuggest.length > 0 ? transaction.agentSuggest : []
-        }
-      ]
+      }
     },
     {
       name: 'description',

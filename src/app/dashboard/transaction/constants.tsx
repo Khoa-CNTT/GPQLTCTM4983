@@ -100,8 +100,7 @@ export const initEmptyDetailTransactionData = {
   accountBank: {
     id: '',
     type: ''
-  },
-  agentSuggest: []
+  }
 }
 
 export const initEmptyTransactionSummaryData = {

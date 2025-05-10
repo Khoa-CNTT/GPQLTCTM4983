@@ -68,12 +68,4 @@ export interface IBodyFormField<T extends EFieldType = EFieldType> {
   props?: FieldProps<T>
   dataSelector?: IDynamicType[] | undefined
   classNameTrigger?: string
-  subItems?: {
-    content: string
-    suggestCategory: {
-      trackerTypeId: string
-      trackerTypeName: string
-      reasonName: string
-    }[]
-  }[]
 }
