@@ -12,6 +12,7 @@ export interface IAccountSource {
   accountBank: IAccountBank | null
   currency: string
   currentAmount: number
+  accountBankId: string
 }
 
 export interface IAccountSourceDataFormat {
