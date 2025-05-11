@@ -1,4 +1,4 @@
-import { IClassiFyFormProps, IClassifyTransactionBody } from '@/core/transaction/models'
+import { IClassiFyFormProps, IClassifyTransactionBody, ITransaction } from '@/core/transaction/models'
 import { useEffect, useState } from 'react'
 import { ETypeOfTrackerTransactionType } from '@/core/tracker-transaction-type/models/tracker-transaction-type.enum'
 import FormZod from '@/components/core/FormZod'

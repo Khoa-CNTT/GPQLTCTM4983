@@ -40,17 +40,20 @@ export const useStoreLocal = create<StoreState>((set) => ({
   unclassifiedTransactionData: [],
   setUnclassifiedTransactionData: (data) => set({ unclassifiedTransactionData: data }),
   // Fund of user store
-  fundId: localStorage.getItem(FUND_ID_STORAGE_KEY) || '',
+  fundId: typeof window !== 'undefined' ? localStorage.getItem(FUND_ID_STORAGE_KEY) || '' : '',
   setFundId: (fundId) => {
-    localStorage.setItem(FUND_ID_STORAGE_KEY, fundId)
+    if (typeof window !== 'undefined') {
+      localStorage.setItem(FUND_ID_STORAGE_KEY, fundId)
+    }
     set({ fundId })
   },
   fundArr: [],
   setFundArr: (fundArr) => set({ fundArr }),
   checkHeightRange: false,
   setCheckHeightRange: (data) => set({ checkHeightRange: data }),
-  viewportHeight: window.innerHeight,
-  setViewportHeight: (viewportHeight) => set({
-    viewportHeight
-  })
+  viewportHeight: typeof window !== 'undefined' ? window.innerHeight : 0,
+  setViewportHeight: (viewportHeight) =>
+    set({
+      viewportHeight
+    })
 }))

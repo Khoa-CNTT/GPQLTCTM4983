@@ -16,6 +16,7 @@ export const defineClassifyTransactionFormBody = ({
   openEditDialog
 }: IClassifyTransactionFormProps): IBodyFormField[] => {
   const t = translate(['transaction', 'common'])
+
   return [
     {
       name: 'reasonName',
