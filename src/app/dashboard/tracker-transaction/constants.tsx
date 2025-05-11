@@ -207,7 +207,8 @@ export const initEmptyDetailTrackerTransaction = {
     user: initEmptyUser
   },
   time: new Date().toISOString(),
-  trackerTime: new Date().toISOString()
+  trackerTime: new Date().toISOString(),
+  accountSource: null
 }
 
 export const ExtendsJSXTrackerTransaction = ({
