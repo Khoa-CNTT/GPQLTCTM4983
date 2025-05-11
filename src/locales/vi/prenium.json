@@ -1,6 +1,7 @@
 {
   "title": "AI Agent",
-  "description": "Nâng cấp tài khoản để sử dụng các tính năng cao cấp.",
+  "description": "Đăng ký tài khoản ngân hàng để nhận phân tích tài chính AI hàng ngày.",
+  "noAccountDescription": "Bạn không còn tài khoản ngân hàng nào để đăng ký AI Agent.",
   "register": "Đăng ký Premium",
   "cancel": "Hủy Premium",
   "registered": "Bạn đã đăng ký Premium.",
@@ -11,9 +12,8 @@
   "featureList": {
     "title": "Tính năng nổi bật",
     "item1": "Truy cập không giới hạn các công cụ AI",
-    "item2": "Hỗ trợ ưu tiên 24/7",
-    "item3": "Báo cáo tài chính nâng cao",
-    "item4": "Tùy chỉnh lịch nhắc nhở"
+    "item2": "Báo cáo tài chính nâng cao",
+    "item3": "Tùy chỉnh lịch nhắc nhở"
   },
   "confirmCancel": "Bạn có thể hủy đăng ký bất kỳ lúc nào. Dịch vụ sẽ tiếp tục cho đến khi bạn hủy đăng ký.",
   "status": {

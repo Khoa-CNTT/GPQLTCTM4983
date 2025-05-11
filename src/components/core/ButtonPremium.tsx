@@ -106,7 +106,6 @@ export default function ButtonPremium() {
 
   const handleUnsubscribe = async (id: string) => {
     setUnsubscribeData({ id, execute: true })
-    setOpen(false)
   }
 
   const onSubmit = async (values: SubscriptionFormValues) => {
@@ -117,7 +116,6 @@ export default function ButtonPremium() {
     }, {
       onSuccess: () => {
         refetchSubscriptionStatus()
-        setOpen(false)
       }
     })
   }
@@ -138,7 +136,11 @@ export default function ButtonPremium() {
           </motion.div>
         </Button>
       </DialogTrigger>
-      <DialogContent className='w-full max-w-full sm:max-w-[1200px] max-h-[90vh] overflow-y-auto overflow-x-hidden p-2 sm:p-6'>
+      <DialogContent
+        className={`w-full overflow-y-auto overflow-x-hidden p-2 sm:p-6 ${
+          subscriptions.length === 0 ? 'max-w-[555px]' : 'sm:max-w-[1200px]'
+        }`}
+      >
         <DialogHeader>
           <DialogTitle className='flex items-center text-xl'>
             <Sparkles className='mr-2 h-5 w-5 text-indigo-500' />
@@ -207,7 +209,6 @@ export default function ButtonPremium() {
                           <li>{t('featureList.item1')}</li>
                           <li>{t('featureList.item2')}</li>
                           <li>{t('featureList.item3')}</li>
-                          <li>{t('featureList.item4')}</li>
                         </ul>
                       </div>
                     </div>
