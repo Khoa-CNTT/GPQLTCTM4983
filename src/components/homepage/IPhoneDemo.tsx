@@ -109,7 +109,7 @@ export const IPhoneDemo = () => {
         }
     }, [])
 
-    // Pause autoplay when user interacts
+    // Handle screen change with a smooth fade transition
     const handleScreenChange = (index: number) => {
         setActiveScreen(index)
         setAutoplay(false)
@@ -301,83 +301,49 @@ export const IPhoneDemo = () => {
                                         />
                                         
                                         {/* Screen content */}
-                                        <div className="absolute top-[2.2%] left-[4.75%] right-[4.75%] bottom-[2.2%] rounded-[30px] overflow-hidden bg-gray-50 dark:bg-gray-900">
-                                            {/* Screen glass effect */}
-                                            <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent pointer-events-none z-[1]"></div>
-                                            
-                                            <motion.div
-                                                className="h-full w-full"
-                                                animate={{ 
-                                                    x: `-${activeScreen * 100}%`,
-                                                }}
-                                                transition={{ 
-                                                    type: "spring", 
-                                                    stiffness: 300, 
-                                                    damping: 30 
-                                                }}
-                                            >
-                                                <div className="flex h-full">
-                                                    {screens.map((screen, index) => (
-                                                        <motion.div 
-                                                            key={index} 
-                                                            className="min-w-full h-full flex-shrink-0 flex items-center justify-center"
-                                                            initial={{ opacity: 0 }}
-                                                            animate={{ 
-                                                                opacity: activeScreen === index ? 1 : 0.5,
-                                                                scale: activeScreen === index ? 1 : 0.98,
+                                        <div className="absolute top-[2.2%] left-[4.75%] right-[4.75%] bottom-[2.2%] rounded-[30px] overflow-hidden bg-white dark:bg-gray-900">
+                                            <div className="relative h-full w-full overflow-hidden">
+                                                {screens.map((screen, index) => (
+                                                    <motion.div 
+                                                        key={index} 
+                                                        className="absolute inset-0 w-full h-full flex items-center justify-center"
+                                                        initial={{ opacity: 0 }}
+                                                        animate={{ 
+                                                            opacity: activeScreen === index ? 1 : 0,
+                                                            zIndex: activeScreen === index ? 10 : 1
+                                                        }}
+                                                        transition={{ duration: 0.5 }}
+                                                    >
+                                                        <Image
+                                                            src={screen}
+                                                            alt={`Màn hình demo ${index + 1}`}
+                                                            priority={index === activeScreen}
+                                                            width={500}
+                                                            height={900}
+                                                            style={{
+                                                                objectFit: 'contain',
+                                                                maxWidth: '100%',
+                                                                maxHeight: '100%'
                                                             }}
-                                                            transition={{ duration: 0.5 }}
-                                                        >
-                                                            <div className="relative w-full h-full">
-                                                                <Image
-                                                                    src={screen}
-                                                                    alt={`Màn hình demo ${index + 1}`}
-                                                                    priority={index === activeScreen}
-                                                                    fill
-                                                                    sizes="100%"
-                                                                    style={{
-                                                                        objectFit: 'cover',
-                                                                        objectPosition: 'center',
-                                                                    }}
-                                                                    className="transition-all duration-500"
-                                                                />
-                                                                
-                                                                {/* Screen overlay with highlights for active screen */}
-                                                                {activeScreen === index && (
-                                                                    <motion.div 
-                                                                        className="absolute inset-0 bg-gradient-to-t from-teal-500/10 to-transparent opacity-0"
-                                                                        animate={{ opacity: [0, 0.3, 0] }}
-                                                                        transition={{ duration: 2, repeat: Infinity, repeatType: "loop" }}
-                                                                    />
-                                                                )}
-                                                            </div>
-                                                        </motion.div>
-                                                    ))}
-                                                </div>
-                                            </motion.div>
-                                            
-                                            {/* Screen overlay effects */}
-                                            <div className="absolute inset-0 pointer-events-none">
-                                                {/* Subtle screen reflection */}
-                                                <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-transparent opacity-40"></div>
-                                                
-                                                {/* Subtle scanlines effect */}
-                                                <div className="absolute inset-0 bg-scanlines opacity-[0.03]"></div>
-                                                
-                                                {/* Screen edge glow */}
-                                                <div className="absolute inset-0 rounded-[30px] shadow-inner"></div>
+                                                            className="transition-all duration-500"
+                                                        />
+                                                    </motion.div>
+                                                ))}
                                             </div>
+                                            
+                                            {/* Screen information overlay - smaller */}
+                                            <motion.div 
+                                                className="absolute top-2 right-2 text-[10px] font-medium bg-black/40 backdrop-blur-md text-white rounded-full px-2 py-0.5 shadow-lg z-20"
+                                                initial={{ opacity: 0, scale: 0.8 }}
+                                                animate={{ opacity: 1, scale: 1 }}
+                                                transition={{ delay: 0.5, duration: 0.3 }}
+                                            >
+                                                {activeScreen + 1}/{screens.length}
+                                            </motion.div>
                                         </div>
                                         
-                                        {/* Screen information overlay - smaller */}
-                                        <motion.div 
-                                            className="absolute top-2 right-2 text-[10px] font-medium bg-black/40 backdrop-blur-md text-white rounded-full px-2 py-0.5 shadow-lg"
-                                            initial={{ opacity: 0, scale: 0.8 }}
-                                            animate={{ opacity: 1, scale: 1 }}
-                                            transition={{ delay: 0.5, duration: 0.3 }}
-                                        >
-                                            {activeScreen + 1}/{screens.length}
-                                        </motion.div>
+                                        {/* Screen edge glow */}
+                                        <div className="absolute inset-0 rounded-[30px]"></div>
                                     </div>
                                 </motion.div>
 
@@ -507,25 +473,6 @@ export const IPhoneDemo = () => {
 }
 
 <style jsx>{`
-    .bg-scanlines {
-        background: repeating-linear-gradient(
-            to bottom,
-            transparent,
-            transparent 1px,
-            rgba(0, 0, 0, 0.05) 1px,
-            rgba(0, 0, 0, 0.05) 2px
-        );
-    }
-    
-    .animate-glow {
-        animation: glow 3s ease-in-out infinite alternate;
-    }
-    
-    @keyframes glow {
-        0% { opacity: 0.5; }
-        100% { opacity: 0.8; }
-    }
-    
     .bg-gradient-radial {
         background-image: radial-gradient(circle, var(--tw-gradient-stops));
     }
