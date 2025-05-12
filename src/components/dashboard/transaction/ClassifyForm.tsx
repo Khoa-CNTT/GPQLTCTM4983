@@ -10,7 +10,6 @@ import { IEditTrackerTypeDialogProps } from '@/core/tracker-transaction-type/mod
 
 export default function ClassifyForm({
   transactionId,
-  transaction,
   incomeTrackerType,
   expenseTrackerType,
   formClassifyRef,
@@ -21,15 +20,10 @@ export default function ClassifyForm({
     IEditTrackerTypeDialogProps,
     'dataArr' | 'type' | 'setType' | 'setOpenEditDialog' | 'openEditDialog'
   >
-  transaction: ITransaction
 }) {
   const [typeOfEditTrackerType, setTypeOfEditTrackerType] = useState<ETypeOfTrackerTransactionType>(
     editTrackerTypeDialogProps.typeDefault || ETypeOfTrackerTransactionType.INCOMING
   )
-
-  useEffect(() => {
-    console.log('111111111111111', transaction)
-  }, [transaction])
 
   const [isOpenDialogEditTrackerType, setIsOpenDialogEditTrackerType] = useState<boolean>(false)
   useEffect(() => {
@@ -45,8 +39,7 @@ export default function ClassifyForm({
         typeOfEditTrackerType,
         setTypeOfEditTrackerType,
         setOpenEditDialog: setIsOpenDialogEditTrackerType,
-        openEditDialog: isOpenDialogEditTrackerType,
-        transaction
+        openEditDialog: isOpenDialogEditTrackerType
       })}
       onSubmit={(data) => handleClassify({ ...data, transactionId } as IClassifyTransactionBody)}
       submitRef={formClassifyRef}
