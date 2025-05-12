@@ -5,105 +5,213 @@ export interface Iphone15ProProps extends SVGProps<SVGSVGElement> {
     height?: number;
     src?: string;
     videoSrc?: string;
+    screenOpacity?: number;
 }
 
 export default function Iphone15Pro({
-    width = 433,
-    height = 882,
+    width = 300,
+    height,
     src,
     videoSrc,
+    screenOpacity = 1,
     ...props
 }: Iphone15ProProps) {
+    // Standard iPhone 15 Pro aspect ratio (close to real device)
+    const aspectRatio = 2.1652;
+    const calculatedHeight = typeof width === 'number' ? Math.round(width * aspectRatio) : height;
+    
     return (
         <svg
             width={width}
-            height={height}
-            viewBox={`0 0 ${width} ${height}`}
+            height={calculatedHeight}
+            viewBox="0 0 390 844"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
+            preserveAspectRatio="xMidYMid meet"
             {...props}
         >
-            <path
-                d="M2 73C2 32.6832 34.6832 0 75 0H357C397.317 0 430 32.6832 430 73V809C430 849.317 397.317 882 357 882H75C34.6832 882 2 849.317 2 809V73Z"
-                className="fill-[#E5E5E5] dark:fill-[#404040]"
+            <defs>
+                {/* Frame shadow */}
+                <filter id="phone-shadow" x="-5%" y="-5%" width="110%" height="110%">
+                    <feDropShadow dx="0" dy="2" stdDeviation="6" floodOpacity="0.15" />
+                </filter>
+                
+                {/* Screen reflection gradient */}
+                <linearGradient id="screen-reflection" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stopColor="white" stopOpacity="0.04" />
+                    <stop offset="40%" stopColor="white" stopOpacity="0" />
+                    <stop offset="100%" stopColor="white" stopOpacity="0.06" />
+                </linearGradient>
+                
+                {/* Screen clipping path with accurate corner radius */}
+                <clipPath id="screen-clip">
+                    <rect 
+                        x="18" 
+                        y="18" 
+                        width="354" 
+                        height="808" 
+                        rx="38" 
+                        ry="38"
+                    />
+                </clipPath>
+            </defs>
+            
+            {/* Main frame - slightly darker in dark mode */}
+            <rect
+                x="0" 
+                y="0" 
+                width="390" 
+                height="844"
+                rx="54" 
+                ry="54"
+                className="fill-[#1A1A1C] dark:fill-[#111112]"
+                filter="url(#phone-shadow)"
             />
-            <path
-                d="M0 171C0 170.448 0.447715 170 1 170H3V204H1C0.447715 204 0 203.552 0 203V171Z"
-                className="fill-[#E5E5E5] dark:fill-[#404040]"
+            
+            {/* Inner bezel */}
+            <rect 
+                x="4" 
+                y="4" 
+                width="382" 
+                height="836"
+                rx="50" 
+                ry="50"
+                className="fill-[#343438] dark:fill-[#232326]"
             />
-            <path
-                d="M1 234C1 233.448 1.44772 233 2 233H3.5V300H2C1.44772 300 1 299.552 1 299V234Z"
-                className="fill-[#E5E5E5] dark:fill-[#404040]"
+            
+            {/* Screen background */}
+            <rect 
+                x="18" 
+                y="18" 
+                width="354" 
+                height="808"
+                rx="38" 
+                ry="38"
+                className="fill-black"
             />
-            <path
-                d="M1 319C1 318.448 1.44772 318 2 318H3.5V385H2C1.44772 385 1 384.552 1 384V319Z"
-                className="fill-[#E5E5E5] dark:fill-[#404040]"
-            />
-            <path
-                d="M430 279H432C432.552 279 433 279.448 433 280V384C433 384.552 432.552 385 432 385H430V279Z"
-                className="fill-[#E5E5E5] dark:fill-[#404040]"
-            />
-            <path
-                d="M6 74C6 35.3401 37.3401 4 76 4H356C394.66 4 426 35.3401 426 74V808C426 846.66 394.66 878 356 878H76C37.3401 878 6 846.66 6 808V74Z"
-                className="fill-white dark:fill-[#262626]"
-            />
-            <path
-                opacity="0.5"
-                d="M174 5H258V5.5C258 6.60457 257.105 7.5 256 7.5H176C174.895 7.5 174 6.60457 174 5.5V5Z"
-                className="fill-[#E5E5E5] dark:fill-[#404040]"
-            />
-            <path
-                d="M21.25 75C21.25 44.2101 46.2101 19.25 77 19.25H355C385.79 19.25 410.75 44.2101 410.75 75V807C410.75 837.79 385.79 862.75 355 862.75H77C46.2101 862.75 21.25 837.79 21.25 807V75Z"
-                className="fill-[#E5E5E5] stroke-[#E5E5E5] stroke-[0.5] dark:fill-[#404040] dark:stroke-[#404040]"
-            />
-
+            
+            {/* Screen content */}
             {src && (
-                <image
-                    href={src}
-                    x="21.25"
-                    y="19.25"
-                    width="389.5"
-                    height="843.5"
-                    preserveAspectRatio="xMidYMid slice"
-                    clipPath="url(#roundedCorners)"
-                />
+                <g clipPath="url(#screen-clip)">
+                    <image
+                        href={src}
+                        x="18"
+                        y="18"
+                        width="354"
+                        height="808"
+                        preserveAspectRatio="xMidYMid meet"
+                        style={{opacity: screenOpacity}}
+                    />
+                    <rect
+                        x="18"
+                        y="18"
+                        width="354"
+                        height="808"
+                        fill="url(#screen-reflection)"
+                    />
+                </g>
             )}
+            
             {videoSrc && (
-                <foreignObject x="21.25" y="19.25" width="389.5" height="843.5">
+                <foreignObject 
+                    x="18" 
+                    y="18" 
+                    width="354" 
+                    height="808" 
+                    clipPath="url(#screen-clip)"
+                >
                     <video
-                        className="size-full overflow-hidden rounded-[55.75px] object-cover"
+                        style={{
+                            width: '100%',
+                            height: '100%',
+                            objectFit: 'cover',
+                            opacity: screenOpacity
+                        }}
                         src={videoSrc}
                         autoPlay
                         loop
                         muted
                         playsInline
                     />
+                    <div
+                        style={{
+                            position: 'absolute',
+                            top: 0,
+                            left: 0,
+                            width: '100%',
+                            height: '100%',
+                            background: 'linear-gradient(135deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0) 40%, rgba(255,255,255,0.06) 100%)',
+                            pointerEvents: 'none'
+                        }}
+                    />
                 </foreignObject>
             )}
-            <path
-                d="M154 48.5C154 38.2827 162.283 30 172.5 30H259.5C269.717 30 278 38.2827 278 48.5C278 58.7173 269.717 67 259.5 67H172.5C162.283 67 154 58.7173 154 48.5Z"
-                className="fill-[#F5F5F5] dark:fill-[#262626]"
+            
+            {/* Dynamic Island */}
+            <rect
+                x="125"
+                y="18"
+                width="140"
+                height="34"
+                rx="17"
+                ry="17"
+                className="fill-black"
             />
-            <path
-                d="M249 48.5C249 42.701 253.701 38 259.5 38C265.299 38 270 42.701 270 48.5C270 54.299 265.299 59 259.5 59C253.701 59 249 54.299 249 48.5Z"
-                className="fill-[#F5F5F5] dark:fill-[#262626]"
+            
+            {/* Camera/sensor cluster */}
+            <circle cx="150" cy="35" r="6" className="fill-[#1F2937] opacity-90" />
+            <circle cx="150" cy="35" r="3" className="fill-[#121212]" />
+            
+            {/* Side buttons */}
+            <rect 
+                x="0" 
+                y="170" 
+                width="3.5" 
+                height="40" 
+                rx="1" 
+                ry="1"
+                className="fill-[#343438] dark:fill-[#232326]" 
             />
-            <path
-                d="M254 48.5C254 45.4624 256.462 43 259.5 43C262.538 43 265 45.4624 265 48.5C265 51.5376 262.538 54 259.5 54C256.462 54 254 51.5376 254 48.5Z"
-                className="fill-[#E5E5E5] dark:fill-[#404040]"
+            <rect 
+                x="0" 
+                y="230" 
+                width="3.5" 
+                height="60" 
+                rx="1" 
+                ry="1"
+                className="fill-[#343438] dark:fill-[#232326]" 
             />
-            <defs>
-                <clipPath id="roundedCorners">
-                    <rect
-                        x="21.25"
-                        y="19.25"
-                        width="389.5"
-                        height="843.5"
-                        rx="55.75"
-                        ry="55.75"
-                    />
-                </clipPath>
-            </defs>
+            <rect 
+                x="0" 
+                y="310" 
+                width="3.5" 
+                height="60" 
+                rx="1" 
+                ry="1" 
+                className="fill-[#343438] dark:fill-[#232326]" 
+            />
+            
+            {/* Power button */}
+            <rect 
+                x="386.5" 
+                y="250" 
+                width="3.5" 
+                height="80" 
+                rx="1" 
+                ry="1" 
+                className="fill-[#343438] dark:fill-[#232326]" 
+            />
+            
+            {/* Home indicator */}
+            <rect 
+                x="165" 
+                y="813" 
+                width="60" 
+                height="4" 
+                rx="2" 
+                ry="2" 
+                className="fill-white opacity-30" 
+            />
         </svg>
     );
 }
