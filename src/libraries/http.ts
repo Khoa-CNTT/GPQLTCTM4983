@@ -167,15 +167,25 @@ const request = async <TResponseponse>(
 const handleClientSideActions = (url: string, data: any) => {
   const normalizedUrl = normalizePath(url)
   if (['api/auth/login'].includes(normalizedUrl)) {
+    // Xóa token cũ trước khi lưu token mới
+    removeTokensFromLocalStorage()
+    Cookies.remove('authTokenVerify', { path: '/' })
+    Cookies.remove('refreshToken', { path: '/' })
+    
     const { accessToken, refreshToken } = data.data
     setAccessTokenToLocalStorage(accessToken)
     setRefreshTokenToLocalStorage(refreshToken)
   } else if (normalizedUrl === 'api/auth/token') {
+    // Xóa token cũ trước khi lưu token mới
+    removeTokensFromLocalStorage()
+    Cookies.remove('authTokenVerify', { path: '/' })
+    Cookies.remove('refreshToken', { path: '/' })
+    
     const { accessToken, refreshToken } = data as { accessToken: string; refreshToken: string }
     setAccessTokenToLocalStorage(accessToken)
     setRefreshTokenToLocalStorage(refreshToken)
   } else if (['api/auth/logout', 'api/guest/auth/logout'].includes(normalizedUrl)) {
-    removeTokensFromLocalStorage()
+    clearAllAuthData()
   }
 }
 
