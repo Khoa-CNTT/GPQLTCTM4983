@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef, useEffect, memo } from 'react'
+import { useRef, useEffect, memo, useState } from 'react'
 import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion'
 import dynamic from 'next/dynamic'
 import { initPerformanceOptimizations } from '@/libraries/performance-optimization'
@@ -85,6 +85,26 @@ const MainSection = () => {
   const scale = useTransform(scrollYProgress, [0, 0.2], [1, 0.95])
   const y = useTransform(scrollYProgress, [0, 0.2], [0, -50])
   
+  // Thêm state cho scroll to top
+  const [showScrollTop, setShowScrollTop] = useState(false)
+
+  // Thêm effect để theo dõi scroll
+  useEffect(() => {
+    const handleScroll = () => {
+      setShowScrollTop(window.scrollY > 500)
+    }
+    window.addEventListener('scroll', handleScroll)
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
+
+  // Hàm xử lý scroll to top
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    })
+  }
+
   // Parallax effects for background
   const bgY = useTransform(scrollYProgress, [0, 1], [0, -100])
   const gridOpacity = useTransform(scrollYProgress, [0, 0.5, 1], [1, 0.8, 0.7])
@@ -182,6 +202,58 @@ const MainSection = () => {
       {/* Main Content */}
       <div className='relative z-10'>
         <Navbar />
+
+        {/* Thêm nút Scroll To Top */}
+        <AnimatePresence>
+          {showScrollTop && (
+            <motion.button
+              initial={{ opacity: 0, scale: 0.5 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.5 }}
+              onClick={scrollToTop}
+              className="fixed bottom-8 right-8 z-50 flex h-12 w-12 items-center justify-center rounded-lg bg-gradient-to-br from-violet-100 to-indigo-100 text-indigo-600 shadow-lg transition-all hover:from-violet-200 hover:to-indigo-200 hover:text-indigo-700 dark:from-violet-900/30 dark:to-indigo-900/30 dark:text-indigo-400 dark:hover:from-violet-800/40 dark:hover:to-indigo-800/40 dark:hover:text-indigo-300"
+              whileHover={{ 
+                scale: 1.05,
+                transition: { duration: 0.2 }
+              }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <motion.div
+                className="absolute inset-0 -z-10 rounded-lg bg-white/10 blur-sm"
+                animate={{
+                  opacity: [0.3, 0.5, 0.3]
+                }}
+                transition={{
+                  duration: 3,
+                  repeat: Infinity,
+                  repeatType: "reverse"
+                }}
+              />
+              <motion.svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-5 w-5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={2}
+                animate={{
+                  y: [0, -1, 0]
+                }}
+                transition={{
+                  duration: 2,
+                  repeat: Infinity,
+                  repeatType: "reverse"
+                }}
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M5 10l7-7m0 0l7 7m-7-7v18"
+                />
+              </motion.svg>
+            </motion.button>
+          )}
+        </AnimatePresence>
 
         {/* Hero Section with Enhanced Scroll Animation */}
         <motion.div 
