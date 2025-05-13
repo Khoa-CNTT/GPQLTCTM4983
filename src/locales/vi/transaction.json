@@ -76,7 +76,7 @@
     "transactionContent": "Nội dung chuyển tiền",
     "transactionCode": "Mã giao dịch: ",
     "classifier": "Người phân loại",
-    "classificationTime": "Thời gian phân loại",
+    "classificationTime": "Thời gian giao dịch",
     "description": "Mô tả",
     "category": "Danh mục",
     "note": "Ghi chú",

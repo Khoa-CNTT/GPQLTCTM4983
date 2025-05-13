@@ -37,3 +37,13 @@ export const initDetailNotification: INotification = {
   status: ENotificationStatus.UNREAD,
   timestamp: new Date()
 }
+
+export interface IUpdateNotificationForm {
+  id: string,
+  status?: ENotificationStatus,
+  title?: string,
+  content?: string,
+  link?: string
+}
+
+export type TNotificationActions = 'getAdvancedNotifications'
