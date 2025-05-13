@@ -32,8 +32,9 @@ import { userRoutes } from '@/api/user'
 import httpService from '@/libraries/http'
 import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { UserDetailsDialog } from './user-details-dialog'
+import { UserDetailsDialog } from '@/app/dashboard/user-management/components/user-details-dialog'
 import toast from 'react-hot-toast'
+import { useTranslation } from 'react-i18next'
 
 export interface User {
   id: string
@@ -53,23 +54,33 @@ export interface User {
 
 interface UserResponse {
   data: User[]
+  total: number
 }
 
-export function UserManagementTable() {
+function LoadingTable() {
+  return (
+    <div className="flex items-center justify-center h-40">
+      <div className="h-8 w-8 animate-spin rounded-full border-4 border-b-transparent border-primary"></div>
+    </div>
+  )
+}
+
+export function UserTable() {
   const [selectedUser, setSelectedUser] = useState<User | null>(null)
   const [isDetailsOpen, setIsDetailsOpen] = useState(false)
   const [searchTerm, setSearchTerm] = useState('')
   const queryClient = useQueryClient()
+  const { t } = useTranslation(['common'])
 
   const { data: usersData, isLoading, refetch } = useQuery({
     queryKey: ['users'],
     queryFn: async () => {
       const response = await httpService.get<UserResponse>(userRoutes.getAllUsers)
-      // Lọc ra những user có roleId = null
-      const normalUsers = response.payload.data.filter(user => user.roleId === null);
+      // Lọc ra những user có roleId là null (không phải admin)
+      const regularUsers = response.payload.data.filter(user => user.roleId === null);
       return {
         ...response.payload,
-        data: normalUsers
+        data: regularUsers
       };
     },
   })
@@ -84,11 +95,11 @@ export function UserManagementTable() {
       // Cập nhật lại dữ liệu sau khi thành công
       queryClient.invalidateQueries({ queryKey: ['users'] })
       refetch()
-      toast.success(`Người dùng đã được cập nhật trạng thái thành công!`)
+      toast.success(t('user.status_update_success', 'Người dùng đã được cập nhật trạng thái thành công!'))
     },
     onError: (error) => {
       console.error('Lỗi khi cập nhật trạng thái người dùng:', error)
-      toast.error('Không thể cập nhật trạng thái người dùng. Vui lòng thử lại sau.')
+      toast.error(t('user.status_update_error', 'Không thể cập nhật trạng thái người dùng. Vui lòng thử lại sau.'))
     }
   })
 
@@ -136,10 +147,16 @@ export function UserManagementTable() {
     <>
       <Card className="mb-6">
         <CardHeader className="pb-3">
-          <CardTitle>Quản lý người dùng</CardTitle>
-          <CardDescription>
-            Tổng cộng có {usersData?.data?.length || 0} người dùng trong hệ thống
-          </CardDescription>
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle>{t('sidebar.user_management', 'Quản lý người dùng')}</CardTitle>
+              <CardDescription>
+                {t('user.total_count', 'Tổng cộng có {{count}} người dùng trong hệ thống', {
+                  count: usersData?.data?.length || 0
+                })}
+              </CardDescription>
+            </div>
+          </div>
         </CardHeader>
         <CardContent>
           <div className="flex items-center gap-4">
@@ -147,7 +164,7 @@ export function UserManagementTable() {
               <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
               <Input
                 type="search"
-                placeholder="Tìm kiếm theo tên, email hoặc số điện thoại..."
+                placeholder={t('user.search_placeholder', 'Tìm kiếm theo tên, email hoặc số điện thoại...')}
                 className="pl-8"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
@@ -155,21 +172,21 @@ export function UserManagementTable() {
             </div>
             <Button variant="outline" size="icon" className="shrink-0">
               <Filter className="h-4 w-4" />
-              <span className="sr-only">Lọc</span>
+              <span className="sr-only">{t('table.filterPlaceholder', 'Lọc')}</span>
             </Button>
           </div>
         </CardContent>
       </Card>
 
-      <div className="rounded-md border">
+      <div>
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Người dùng</TableHead>
-              <TableHead>Email</TableHead>
-              <TableHead>Số điện thoại</TableHead>
-              <TableHead className="w-[140px]">Trạng thái</TableHead>
-              <TableHead className="text-right">Thao tác</TableHead>
+              <TableHead>{t('user.user', 'Người dùng')}</TableHead>
+              <TableHead>{t('user.email', 'Email')}</TableHead>
+              <TableHead>{t('user.phone', 'Số điện thoại')}</TableHead>
+              <TableHead className="w-[140px]">{t('user.status', 'Trạng thái')}</TableHead>
+              <TableHead className="text-right">{t('user.actions', 'Thao tác')}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -182,17 +199,19 @@ export function UserManagementTable() {
                       <AvatarFallback>{getInitials(user.fullName)}</AvatarFallback>
                     </Avatar>
                     <div>
-                      <p className="font-medium">{user.fullName || 'Chưa cập nhật'}</p>
+                      <p className="font-medium">{user.fullName || t('user.not_updated', 'Chưa cập nhật')}</p>
                     </div>
                   </TableCell>
                   <TableCell>{user.email}</TableCell>
-                  <TableCell>{user.phone_number || 'Chưa cập nhật'}</TableCell>
+                  <TableCell>{user.phone_number || t('user.not_updated', 'Chưa cập nhật')}</TableCell>
                   <TableCell>
                     <Badge
                       variant="outline"
                       className={`${getStatusColor(user.status)} w-[120px] text-center`}
                     >
-                      {user.status === 'ACTIVE' ? 'Hoạt động' : 'Không hoạt động'}
+                      {user.status === 'ACTIVE' 
+                        ? t('user.status.active', 'Hoạt động') 
+                        : t('user.status.inactive', 'Không hoạt động')}
                     </Badge>
                   </TableCell>
                   <TableCell className="text-right">
@@ -200,22 +219,22 @@ export function UserManagementTable() {
                       <DropdownMenuTrigger asChild>
                         <Button variant="ghost" size="icon">
                           <MoreHorizontal className="h-4 w-4" />
-                          <span className="sr-only">Mở menu</span>
+                          <span className="sr-only">{t('user.open_menu', 'Mở menu')}</span>
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
                         <DropdownMenuItem onClick={() => handleViewDetails(user)}>
                           <Eye className="mr-2 h-4 w-4" />
-                          <span>Xem chi tiết</span>
+                          <span>{t('user.view_details', 'Xem chi tiết')}</span>
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem onClick={() => updateUserStatus(user.id, 'ACTIVE')}>
                           <UserCheck className="mr-2 h-4 w-4" />
-                          <span>Kích hoạt</span>
+                          <span>{t('user.activate', 'Kích hoạt')}</span>
                         </DropdownMenuItem>
                         <DropdownMenuItem onClick={() => updateUserStatus(user.id, 'BLOCK')}>
                           <UserX className="mr-2 h-4 w-4" />
-                          <span>Vô hiệu hóa</span>
+                          <span>{t('user.deactivate', 'Vô hiệu hóa')}</span>
                         </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
@@ -224,8 +243,8 @@ export function UserManagementTable() {
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={5} className="h-24 text-center">
-                  Không tìm thấy người dùng nào.
+                <TableCell colSpan={6} className="h-24 text-center">
+                  {t('user.no_data', 'Không tìm thấy người dùng nào.')}
                 </TableCell>
               </TableRow>
             )}
@@ -238,65 +257,6 @@ export function UserManagementTable() {
         isOpen={isDetailsOpen} 
         onClose={() => setIsDetailsOpen(false)} 
       />
-    </>
-  )
-}
-
-function LoadingTable() {
-  return (
-    <>
-      <Card className="mb-6">
-        <CardHeader className="pb-3">
-          <div className="h-6 w-40 animate-pulse rounded-md bg-muted"></div>
-          <div className="h-4 w-60 animate-pulse rounded-md bg-muted"></div>
-        </CardHeader>
-        <CardContent>
-          <div className="flex items-center gap-4">
-            <div className="h-10 w-full animate-pulse rounded-md bg-muted"></div>
-            <div className="h-10 w-10 animate-pulse rounded-md bg-muted"></div>
-          </div>
-        </CardContent>
-      </Card>
-
-      <div className="rounded-md border">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Người dùng</TableHead>
-              <TableHead>Email</TableHead>
-              <TableHead>Số điện thoại</TableHead>
-              <TableHead className="w-[140px]">Trạng thái</TableHead>
-              <TableHead className="text-right">Thao tác</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {Array(5)
-              .fill(0)
-              .map((_, index) => (
-                <TableRow key={index}>
-                  <TableCell className="flex items-center gap-3">
-                    <div className="h-10 w-10 rounded-full bg-muted animate-pulse" />
-                    <div>
-                      <div className="h-4 w-32 bg-muted animate-pulse" />
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <div className="h-4 w-40 bg-muted animate-pulse" />
-                  </TableCell>
-                  <TableCell>
-                    <div className="h-4 w-32 bg-muted animate-pulse" />
-                  </TableCell>
-                  <TableCell>
-                    <div className="h-6 w-24 bg-muted animate-pulse" />
-                  </TableCell>
-                  <TableCell className="text-right">
-                    <div className="ml-auto h-8 w-8 bg-muted animate-pulse" />
-                  </TableCell>
-                </TableRow>
-              ))}
-          </TableBody>
-        </Table>
-      </div>
     </>
   )
 } 

@@ -26,16 +26,18 @@ import {
   MoreHorizontal, 
   Search, 
   UserCheck, 
-  UserX 
+  UserX,
+  Plus
 } from 'lucide-react'
 import { userRoutes } from '@/api/user'
 import httpService from '@/libraries/http'
 import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { UserDetailsDialog } from './user-details-dialog'
 import toast from 'react-hot-toast'
+import { AdminDetailsDialog } from './admin-details-dialog'
+import { CreateAdminDialog } from './create-admin-dialog'
 
-export interface User {
+export interface Admin {
   id: string
   fullName: string | null
   email: string
@@ -51,49 +53,51 @@ export interface User {
   address: string | null
 }
 
-interface UserResponse {
-  data: User[]
+interface AdminResponse {
+  data: Admin[]
 }
 
-export function UserManagementTable() {
-  const [selectedUser, setSelectedUser] = useState<User | null>(null)
+export function AdminManagementTable() {
+  const [selectedAdmin, setSelectedAdmin] = useState<Admin | null>(null)
   const [isDetailsOpen, setIsDetailsOpen] = useState(false)
+  const [isCreateOpen, setIsCreateOpen] = useState(false)
   const [searchTerm, setSearchTerm] = useState('')
   const queryClient = useQueryClient()
 
-  const { data: usersData, isLoading, refetch } = useQuery({
-    queryKey: ['users'],
+  const { data: adminsData, isLoading, refetch } = useQuery({
+    queryKey: ['admins'],
     queryFn: async () => {
-      const response = await httpService.get<UserResponse>(userRoutes.getAllUsers)
-      // Lọc ra những user có roleId = null
-      const normalUsers = response.payload.data.filter(user => user.roleId === null);
+      const response = await httpService.get<AdminResponse>(userRoutes.getAllUsers)
+      // Lọc ra những user có roleId khác null
+      const adminUsers = response.payload.data.filter(user => user.roleId !== null);
       return {
         ...response.payload,
-        data: normalUsers
+        data: adminUsers
       };
     },
   })
 
-  // Sử dụng useMutation để cập nhật trạng thái người dùng
-  const updateUserStatusMutation = useMutation({
-    mutationFn: async ({ userId, status }: { userId: string, status: 'ACTIVE' | 'BLOCK' }) => {
-      const url = userRoutes.updateUserStatus.replace(':id', userId)
+  // Sử dụng useMutation để cập nhật trạng thái admin
+  const updateAdminStatusMutation = useMutation({
+    mutationFn: async ({ adminId, status }: { adminId: string, status: 'ACTIVE' | 'BLOCK' }) => {
+      const url = userRoutes.updateUserStatus.replace(':id', adminId)
       return await httpService.patch(url, { status })
     },
     onSuccess: () => {
       // Cập nhật lại dữ liệu sau khi thành công
+      queryClient.invalidateQueries({ queryKey: ['admins'] })
       queryClient.invalidateQueries({ queryKey: ['users'] })
       refetch()
-      toast.success(`Người dùng đã được cập nhật trạng thái thành công!`)
+      toast.success(`Quản trị viên đã được cập nhật trạng thái thành công!`)
     },
     onError: (error) => {
-      console.error('Lỗi khi cập nhật trạng thái người dùng:', error)
-      toast.error('Không thể cập nhật trạng thái người dùng. Vui lòng thử lại sau.')
+      console.error('Lỗi khi cập nhật trạng thái quản trị viên:', error)
+      toast.error('Không thể cập nhật trạng thái quản trị viên. Vui lòng thử lại sau.')
     }
   })
 
   const getInitials = (name: string | null) => {
-    if (!name) return 'U'
+    if (!name) return 'A'
     return name
       .split(' ')
       .map((n) => n[0])
@@ -113,19 +117,33 @@ export function UserManagementTable() {
     }
   }
 
-  const handleViewDetails = (user: User) => {
-    setSelectedUser(user)
+  const getRoleLabel = (roleId: string) => {
+    switch (roleId) {
+      case 'SUPER_ADMIN':
+        return 'Quản trị viên cao cấp'
+      case 'ADMIN':
+        return 'Quản trị viên'
+      case 'MODERATOR':
+        return 'Điều phối viên'
+      default:
+        return roleId
+    }
+  }
+
+  const handleViewDetails = (admin: Admin) => {
+    setSelectedAdmin(admin)
     setIsDetailsOpen(true)
   }
 
-  const updateUserStatus = (userId: string, status: 'ACTIVE' | 'BLOCK') => {
-    updateUserStatusMutation.mutate({ userId, status })
+  const updateAdminStatus = (adminId: string, status: 'ACTIVE' | 'BLOCK') => {
+    updateAdminStatusMutation.mutate({ adminId, status })
   }
 
-  const filteredUsers = usersData?.data?.filter(user => 
-    user.email?.toLowerCase().includes(searchTerm.toLowerCase()) || 
-    user.fullName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    user.phone_number?.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredAdmins = adminsData?.data?.filter(admin => 
+    admin.email?.toLowerCase().includes(searchTerm.toLowerCase()) || 
+    admin.fullName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    admin.phone_number?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    getRoleLabel(admin.roleId).toLowerCase().includes(searchTerm.toLowerCase())
   ) || []
 
   if (isLoading) {
@@ -136,10 +154,17 @@ export function UserManagementTable() {
     <>
       <Card className="mb-6">
         <CardHeader className="pb-3">
-          <CardTitle>Quản lý người dùng</CardTitle>
-          <CardDescription>
-            Tổng cộng có {usersData?.data?.length || 0} người dùng trong hệ thống
-          </CardDescription>
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle>Quản lý quản trị viên</CardTitle>
+              <CardDescription>
+                Tổng cộng có {adminsData?.data?.length || 0} quản trị viên trong hệ thống
+              </CardDescription>
+            </div>
+            <Button onClick={() => setIsCreateOpen(true)}>
+              <Plus className="mr-2 h-4 w-4" /> Thêm quản trị viên
+            </Button>
+          </div>
         </CardHeader>
         <CardContent>
           <div className="flex items-center gap-4">
@@ -147,7 +172,7 @@ export function UserManagementTable() {
               <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
               <Input
                 type="search"
-                placeholder="Tìm kiếm theo tên, email hoặc số điện thoại..."
+                placeholder="Tìm kiếm theo tên, email, vai trò hoặc số điện thoại..."
                 className="pl-8"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
@@ -165,7 +190,7 @@ export function UserManagementTable() {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Người dùng</TableHead>
+              <TableHead>Quản trị viên</TableHead>
               <TableHead>Email</TableHead>
               <TableHead>Số điện thoại</TableHead>
               <TableHead className="w-[140px]">Trạng thái</TableHead>
@@ -173,26 +198,26 @@ export function UserManagementTable() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {filteredUsers.length > 0 ? (
-              filteredUsers.map((user: User) => (
-                <TableRow key={user.id} className="group hover:bg-muted/40">
+            {filteredAdmins.length > 0 ? (
+              filteredAdmins.map((admin: Admin) => (
+                <TableRow key={admin.id} className="group hover:bg-muted/40">
                   <TableCell className="flex items-center gap-3">
                     <Avatar>
-                      <AvatarImage src={user.avatarId || ''} />
-                      <AvatarFallback>{getInitials(user.fullName)}</AvatarFallback>
+                      <AvatarImage src={admin.avatarId || ''} />
+                      <AvatarFallback>{getInitials(admin.fullName)}</AvatarFallback>
                     </Avatar>
                     <div>
-                      <p className="font-medium">{user.fullName || 'Chưa cập nhật'}</p>
+                      <p className="font-medium">{admin.fullName || 'Chưa cập nhật'}</p>
                     </div>
                   </TableCell>
-                  <TableCell>{user.email}</TableCell>
-                  <TableCell>{user.phone_number || 'Chưa cập nhật'}</TableCell>
+                  <TableCell>{admin.email}</TableCell>
+                  <TableCell>{admin.phone_number || 'Chưa cập nhật'}</TableCell>
                   <TableCell>
                     <Badge
                       variant="outline"
-                      className={`${getStatusColor(user.status)} w-[120px] text-center`}
+                      className={`${getStatusColor(admin.status)} w-[120px] text-center`}
                     >
-                      {user.status === 'ACTIVE' ? 'Hoạt động' : 'Không hoạt động'}
+                      {admin.status === 'ACTIVE' ? 'Hoạt động' : 'Không hoạt động'}
                     </Badge>
                   </TableCell>
                   <TableCell className="text-right">
@@ -204,16 +229,16 @@ export function UserManagementTable() {
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
-                        <DropdownMenuItem onClick={() => handleViewDetails(user)}>
+                        <DropdownMenuItem onClick={() => handleViewDetails(admin)}>
                           <Eye className="mr-2 h-4 w-4" />
                           <span>Xem chi tiết</span>
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem onClick={() => updateUserStatus(user.id, 'ACTIVE')}>
+                        <DropdownMenuItem onClick={() => updateAdminStatus(admin.id, 'ACTIVE')}>
                           <UserCheck className="mr-2 h-4 w-4" />
                           <span>Kích hoạt</span>
                         </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => updateUserStatus(user.id, 'BLOCK')}>
+                        <DropdownMenuItem onClick={() => updateAdminStatus(admin.id, 'BLOCK')}>
                           <UserX className="mr-2 h-4 w-4" />
                           <span>Vô hiệu hóa</span>
                         </DropdownMenuItem>
@@ -224,8 +249,8 @@ export function UserManagementTable() {
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={5} className="h-24 text-center">
-                  Không tìm thấy người dùng nào.
+                <TableCell colSpan={6} className="h-24 text-center">
+                  Không tìm thấy quản trị viên nào.
                 </TableCell>
               </TableRow>
             )}
@@ -233,10 +258,16 @@ export function UserManagementTable() {
         </Table>
       </div>
 
-      <UserDetailsDialog 
-        user={selectedUser} 
+      <AdminDetailsDialog 
+        admin={selectedAdmin} 
         isOpen={isDetailsOpen} 
         onClose={() => setIsDetailsOpen(false)} 
+      />
+
+      <CreateAdminDialog 
+        isOpen={isCreateOpen} 
+        onClose={() => setIsCreateOpen(false)} 
+        onSuccess={() => refetch()}
       />
     </>
   )
@@ -247,8 +278,13 @@ function LoadingTable() {
     <>
       <Card className="mb-6">
         <CardHeader className="pb-3">
-          <div className="h-6 w-40 animate-pulse rounded-md bg-muted"></div>
-          <div className="h-4 w-60 animate-pulse rounded-md bg-muted"></div>
+          <div className="flex items-center justify-between">
+            <div>
+              <div className="h-6 w-40 animate-pulse rounded-md bg-muted"></div>
+              <div className="h-4 w-60 animate-pulse rounded-md bg-muted"></div>
+            </div>
+            <div className="h-10 w-40 animate-pulse rounded-md bg-muted"></div>
+          </div>
         </CardHeader>
         <CardContent>
           <div className="flex items-center gap-4">
@@ -259,43 +295,7 @@ function LoadingTable() {
       </Card>
 
       <div className="rounded-md border">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Người dùng</TableHead>
-              <TableHead>Email</TableHead>
-              <TableHead>Số điện thoại</TableHead>
-              <TableHead className="w-[140px]">Trạng thái</TableHead>
-              <TableHead className="text-right">Thao tác</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {Array(5)
-              .fill(0)
-              .map((_, index) => (
-                <TableRow key={index}>
-                  <TableCell className="flex items-center gap-3">
-                    <div className="h-10 w-10 rounded-full bg-muted animate-pulse" />
-                    <div>
-                      <div className="h-4 w-32 bg-muted animate-pulse" />
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <div className="h-4 w-40 bg-muted animate-pulse" />
-                  </TableCell>
-                  <TableCell>
-                    <div className="h-4 w-32 bg-muted animate-pulse" />
-                  </TableCell>
-                  <TableCell>
-                    <div className="h-6 w-24 bg-muted animate-pulse" />
-                  </TableCell>
-                  <TableCell className="text-right">
-                    <div className="ml-auto h-8 w-8 bg-muted animate-pulse" />
-                  </TableCell>
-                </TableRow>
-              ))}
-          </TableBody>
-        </Table>
+        <div className="h-[300px] animate-pulse bg-muted/20"></div>
       </div>
     </>
   )

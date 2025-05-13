@@ -4,5 +4,7 @@ export const userRoutes = {
   updatePassword: 'users/update-password/:id',
   clearCache: 'users/cache/clear',
   getAllUsers: 'users/admin/all',
-  updateUserStatus: 'users/:id/status'
+  updateUserStatus: 'users/:id/status',
+  createAdmin: 'users/admin',
+  updateAdmin: 'users/admins/:id'
 }

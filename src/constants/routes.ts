@@ -52,6 +52,12 @@ export const navItems: NavItem[] = [
     ]
   },
   {
+    title: 'Admin Management',
+    href: '/dashboard/admin-management',
+    icon: 'shieldPlus',
+    label: 'Admin Management'
+  },
+  {
     title: 'User Management',
     href: '/dashboard/user-management',
     icon: 'user',
