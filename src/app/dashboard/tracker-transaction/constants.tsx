@@ -266,5 +266,6 @@ export const formatTrackerTransactionData = (data: ITrackerTransaction): ICustom
 export enum EPaymentEvents {
   REFETCH_COMPLETE = 'refetchComplete',
   REFETCH_FAILED = 'refetchFailed',
-  REFETCH_STARTED = 'refetchStarted'
+  REFETCH_STARTED = 'refetchStarted',
+  CREATED_TRANSACTIONS = 'createdTransactions'
 }

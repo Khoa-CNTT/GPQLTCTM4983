@@ -82,6 +82,7 @@ import { useOverviewPage } from '@/core/overview/hooks'
 import { GET_ADVANCED_EXPENDITURE_FUND_KEY } from '@/core/expenditure-fund/constants'
 import { Checkbox } from '@/components/ui/checkbox'
 import { ArrowUpDown } from 'lucide-react'
+import { EPaymentEvents } from '../tracker-transaction/constants'
 
 export default function TransactionForm() {
   // states
@@ -291,13 +292,25 @@ export default function TransactionForm() {
 
   useEffect(() => {
     if (socket) {
-      socket.off('refetchComplete')
-      socket.on('refetchComplete', (data: { message: string; status: string }) => {
+      socket.off(EPaymentEvents.REFETCH_COMPLETE)
+      socket.on(EPaymentEvents.REFETCH_COMPLETE, (data: { message: string; status: string }) => {
         if (data.status == 'NO_NEW_TRANSACTION') {
           toast.success('No new transaction to fetch!', {
             duration: 2000
           })
         } else if (data.status == 'NEW_TRANSACTION') {
+          toast.success(
+            'Refetch transaction successfully - Found new transaction! Creating and reloading transactions...',
+            {
+              duration: 2000
+            }
+          )
+        }
+        setIsPendingRefetch(false)
+      })
+      socket.off(EPaymentEvents.CREATED_TRANSACTIONS)
+      socket.on(EPaymentEvents.CREATED_TRANSACTIONS, (data: { message: string; status: string }) => {
+        if (data.status === 'TRANSACTIONS_IS_CREATED') {
           reloadDataFunction()
           callBackRefetchTransactionPage([
             'getUnclassifiedTransactions',
@@ -310,7 +323,7 @@ export default function TransactionForm() {
           setUncDataTableConfig((prev) => ({ ...prev, currentPage: 1 }))
           setTodayDataTableConfig((prev) => ({ ...prev, currentPage: 1 }))
           setDataTableConfig((prev) => ({ ...prev, currentPage: 1 }))
-          toast.success('Refetch transaction successfully - Found new transaction!', {
+          toast.success('Transactions successfully created and data refreshed!', {
             duration: 2000
           })
         }
@@ -318,7 +331,8 @@ export default function TransactionForm() {
       })
     }
     return () => {
-      socket?.off('refetchComplete')
+      socket?.off(EPaymentEvents.REFETCH_COMPLETE)
+      socket?.off(EPaymentEvents.CREATED_TRANSACTIONS)
     }
   }, [socket])
 

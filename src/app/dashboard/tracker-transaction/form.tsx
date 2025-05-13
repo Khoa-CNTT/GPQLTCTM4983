@@ -412,7 +412,7 @@ export default function TrackerTransactionForm() {
   useEffect(() => {
     if (!socket) return
 
-    const handleRefetchComplete = (data: { messages: string; status: string }) => {
+    const handleCreatedTransactions = (data: { messages: string; status: string }) => {
       setIsPendingRefetch(false)
       switch (data.status) {
         case 'NO_NEW_TRANSACTION':
@@ -449,13 +449,16 @@ export default function TrackerTransactionForm() {
     }
 
     socket.off(EPaymentEvents.REFETCH_COMPLETE)
+    socket.off(EPaymentEvents.CREATED_TRANSACTIONS)
     socket.off(EPaymentEvents.REFETCH_FAILED)
 
-    socket.on(EPaymentEvents.REFETCH_COMPLETE, handleRefetchComplete)
+    socket.on(EPaymentEvents.REFETCH_COMPLETE, () => {})
+    socket.on(EPaymentEvents.CREATED_TRANSACTIONS, handleCreatedTransactions)
     socket.on(EPaymentEvents.REFETCH_FAILED, handleRefetchFailed)
 
     return () => {
-      socket.off(EPaymentEvents.REFETCH_COMPLETE, handleRefetchComplete)
+      socket.off(EPaymentEvents.REFETCH_COMPLETE, () => {})
+      socket.off(EPaymentEvents.CREATED_TRANSACTIONS, handleCreatedTransactions)
       socket.off(EPaymentEvents.REFETCH_FAILED, handleRefetchFailed)
     }
   }, [socket])
