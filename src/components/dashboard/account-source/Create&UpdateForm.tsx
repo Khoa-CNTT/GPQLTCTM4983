@@ -146,9 +146,7 @@ export default function CreateAndUpdateAccountSourceForm({
   }
 
   useEffect(() => {
-    console.log('defaultValue: ', defaultValue)
     if (defaultValue) {
-      console.log('defaultValue: ', defaultValue)
       currentNameRef.current = defaultValue.name
       setLatestName(defaultValue.name)
       setFormValues({ accountSourceName: defaultValue.name })

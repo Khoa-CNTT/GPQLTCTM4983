@@ -61,7 +61,6 @@ export default function BreadcrumbHeader() {
   const breadcrumbItems = useMemo(() => {
     const segments = path.split('/').filter((seg) => seg)
     const paths = segments.map((segment, index) => `/${segments.slice(0, index + 1).join('/')}`)
-  console.log('paths', paths);
 
     return paths.map((path, index) => {
       const navItem = findNavItem(path)

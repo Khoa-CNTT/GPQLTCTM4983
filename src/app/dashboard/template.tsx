@@ -18,7 +18,6 @@ export default function Template({ children }: { children: React.ReactNode }) {
     if (viewportHeight) {
       setViewportHeight(window.innerHeight)
     }
-    console.log("🚀 ~ updateScreenHeight ~ viewportHeight:", window.innerHeight)
   }, [window.innerHeight]);
 
   useEffect(() => {

@@ -289,7 +289,6 @@ export default function AccountSourceForm() {
 
   // Tạo một key duy nhất cho DataTable để đảm bảo re-render khi ngôn ngữ thay đổi
   const tableKey = useMemo(() => {
-    console.log('Generating new table key for language:', i18n.language)
     return `account-source-table-${i18n.language}-${Math.random()}`
   }, [i18n.language])
 
@@ -303,7 +302,6 @@ export default function AccountSourceForm() {
       }
     }
 
-    console.log('Language changed, refetching data...')
     refetchData()
   }, [i18n.language])
 

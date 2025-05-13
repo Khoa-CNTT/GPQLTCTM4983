@@ -76,7 +76,7 @@
     "transactionContent": "Transaction Content",
     "transactionCode": "Transaction Code: ",
     "classifier": "Classifier",
-    "classificationTime": "Classification Time",
+    "classificationTime": "Transaction Time",
     "description": "Description",
     "category": "Category",
     "note": "Comments",

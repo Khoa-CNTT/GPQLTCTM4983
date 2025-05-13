@@ -263,7 +263,6 @@ export default function TransactionForm() {
       }
     }
 
-    console.log('Language changed, refetching data...')
     refetchData()
   }, [i18n.language])
 
@@ -355,8 +354,6 @@ export default function TransactionForm() {
     if (dataTransaction && dataTransaction.data) {
       try {
         const formattedData = modifyTransactionHandler(dataTransaction.data)
-        console.log('Current language:', i18n.language)
-        console.log('Data keys:', formattedData.length > 0 ? Object.keys(formattedData[0]) : [])
 
         setDataTable(formattedData)
         setDataTableConfig((prev) => ({
@@ -517,7 +514,6 @@ export default function TransactionForm() {
 
   // Tạo một key duy nhất cho DataTable để đảm bảo re-render khi ngôn ngữ thay đổi
   const tableKey = useMemo(() => {
-    console.log('Generating new table key for language:', i18n.language)
     return `transaction-table-${i18n.language}-${Math.random()}`
   }, [i18n.language])
 
