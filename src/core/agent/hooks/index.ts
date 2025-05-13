@@ -1,14 +1,14 @@
 import { IUseQueryHookOptions } from '@/types/query.interface'
-import { useDeleteAgentSubcription } from './useDeleteAgentSubcription'
-import { useCreateAgenSubscribe } from './useCreateAgenSubscribe'
+import { useDeleteAgentSubscription } from './useDeleteAgentSubscription'
+import { useCreateAgentSubscribe } from './useCreateAgentSubscribe'
 import { useGetAgentSubscription } from './useGetAgentSubscription'
 
 export const useAgent = (opts?: IUseQueryHookOptions) => {
-  const { mutate: subscribeToAgent, isPending: isSubscribing } = useCreateAgenSubscribe(opts)
+  const { mutate: subscribeToAgent, isPending: isSubscribing } = useCreateAgentSubscribe(opts)
   return {
     useGetAgentSubscription,
     isSubscribing,
     subscribeToAgent,
-    useDeleteAgentSubcription
+    useDeleteAgentSubscription
   }
 }

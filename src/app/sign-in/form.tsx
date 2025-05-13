@@ -192,7 +192,7 @@ export default function SignInForm() {
                   </Button>
                   <Button
                     onClick={() => {
-                      window.location.href = `${process.env.NEXT_PUBLIC_BACKEND}/api/auth/login/facebook`
+                      window.location.href = `${process.env.NEXT_PUBLIC_BACKEND}api/auth/login/facebook`
                     }}
                     variant='blueVin'
                     className='w-full'

@@ -1,6 +1,6 @@
 import { transactionRoutes } from '@/api/transaction'
 import { GET_UNCLASSIFIED_TRANSACTION_KEY, TRANSACTION_RETRY } from '@/core/transaction/constants'
-import { IGetTransactionResponse } from '@/core/transaction/models'
+import { IGetTransactionResponse, IGetUnclassifiedTransactionResponse } from '@/core/transaction/models'
 import { useModelQuery } from '@/hooks/useQueryModel'
 import { IUseGetAdvancedProps } from '@/types/query.interface'
 import { useEffect } from 'react'
@@ -12,7 +12,7 @@ export const useGetUnclassifiedTransactions = (props: IUseGetAdvancedProps) => {
     data: dataUnclassifiedTxs,
     error,
     refetch: refetchGetUnclassifiedTxs
-  } = useModelQuery<IGetTransactionResponse>(
+  } = useModelQuery<IGetUnclassifiedTransactionResponse>(
     GET_UNCLASSIFIED_TRANSACTION_KEY,
     transactionRoutes.getUnclassifiedTransactions,
     {

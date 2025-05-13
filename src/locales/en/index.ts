@@ -7,7 +7,7 @@ import expenditureFund from './expenditure-fund.json'
 import expenditureFundDetails from './expenditureFundDetails.json'
 import overview from './overview.json'
 import spendingPlan from './spending-plan.json'
-import prenium from './prenium.json'
+import agentSubscription from './agent-subscription.json'
 
 const englishTranslations = {
   common,
@@ -19,7 +19,7 @@ const englishTranslations = {
   expenditureFundDetails,
   overview,
   spendingPlan,
-  prenium
+  agentSubscription
 }
 
 export default englishTranslations

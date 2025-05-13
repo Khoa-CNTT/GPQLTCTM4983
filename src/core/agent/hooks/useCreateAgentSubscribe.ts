@@ -5,7 +5,7 @@ import toast from 'react-hot-toast'
 import { IAgentSubscriptionBody, IAgentSubscriptionResponse } from '../models/agent.interface'
 import { agentRoutes } from '../configs'
 
-export const useCreateAgenSubscribe = (opts?: IUseQueryHookOptions) => {
+export const useCreateAgentSubscribe = (opts?: IUseQueryHookOptions) => {
   return useMutationCustom<IAgentSubscriptionBody, IAgentSubscriptionResponse>({
     pathUrl: agentRoutes.subscribe,
     mutateOption: {
