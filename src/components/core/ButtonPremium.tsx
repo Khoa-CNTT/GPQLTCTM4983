@@ -39,7 +39,7 @@ import { motion } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
 
 export default function ButtonPremium() {
-  const { t } = useTranslation(['prenium'])
+  const { t } = useTranslation(['agentSubscription'])
   const [open, setOpen] = useState(false)
   const [bankAccounts, setBankAccounts] = useState<IAccountSource[]>([])
   const [subscriptions, setSubscriptions] = useState<IAgentSubscriptionStatus[]>([])
@@ -55,7 +55,7 @@ export default function ButtonPremium() {
     setBankAccounts(dataAccountBank)
   }, [getAdvancedData])
 
-  const { useGetAgentSubscription, isSubscribing, subscribeToAgent, useDeleteAgentSubcription } = useAgent()
+  const { useGetAgentSubscription, isSubscribing, subscribeToAgent, useDeleteAgentSubscription } = useAgent()
 
   const { getAllDataAgent, refetchSubscriptionStatus } = useGetAgentSubscription({ query: queryOptions, fundId })
 
@@ -65,8 +65,8 @@ export default function ButtonPremium() {
 
   const allAccounts = useMemo(() => {
     if (bankAccounts.length === 0) return []
-    return bankAccounts.flatMap(bank =>
-      (bank?.accountBank?.accounts || []).map(acc => ({
+    return bankAccounts.flatMap((bank) =>
+      (bank?.accountBank?.accounts || []).map((acc) => ({
         accountBankId: bank.accountBankId,
         accountNo: acc.accountNo,
         bankName: bank.name
@@ -75,18 +75,20 @@ export default function ButtonPremium() {
   }, [bankAccounts])
 
   const availableAccounts = useMemo(() => {
-    const registeredIds = subscriptions.map(sub => sub.accountBankId)
-    return allAccounts.filter(acc => !registeredIds.includes(acc.accountBankId))
+    const registeredIds = subscriptions.map((sub) => sub.accountBankId)
+    return allAccounts.filter((acc) => !registeredIds.includes(acc.accountBankId))
   }, [allAccounts, subscriptions, unsubscribeData])
 
   const registeredAccounts = useMemo(() => {
-    return subscriptions.map(sub => ({
-      id: sub.id,
-      accountNo: sub.accountBank?.login_id,
-      bankName: sub.accountBank?.AccountSource?.name || sub.accountBank?.login_id || 'Unknown Bank',
-      hour: sub.hour,
-      minute: sub.minute
-    }))
+    return subscriptions.map((sub) => {
+      return {
+        id: sub.id,
+        accountNo: sub.accountBank?.accounts[0].accountNo,
+        bankName: sub.accountBank?.AccountSource?.name || sub.accountBank?.login_id || 'Unknown Bank',
+        hour: sub.hour,
+        minute: sub.minute
+      }
+    })
   }, [subscriptions])
 
   const form = useForm<SubscriptionFormValues>({
@@ -98,7 +100,7 @@ export default function ButtonPremium() {
     }
   })
 
-  const { isUnsubscribing } = useDeleteAgentSubcription({
+  const { isUnsubscribing } = useDeleteAgentSubscription({
     unsubscribeData,
     setUnsubscribeData,
     refetchSubscriptionStatus
@@ -109,15 +111,18 @@ export default function ButtonPremium() {
   }
 
   const onSubmit = async (values: SubscriptionFormValues) => {
-    subscribeToAgent({
-      accountBankId: values.accountBankId,
-      hour: values.hour,
-      minute: values.minute
-    }, {
-      onSuccess: () => {
-        refetchSubscriptionStatus()
+    subscribeToAgent(
+      {
+        accountBankId: values.accountBankId,
+        hour: values.hour,
+        minute: values.minute
+      },
+      {
+        onSuccess: () => {
+          refetchSubscriptionStatus()
+        }
       }
-    })
+    )
   }
 
   const hours = useMemo(() => Array.from({ length: 24 }, (_, i) => i), [])
@@ -146,36 +151,44 @@ export default function ButtonPremium() {
             <Sparkles className='mr-2 h-5 w-5 text-indigo-500' />
             {t('title')}
           </DialogTitle>
-          <DialogDescription className='pt-2 text-base'>
-            {t('description')}
-          </DialogDescription>
+          <DialogDescription className='pt-2 text-base'>{t('description')}</DialogDescription>
         </DialogHeader>
 
-        <div className='flex flex-col xl:flex-row gap-6 w-full min-w-0'>
+        <div className='flex w-full min-w-0 flex-col gap-6 xl:flex-row'>
           {registeredAccounts.length > 0 && (
-            <div className='flex-1 min-w-0 w-full'>
+            <div className='w-full min-w-0 flex-1'>
               <div className='mb-4 rounded-lg bg-indigo-50 p-4 dark:bg-indigo-900/20'>
-                <h3 className='mb-4 flex items-center font-medium text-lg'>
+                <h3 className='mb-4 flex items-center text-lg font-medium'>
                   <Clock1 className='mr-2 h-5 w-5 text-indigo-500' />
                   {t('registered')}
                 </h3>
                 <div className='space-y-3'>
-                  {registeredAccounts.map(acc => (
-                    <div key={acc.id} className='flex flex-col sm:flex-row sm:items-center justify-between text-sm border-b border-gray-200 dark:border-gray-700 py-3 gap-2 sm:gap-4 w-full min-w-0'>
-                      <div className='flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 flex-1 min-w-0'>
-                        <div className='flex flex-col min-w-[120px] max-w-full'>
-                          <span className='font-medium text-base truncate'>{acc.bankName}</span>
-                          <span className='text-gray-500 dark:text-gray-400 text-sm truncate'>{acc.accountNo}</span>
-                        </div>
-                        <div className='flex items-center gap-2 text-indigo-600 dark:text-indigo-400 whitespace-nowrap'>
-                          <Clock1 className='h-4 w-4 flex-shrink-0' />
-                          <span>{t('dailyAt', { hour: acc.hour.toString().padStart(2, '0'), minute: acc.minute.toString().padStart(2, '0') })}</span>
+                  {registeredAccounts.map((acc) => (
+                    <div
+                      key={acc.id}
+                      className='flex w-full min-w-0 flex-col justify-between gap-2 border-b border-gray-200 py-3 text-sm dark:border-gray-700 sm:flex-row sm:items-center sm:gap-4'
+                    >
+                      <div className='flex min-w-0 flex-1 flex-col gap-2'>
+                        <div className='flex min-w-[120px] max-w-full flex-col'>
+                          <span className='truncate text-base font-medium'>{acc.bankName}</span>
+                          <div className='flex w-full items-center'>
+                            <span className='truncate text-sm text-gray-500 dark:text-gray-400'>{acc.accountNo}</span>
+                            <div className='ml-4 flex items-center gap-2 whitespace-nowrap text-indigo-600 dark:text-indigo-400'>
+                              <Clock1 className='h-4 w-4 flex-shrink-0' />
+                              <span>
+                                {t('dailyAt', {
+                                  hour: acc.hour.toString().padStart(2, '0'),
+                                  minute: acc.minute.toString().padStart(2, '0')
+                                })}
+                              </span>
+                            </div>
+                          </div>
                         </div>
                       </div>
                       <Button
                         variant='destructive'
                         onClick={() => handleUnsubscribe(acc.id)}
-                        className='gap-2 whitespace-nowrap flex-shrink-0 w-full sm:w-auto mt-2 sm:mt-0'
+                        className='mt-2 w-full flex-shrink-0 gap-2 whitespace-nowrap sm:mt-0 sm:w-auto'
                       >
                         {t('cancel')}
                       </Button>
@@ -192,16 +205,16 @@ export default function ButtonPremium() {
             </div>
           )}
 
-          <div className='flex-1 min-w-0 w-full'>
+          <div className='w-full min-w-0 flex-1'>
             <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-8 w-full min-w-0'>
+              <form onSubmit={form.handleSubmit(onSubmit)} className='w-full min-w-0 space-y-8'>
                 <div className='space-y-6'>
                   <div className='rounded-lg bg-blue-50 p-5 dark:bg-blue-900/20'>
                     <div className='flex items-start gap-4'>
-                      <div className='rounded-full bg-blue-100 p-2 dark:bg-blue-800/30 flex-shrink-0'>
+                      <div className='flex-shrink-0 rounded-full bg-blue-100 p-2 dark:bg-blue-800/30'>
                         <Info className='h-5 w-5 text-blue-600 dark:text-blue-400' />
                       </div>
-                      <div className='flex-1 min-w-0'>
+                      <div className='min-w-0 flex-1'>
                         <h4 className='mb-2 text-base font-medium text-blue-800 dark:text-blue-200'>
                           {t('featureList.title')}
                         </h4>
@@ -220,7 +233,7 @@ export default function ButtonPremium() {
                       name='accountBankId'
                       render={({ field }) => (
                         <FormItem>
-                          <div className='flex justify-between mb-2'>
+                          <div className='mb-2 flex justify-between'>
                             <FormLabel className='flex items-center text-base text-muted-foreground'>
                               <CreditCard className='mr-2 h-5 w-5 text-indigo-500' />
                               {t('accountLabel')}
@@ -228,9 +241,13 @@ export default function ButtonPremium() {
                             <FormMessage />
                           </div>
                           <FormControl>
-                            <Select onValueChange={field.onChange} value={field.value} disabled={availableAccounts.length === 0}>
+                            <Select
+                              onValueChange={field.onChange}
+                              value={field.value}
+                              disabled={availableAccounts.length === 0}
+                            >
                               <FormControl>
-                                <SelectTrigger className='w-full h-11 border-indigo-100 focus:ring-indigo-200 dark:border-indigo-800'>
+                                <SelectTrigger className='h-11 w-full border-indigo-100 focus:ring-indigo-200 dark:border-indigo-800'>
                                   <SelectValue placeholder={t('accountPlaceholder')} />
                                 </SelectTrigger>
                               </FormControl>
@@ -247,13 +264,13 @@ export default function ButtonPremium() {
                       )}
                     />
 
-                    <div className='flex flex-col lg:flex-row items-start lg:items-center gap-4 w-full min-w-0'>
+                    <div className='flex w-full min-w-0 flex-col items-start gap-4 lg:flex-row lg:items-center'>
                       <FormField
                         control={form.control}
                         name='hour'
                         render={({ field }) => (
-                          <FormItem className='flex-1 min-w-0'>
-                            <div className='flex justify-between mb-2'>
+                          <FormItem className='min-w-0 flex-1'>
+                            <div className='mb-2 flex justify-between'>
                               <FormLabel className='flex items-center text-base text-muted-foreground'>
                                 <Clock1 className='mr-2 h-5 w-5 text-indigo-500' />
                                 {t('hourLabel')}
@@ -266,7 +283,7 @@ export default function ButtonPremium() {
                                 value={field.value?.toString()}
                               >
                                 <FormControl>
-                                  <SelectTrigger className='w-full h-11 border-indigo-100 focus:ring-indigo-200 dark:border-indigo-800'>
+                                  <SelectTrigger className='h-11 w-full border-indigo-100 focus:ring-indigo-200 dark:border-indigo-800'>
                                     <SelectValue placeholder={t('hourPlaceholder')} />
                                   </SelectTrigger>
                                 </FormControl>
@@ -286,8 +303,8 @@ export default function ButtonPremium() {
                         control={form.control}
                         name='minute'
                         render={({ field }) => (
-                          <FormItem className='flex-1 min-w-0'>
-                            <div className='flex justify-between mb-2'>
+                          <FormItem className='min-w-0 flex-1'>
+                            <div className='mb-2 flex justify-between'>
                               <FormLabel className='flex items-center text-base text-muted-foreground'>
                                 <Clock1 className='mr-2 h-5 w-5 text-indigo-500' />
                                 {t('minuteLabel')}
@@ -300,7 +317,7 @@ export default function ButtonPremium() {
                                 value={field.value?.toString()}
                               >
                                 <FormControl>
-                                  <SelectTrigger className='w-full h-11 border-indigo-100 focus:ring-indigo-200 dark:border-indigo-800'>
+                                  <SelectTrigger className='h-11 w-full border-indigo-100 focus:ring-indigo-200 dark:border-indigo-800'>
                                     <SelectValue placeholder={t('minutePlaceholder')} />
                                   </SelectTrigger>
                                 </FormControl>
@@ -322,16 +339,14 @@ export default function ButtonPremium() {
                   {availableAccounts.length === 0 && (
                     <div className='rounded-lg bg-yellow-50 p-5 dark:bg-yellow-900/20'>
                       <div className='flex items-start gap-4'>
-                        <div className='rounded-full bg-yellow-100 p-2 dark:bg-yellow-800/30 flex-shrink-0'>
+                        <div className='flex-shrink-0 rounded-full bg-yellow-100 p-2 dark:bg-yellow-800/30'>
                           <AlertTriangle className='h-5 w-5 text-yellow-600 dark:text-yellow-400' />
                         </div>
-                        <div className='flex-1 min-w-0'>
+                        <div className='min-w-0 flex-1'>
                           <h4 className='mb-1 text-base font-medium text-yellow-800 dark:text-yellow-200'>
                             {t('notRegistered')}
                           </h4>
-                          <p className='text-sm text-yellow-800 dark:text-yellow-200'>
-                            {t('cannotRegisterMore')}
-                          </p>
+                          <p className='text-sm text-yellow-800 dark:text-yellow-200'>{t('cannotRegisterMore')}</p>
                         </div>
                       </div>
                     </div>
@@ -342,13 +357,9 @@ export default function ButtonPremium() {
                   <Button
                     type='submit'
                     disabled={isSubscribing || availableAccounts.length === 0}
-                    className='gap-2 w-full sm:w-auto h-11 text-base'
+                    className='h-11 w-full gap-2 text-base sm:w-auto'
                   >
-                    {isSubscribing ? (
-                      <Loader2 className="h-5 w-5 animate-spin" />
-                    ) : (
-                      <Sparkles className='h-5 w-5' />
-                    )}
+                    {isSubscribing ? <Loader2 className='h-5 w-5 animate-spin' /> : <Sparkles className='h-5 w-5' />}
                     {t('register')}
                   </Button>
                 </div>

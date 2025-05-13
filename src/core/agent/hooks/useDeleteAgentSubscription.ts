@@ -6,32 +6,28 @@ import { AGENT_MODEL_RETRY, AGENT_SUBSCRIPTION_KEY } from '../constants'
 import toast from 'react-hot-toast'
 import { useEffect } from 'react'
 
-export const useDeleteAgentSubcription = (
-  props: {
-    unsubscribeData: {
-      id: string;
-      execute: boolean;
-    },
-    setUnsubscribeData: React.Dispatch<React.SetStateAction<{
-      id: string;
-      execute: boolean;
-    }>>
-    refetchSubscriptionStatus: () => void
+export const useDeleteAgentSubscription = (props: {
+  unsubscribeData: {
+    id: string
+    execute: boolean
   }
-) => {
+  setUnsubscribeData: React.Dispatch<
+    React.SetStateAction<{
+      id: string
+      execute: boolean
+    }>
+  >
+  refetchSubscriptionStatus: () => void
+}) => {
   const {
     isPending: isUnsubscribing,
     data: unsubscribeResult,
     error: unsubscribeError
-  } = useModelQuery<IBaseResponseData<IAgentSubscriptionResponse>>(
-    AGENT_SUBSCRIPTION_KEY,
-    agentRoutes.unsubscribe,
-    {
-      enable: !!props.unsubscribeData.id && !!props.unsubscribeData.execute,
-      params: { id: props.unsubscribeData.id },
-      retry: AGENT_MODEL_RETRY,
-    }
-  )
+  } = useModelQuery<IBaseResponseData<IAgentSubscriptionResponse>>(AGENT_SUBSCRIPTION_KEY, agentRoutes.unsubscribe, {
+    enable: !!props.unsubscribeData.id && !!props.unsubscribeData.execute,
+    params: { id: props.unsubscribeData.id },
+    retry: AGENT_MODEL_RETRY
+  })
 
   useEffect(() => {
     if (unsubscribeError) {
