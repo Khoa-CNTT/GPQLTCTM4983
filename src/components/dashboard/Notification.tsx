@@ -17,7 +17,8 @@ import {
   ENotificationStatus,
   IDialogNotification,
   initDialogNotification,
-  initDetailNotification
+  initDetailNotification,
+  TNotificationActions
 } from '@/core/notifications/models'
 import { NotificationDialog } from './NotificationDialog'
 
@@ -29,12 +30,26 @@ export default function NotificationDropdown() {
   const [detailNotification, setDetailNotification] = useState<INotification>(initDetailNotification)
 
   // hooks
-  const { getAdvancedNotifications } = useNotification()
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, status } = getAdvancedNotifications()
+  const { getAdvancedNotifications, updateNotification, statusUpdate } = useNotification()
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, status, refetchAdvancedNotifications } = getAdvancedNotifications()
+
+  const actionMap: Record<TNotificationActions, () => void> = {
+    getAdvancedNotifications: refetchAdvancedNotifications,
+  }
+
+  const callBackRefetchTransactionPage = (actions: TNotificationActions[]) => {
+    actions.forEach((action) => {
+      if (actionMap[action]) {
+        actionMap[action]()
+      }
+    })
+  }
 
   // effects
   useEffect(() => {
     if (data?.pages?.[0]?.data) {
+      console.log('Updateee');
+      
       setNotifications((prev) => [...prev, ...data.pages[0].data.data])
       setUnreadCount(data.pages[0].data.unreadCount)
     }
@@ -52,7 +67,16 @@ export default function NotificationDropdown() {
   }
 
   const markAsRead = (id: string) => {
-    setNotifications(notifications.map((n) => (n.id === id ? { ...n, read: true } : n)))
+
+    updateNotification({ id,  status: ENotificationStatus.READ }, {
+      onSuccess: (res: any) => {
+        if (res.statusCode === 200) {
+          callBackRefetchTransactionPage(['getAdvancedNotifications'])
+        }
+      }
+    })
+
+    
   }
 
   return (

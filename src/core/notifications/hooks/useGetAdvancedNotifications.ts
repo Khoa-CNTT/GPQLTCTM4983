@@ -8,7 +8,7 @@ const baseUrl = getBaseUrl()
 const accessToken = getAccessTokenFromLocalStorage()
 
 export const useGetAdvancedNotifications = () => {
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, status } =
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, status, refetch: refetchAdvancedNotifications } =
     useInfiniteQuery<IAdvancedNotificationsResponse>({
       queryKey: [GET_ADVANCED_NOTIFICATIONS_KEY],
       retry: NOTIFICATIONS_RETRY_QUERY,
@@ -35,6 +35,7 @@ export const useGetAdvancedNotifications = () => {
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
-    status
+    status,
+    refetchAdvancedNotifications
   }
 }
