@@ -22,50 +22,13 @@ import ButtonLanguage from '@/components/core/ButtonLanguage'
 import { useTranslation } from 'react-i18next'
 
 export default function AdminLoginForm() {
-  const { signIn, isSigningIn, isRememberMe, setIsRememberMe } = useAuth()
+  const { adminSignIn, isAdminSigningIn, isRememberMe, setIsRememberMe } = useAuth()
   const formRef = useRef<HTMLFormElement>(null)
   const router = useRouter()
   const { t } = useTranslation(['common'])
   
-  // Thêm state để theo dõi xem có đang chuyển hướng không
-  const [isRedirecting, setIsRedirecting] = useState(false)
-  
   const handleSubmit = (value: ISignInBody) => {
-    signIn(value, {
-      onSuccess: (data) => {
-        // Lưu tránh việc đăng nhập thành công nhưng kiểm tra quyền chưa hoàn thành
-        if (isRedirecting) return
-        
-        const user = data.data.user
-        // Kiểm tra xem người dùng có roleId không - chỉ cần khác null
-        if (user.roleId !== null) {
-          setIsRedirecting(true)
-          
-          // Đảm bảo thông tin người dùng được lưu vào localStorage
-          try {
-            localStorage.setItem('user', JSON.stringify(user))
-            console.log('Thông tin người dùng đã lưu:', user)
-          } catch (error) {
-            console.error('Lỗi khi lưu thông tin người dùng:', error)
-          }
-          
-          toast.success('Đăng nhập thành công!')
-          
-          // Thêm timeout nhỏ để đảm bảo dữ liệu được lưu trước khi chuyển trang
-          setTimeout(() => {
-            router.push('/admin/dashboard')
-          }, 300)
-        } else {
-          toast.error('Bạn không có quyền truy cập trang quản trị!')
-          // Xử lý trường hợp không có quyền admin
-        }
-      },
-      onError: (error) => {
-        const errorMessage = 
-          (error as any)?.payload?.message || 'Đăng nhập thất bại, vui lòng thử lại!'
-        toast.error(errorMessage)
-      }
-    })
+    adminSignIn(value)
   }
 
   return (
@@ -168,7 +131,7 @@ export default function AdminLoginForm() {
                   variant='default'
                   className='mt-4 w-full bg-primary hover:bg-primary/90 text-primary-foreground'
                   onClick={() => formRef.current?.requestSubmit()}
-                  isLoading={isSigningIn}
+                  isLoading={isAdminSigningIn}
                 >
                   {t('button.sign_in', 'Đăng nhập')}
                 </Button>
