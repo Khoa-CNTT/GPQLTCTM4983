@@ -105,16 +105,16 @@ axiosInstance.interceptors.response.use(
           }
         } catch (refreshError) {
           // Nếu không thể refresh token, xóa token và chuyển hướng đến trang đăng nhập
-          if (window.location.pathname !== '/sign-in' && !isRedirecting) {
-            isRedirecting = true
-            clearAllAuthData()
-            // Hiển thị thông báo lỗi
-            toast.error('Phiên làm việc đã hết hạn. Vui lòng đăng nhập lại.')
-            // Chuyển hướng đến trang đăng nhập sau một khoảng thời gian nhỏ
-            setTimeout(() => {
-              window.location.replace('/sign-in')
-            }, 100)
-          }
+          // if (window.location.pathname !== '/sign-in' && !isRedirecting) {
+          //   isRedirecting = true
+          //   clearAllAuthData()
+          //   // Hiển thị thông báo lỗi
+          //   toast.error('Phiên làm việc đã hết hạn. Vui lòng đăng nhập lại.')
+          //   // Chuyển hướng đến trang đăng nhập sau một khoảng thời gian nhỏ
+          //   setTimeout(() => {
+          //     window.location.replace('/sign-in')
+          //   }, 100)
+          // }
         }
       } else {
         // Nếu chính API verify-token trả về lỗi, xóa token và chuyển hướng đến trang đăng nhập
