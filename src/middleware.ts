@@ -27,6 +27,20 @@ export function middleware(req: NextRequest) {
     return NextResponse.redirect(new URL('/dashboard/', req.url))
   }
 
+  if (pathname.startsWith('/admin/login')) {
+    if (hasValidToken) {
+      return NextResponse.next()
+    }
+    return NextResponse.next()
+  }
+
+  if (pathname.startsWith('/admin/dashboard')) {
+    if (!hasValidToken) {
+      return NextResponse.redirect(new URL('/admin/login', req.url))
+    }
+    return NextResponse.next()
+  }
+
   // Xử lý tham số loggedIn
   const isDashboardPath = pathname === '/dashboard' || pathname === '/dashboard/' || pathname.match(/^\/dashboard\/?$/)
   if (isDashboardPath && searchParams.get('loggedIn') === 'true') {
