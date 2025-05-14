@@ -349,7 +349,9 @@ export default function DetailUpdateTransaction({
               defaultValues={{
                 amount: updateTransactionProps.transaction.amount,
                 accountSourceId: updateTransactionProps.transaction.accountSource.id,
-                direction: transactionState.direction
+                direction: updateTransactionProps.transaction.direction === ETypeOfTrackerTransactionType.INCOMING 
+                  ? 'INCOMING' 
+                  : 'EXPENSE'
               }}
             />
           )}
