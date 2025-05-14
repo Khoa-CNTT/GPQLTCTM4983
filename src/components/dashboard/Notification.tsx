@@ -48,8 +48,6 @@ export default function NotificationDropdown() {
   // effects
   useEffect(() => {
     if (data?.pages?.[0]?.data) {
-      console.log('Updateee');
-      
       setNotifications((prev) => [...prev, ...data.pages[0].data.data])
       setUnreadCount(data.pages[0].data.unreadCount)
     }
