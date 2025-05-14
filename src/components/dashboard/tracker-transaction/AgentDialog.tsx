@@ -180,7 +180,7 @@ export function AgentDialog({ isOpen, setOpen, data }: AgentDialogProps) {
 
     return (
         <Dialog open={isOpen} onOpenChange={setOpen}>
-            <DialogContent className="sm:max-w-[850px] max-h-[750px] overflow-hidden rounded-xl border-primary/10 shadow-lg shadow-primary/5">
+            <DialogContent className="sm:max-w-[850px] max-h-[850px] overflow-hidden rounded-xl border-primary/10 shadow-lg shadow-primary/5">
                 <DialogHeader className="mb-1">
                     <DialogTitle className="text-xl font-semibold text-primary/90 flex items-center">
                         <div className="mr-2 bg-primary/40 p-1.5 rounded-md">
@@ -292,14 +292,14 @@ export function AgentDialog({ isOpen, setOpen, data }: AgentDialogProps) {
                                 transition={{ duration: 0.4, delay: groupIndex * 0.1 }}
                                 className="space-y-2.5"
                             >
-                                <div className="sticky top-0 bg-gradient-to-r from-primary/10 via-primary/5 to-background p-2.5 rounded-md z-10">
-                                    <h3 className="text-xs font-medium flex items-center text-primary">
-                                        <CalendarIcon className="mr-2 h-3.5 w-3.5 text-primary/80" />
+                                <div className="sticky top-0 bg-accent/70 backdrop-blur-sm p-2.5 rounded-md z-10">
+                                    <h3 className="text-xs font-medium flex items-center text-white">
+                                        <CalendarIcon className="mr-2 h-3.5 w-3.5 text-white" />
                                         {format(group.date, 'EEEE, dd MMMM yyyy', { locale: vi })}
                                     </h3>
                                 </div>
 
-                                <div className="space-y-3 pl-1">
+                                <div className="space-y-3 px-5">
                                     {group.transactions.map((transaction, idx) => (
                                         <motion.div
                                             key={transaction.id}
@@ -307,23 +307,21 @@ export function AgentDialog({ isOpen, setOpen, data }: AgentDialogProps) {
                                             animate={{ opacity: 1, y: 0 }}
                                             transition={{ duration: 0.3, delay: idx * 0.05 }}
                                             className={cn(
-                                                "p-3.5 rounded-xl border hover:border-primary/40 transition-all duration-300 shadow-sm hover:shadow group",
-                                                transaction.type === "incoming" 
-                                                    ? "border-green-100/60 bg-gradient-to-r from-green-50/30 to-transparent hover:from-green-50/50" 
-                                                    : "border-red-100/60 bg-gradient-to-r from-red-50/30 to-transparent hover:from-red-50/50"
+                                                "p-2 rounded-xl border hover:border-accent/40 transition-all duration-300 shadow-sm hover:shadow group",
+                                                transaction.type === "incoming"
+                                                    ? "border-accent/40 bg-accent/40 hover:from-green-50/50"
+                                                    : "border-accent/40 bg-accent/40 hover:from-red-50/50"
                                             )}
                                         >
                                             <div className="flex justify-between items-center gap-3">
                                                 <div className="flex items-center gap-3.5">
                                                     <div className={cn(
                                                         "w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 transition-all duration-300 group-hover:scale-110 group-hover:shadow-sm",
-                                                        transaction.type === "incoming"
-                                                            ? "bg-gradient-to-br from-green-100 to-green-50 group-hover:from-green-200 group-hover:to-green-100"
-                                                            : "bg-gradient-to-br from-red-100 to-red-50 group-hover:from-red-200 group-hover:to-red-100"
+
                                                     )}>
                                                         {transaction.type === "incoming"
                                                             ? <ArrowDownIcon className="h-4.5 w-4.5 text-green-600" />
-                                                            : <ArrowUpIcon className="h-4.5 w-4.5 text-red-600" />
+                                                            : <ArrowUpIcon className="h-4.5 w-4.5 text-rose-600" />
                                                         }
                                                     </div>
 
@@ -335,8 +333,8 @@ export function AgentDialog({ isOpen, setOpen, data }: AgentDialogProps) {
                                                                 className={cn(
                                                                     "h-5 px-2 text-[0.65rem] flex items-center gap-1 leading-none ml-auto transition-colors shadow-sm",
                                                                     transaction.type === "incoming"
-                                                                        ? "bg-green-50 text-green-700 group-hover:bg-green-100 border-green-100"
-                                                                        : "bg-red-50 text-red-700 group-hover:bg-red-100 border-red-100"
+                                                                        ? "bg-green-500 text-white"
+                                                                        : "bg-red-500 text-white"
                                                                 )}
                                                             >
                                                                 {getCategoryIcon(transaction.category)}
@@ -356,9 +354,9 @@ export function AgentDialog({ isOpen, setOpen, data }: AgentDialogProps) {
 
                                                 <div className={cn(
                                                     "text-sm font-semibold tabular-nums transition-all duration-300 group-hover:scale-105 py-1.5 px-3 rounded-lg",
-                                                    transaction.type === "incoming" 
-                                                        ? "text-green-600 bg-green-50 group-hover:bg-green-100" 
-                                                        : "text-red-600 bg-red-50 group-hover:bg-red-100"
+                                                    transaction.type === "incoming"
+                                                        ? "text-green-600 "
+                                                        : "text-red-600 "
                                                 )}>
                                                     {transaction.type === "incoming" ? "+" : "-"}{formatCurrency(transaction.amount)}
                                                 </div>
