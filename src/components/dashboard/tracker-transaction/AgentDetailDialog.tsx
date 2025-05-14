@@ -59,9 +59,9 @@ interface AgentDetailDialogProps {
 }
 
 export function AgentDetailDialog({ isOpen, setOpen, transaction }: AgentDetailDialogProps) {
-    if (!transaction) return null;
+    const [selectedCategory, setSelectedCategory] = useState(transaction?.category || "");
 
-    const [selectedCategory, setSelectedCategory] = useState(transaction.category);
+    if (!transaction) return null;
 
     // Danh sách category mẫu - có thể thay đổi theo yêu cầu thực tế
     const categories = transaction.type === "incoming"
