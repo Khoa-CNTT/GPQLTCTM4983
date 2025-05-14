@@ -836,7 +836,6 @@ export default function TrackerTransactionForm() {
       <AgentDialog
         isOpen={isOpenAgentDialog}
         setOpen={setIsOpenAgentDialog}
-        data={[]}
       />
     </div>
   )

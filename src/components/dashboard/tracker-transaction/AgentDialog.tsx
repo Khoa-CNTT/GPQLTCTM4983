@@ -169,7 +169,7 @@ const formatCurrency = (amount: number): string => {
 interface AgentDialogProps {
     isOpen: boolean;
     setOpen: (open: boolean) => void;
-    data: {
+    data?: {
         transactions?: Transaction[];
     } | null;
 }

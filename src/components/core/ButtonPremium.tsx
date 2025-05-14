@@ -136,15 +136,14 @@ export default function ButtonPremium() {
           className='mr-2 mt-0.5 h-7 select-none rounded-full !border-0 p-0 outline-none hover:bg-transparent focus:outline-none focus-visible:ring-0 focus-visible:ring-transparent focus-visible:ring-offset-0'
         >
           <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className='flex items-center gap-2'>
-            <Sparkles className='mr-2 h-4 w-4' />
+            <Sparkles className='h-4 w-4' />
             {t('title')}
           </motion.div>
         </Button>
       </DialogTrigger>
       <DialogContent
-        className={`w-full overflow-y-auto overflow-x-hidden p-2 sm:p-6 ${
-          subscriptions.length === 0 ? 'max-w-[555px]' : 'sm:max-w-[1200px]'
-        }`}
+        className={`w-full overflow-y-auto overflow-x-hidden p-2 sm:p-6 ${subscriptions.length === 0 ? 'max-w-[555px]' : 'sm:max-w-[1200px]'
+          }`}
       >
         <DialogHeader>
           <DialogTitle className='flex items-center text-xl'>
