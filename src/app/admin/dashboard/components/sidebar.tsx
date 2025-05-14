@@ -8,7 +8,8 @@ import {
   Users,
   ShieldCheck,
   LogOut,
-  Shield
+  Shield,
+  Tags
 } from 'lucide-react'
 import Logo2 from '@/images/logo-2.png'
 import Image from 'next/image'
@@ -52,6 +53,11 @@ const Sidebar = () => {
       title: t('sidebar.permission_management', 'Quản lý quyền truy cập'),
       href: '/admin/dashboard/permission-management',
       icon: <Shield className="mr-2 h-4 w-4" />
+    },
+    {
+      title: t('sidebar.transaction_types', 'Quản lý loại giao dịch'),
+      href: '/admin/dashboard/transaction-types',
+      icon: <Tags className="mr-2 h-4 w-4" />
     }
   ]
   
@@ -76,6 +82,11 @@ const Sidebar = () => {
     
     // Kiểm tra cho trang permission-management
     if (href === '/admin/dashboard/permission-management' && pathname.includes('permission-management')) {
+      return true;
+    }
+    
+    // Kiểm tra cho trang transaction-types
+    if (href === '/admin/dashboard/transaction-types' && pathname.includes('transaction-types')) {
       return true;
     }
     
@@ -120,7 +131,7 @@ const Sidebar = () => {
         <Separator />
         <nav className="flex-1 overflow-auto p-2">
           <div className="space-y-2">
-            {[1, 2, 3, 4].map(i => (
+            {[1, 2, 3, 4, 5].map(i => (
               <div key={i} className="h-10 bg-gray-100 rounded-md"></div>
             ))}
           </div>

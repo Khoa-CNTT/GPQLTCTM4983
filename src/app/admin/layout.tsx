@@ -43,6 +43,24 @@ export default function AdminLayout({
 
   useEffect(() => {
     setMounted(true)
+    
+    // Sử dụng try-catch để tránh lỗi và đảm bảo mã tiếp tục thực thi
+    try {
+      // Đặt ngôn ngữ thành tiếng Việt cho trang admin bằng cách an toàn
+      const setLanguage = async () => {
+        // Sử dụng timeout để đảm bảo i18n đã được khởi tạo đầy đủ
+        setTimeout(async () => {
+          const i18nModule = await import('@/libraries/i18n')
+          if (i18nModule.default && typeof i18nModule.default.changeLanguage === 'function') {
+            i18nModule.default.changeLanguage('vi')
+          }
+        }, 100)
+      }
+      
+      setLanguage()
+    } catch (error) {
+      console.error('Không thể thiết lập ngôn ngữ:', error)
+    }
   }, [])
 
   // Layout khác nhau dựa vào trang hiện tại

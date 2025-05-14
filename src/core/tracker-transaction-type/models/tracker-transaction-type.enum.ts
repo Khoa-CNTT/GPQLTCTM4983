@@ -1,6 +1,7 @@
 export enum ETypeOfTrackerTransactionType {
   INCOMING = 'INCOMING',
-  EXPENSE = 'EXPENSE'
+  EXPENSE = 'EXPENSE',
+  TRANSFER = 'TRANSFER'
 }
 
 export enum ETrackerTypeOfTrackerTransactionType {
