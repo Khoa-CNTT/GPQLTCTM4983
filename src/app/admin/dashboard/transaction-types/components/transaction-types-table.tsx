@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import {
   Table,
   TableBody,
@@ -40,6 +40,7 @@ import { translate } from '@/libraries/utils'
 import { Skeleton } from '@/components/ui/skeleton'
 import { CreateTransactionTypeDialog } from '@/app/admin/dashboard/transaction-types/components/create-transaction-type-dialog'
 import { EditTransactionTypeDialog } from '@/app/admin/dashboard/transaction-types/components/edit-transaction-type-dialog'
+import { useTranslation } from 'react-i18next'
 
 export type TransactionType = AdminTransactionType
 
@@ -48,6 +49,7 @@ interface TransactionTypesTableProps {
 }
 
 export function TransactionTypesTable({ filterType }: TransactionTypesTableProps) {
+  const { i18n } = useTranslation()
   const t = translate(['common'])
   const [searchQuery, setSearchQuery] = useState('')
   const [trackerTypeFilter, setTrackerTypeFilter] = useState<string | undefined>(undefined)
@@ -55,6 +57,7 @@ export function TransactionTypesTable({ filterType }: TransactionTypesTableProps
   const [editDialogOpen, setEditDialogOpen] = useState(false)
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
   const [selectedTransactionType, setSelectedTransactionType] = useState<TransactionType | null>(null)
+  const [languageKey, setLanguageKey] = useState(i18n.language)
 
   const { 
     transactionTypes, 
@@ -65,6 +68,18 @@ export function TransactionTypesTable({ filterType }: TransactionTypesTableProps
     type: filterType, 
     trackerType: trackerTypeFilter 
   })
+
+  useEffect(() => {
+    const handleLanguageChange = () => {
+      setLanguageKey(i18n.language)
+    }
+    
+    window.addEventListener('languageChanged', handleLanguageChange)
+    
+    return () => {
+      window.removeEventListener('languageChanged', handleLanguageChange)
+    }
+  }, [i18n])
 
   const filteredData = transactionTypes?.filter(item => 
     item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||

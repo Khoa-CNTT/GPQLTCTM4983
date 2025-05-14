@@ -37,40 +37,29 @@ export default function AdminLayout({
 }>) {
   const pathname = usePathname()
   const [mounted, setMounted] = useState(false)
+  const [languageKey, setLanguageKey] = useState(0)
 
-  // Kiểm tra xem có đang ở trang login hay không
   const isLoginPage = pathname === '/admin/login'
 
   useEffect(() => {
     setMounted(true)
     
-    // Sử dụng try-catch để tránh lỗi và đảm bảo mã tiếp tục thực thi
-    try {
-      // Đặt ngôn ngữ thành tiếng Việt cho trang admin bằng cách an toàn
-      const setLanguage = async () => {
-        // Sử dụng timeout để đảm bảo i18n đã được khởi tạo đầy đủ
-        setTimeout(async () => {
-          const i18nModule = await import('@/libraries/i18n')
-          if (i18nModule.default && typeof i18nModule.default.changeLanguage === 'function') {
-            i18nModule.default.changeLanguage('vi')
-          }
-        }, 100)
-      }
-      
-      setLanguage()
-    } catch (error) {
-      console.error('Không thể thiết lập ngôn ngữ:', error)
+    const handleLanguageChange = () => {
+      setLanguageKey(prev => prev + 1)
+    }
+    
+    window.addEventListener('languageChanged', handleLanguageChange)
+    
+    return () => {
+      window.removeEventListener('languageChanged', handleLanguageChange)
     }
   }, [])
 
-  // Layout khác nhau dựa vào trang hiện tại
   const renderContent = () => {
-    // Nếu đang ở trang login, chỉ hiển thị trang login
     if (isLoginPage) {
       return children
     }
 
-    // Nếu không phải trang login, hiển thị layout đầy đủ với sidebar và header
     return (
       <div className="flex min-h-screen flex-col bg-background">
         <div className="sticky top-0 z-30 h-[3.2rem] border-b-[1px] bg-background_nav">
@@ -88,7 +77,7 @@ export default function AdminLayout({
   }
 
   return (
-    <div className={inter.className}>
+    <div className={inter.className} key={languageKey}>
       <Toaster
         toastOptions={{
           duration: 5000,

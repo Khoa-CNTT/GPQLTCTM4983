@@ -1,17 +1,30 @@
 'use client'
 
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { TransactionTypesTable } from './components/transaction-types-table'
 import { translate } from '@/libraries/utils'
+import { useTranslation } from 'react-i18next'
 
 export default function TransactionTypesPage() {
+  const { i18n } = useTranslation()
   const t = translate(['common'])
+  const [languageKey, setLanguageKey] = useState(i18n.language)
   
   useEffect(() => {
     document.title = `${t('admin.transactionTypes.title')} | Admin`
-  }, [t])
+    
+    const handleLanguageChange = () => {
+      setLanguageKey(i18n.language)
+    }
+    
+    window.addEventListener('languageChanged', handleLanguageChange)
+    
+    return () => {
+      window.removeEventListener('languageChanged', handleLanguageChange)
+    }
+  }, [t, i18n, languageKey])
 
   return (
     <div className="flex-1 space-y-4 p-4 md:p-8 pt-6">

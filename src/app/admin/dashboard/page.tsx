@@ -16,19 +16,7 @@ import {
 import { Button } from '@/components/ui/button'
 import { useRouter } from 'next/navigation'
 import toast from 'react-hot-toast'
-import dynamic from 'next/dynamic'
 import { useTranslation } from 'react-i18next'
-
-// Lazy load components
-const Overview = dynamic(() => import('@/app/admin/dashboard/components/overview').then(mod => ({ default: mod.Overview })), {
-  ssr: false,
-  loading: () => <div className="h-[350px] flex items-center justify-center">Đang tải dữ liệu...</div>
-})
-
-const RecentTransactions = dynamic(() => import('@/app/admin/dashboard/components/recent-transactions'), {
-  ssr: false,
-  loading: () => <div className="h-[300px] flex items-center justify-center">Đang tải dữ liệu...</div>
-})
 
 export default function AdminDashboard() {
   const [mounted, setMounted] = useState(false)
@@ -149,32 +137,6 @@ export default function AdminDashboard() {
           <CardContent>
             <div className="text-2xl font-bold">12</div>
             <p className="text-xs text-muted-foreground">+2 quản trị viên mới trong tháng này</p>
-          </CardContent>
-        </Card>
-      </div>
-      
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7 mt-4">
-        <Card className="col-span-4">
-          <CardHeader>
-            <CardTitle>Tổng quan</CardTitle>
-            <CardDescription>
-              Biểu đồ tổng quan giao dịch trong 30 ngày qua
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="pl-2">
-            <Overview />
-          </CardContent>
-        </Card>
-        
-        <Card className="col-span-3">
-          <CardHeader>
-            <CardTitle>Giao dịch gần đây</CardTitle>
-            <CardDescription>
-              Danh sách các giao dịch mới nhất
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <RecentTransactions />
           </CardContent>
         </Card>
       </div>
