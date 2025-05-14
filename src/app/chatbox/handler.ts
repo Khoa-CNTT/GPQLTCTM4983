@@ -9,7 +9,8 @@ import { getAccessTokenFromLocalStorage } from '@/libraries/helpers'
 import { Dispatch, SetStateAction } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3002'
+const API_URL = process.env.NEXT_PUBLIC_CHATBOT || 'http://localhost:3002/'
+const accessToken = getAccessTokenFromLocalStorage()
 
 export const handleStartEdit = ({ transaction, setEditingId, setEditForms }: IPropsStartEdit) => {
   setEditingId(transaction.id)
@@ -25,8 +26,6 @@ export const handleStartEdit = ({ transaction, setEditingId, setEditForms }: IPr
         accountSourceName: transaction.walletName
       }
     }
-    console.log('🚀 ~ updatedForm:', updatedForm)
-
     return updatedForm
   })
 }
@@ -93,11 +92,11 @@ export const handleSend = async ({
   setTimeout(scrollToBottom, 100)
 
   try {
-    const response = await fetch(`${API_URL}/chat`, {
+    const response = await fetch(`${API_URL}chat`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${getAccessTokenFromLocalStorage()}`
+        Authorization: `Bearer ${accessToken}`
       },
       body: JSON.stringify({
         message: input,
@@ -127,7 +126,6 @@ export const handleSend = async ({
       for (const line of lines) {
         try {
           const data = JSON.parse(line)
-          console.log('🚀 ~ data:', data)
           const updatedTransactions =
             data?.data?.transactions?.map((transaction: any) => ({
               ...transaction,
@@ -180,86 +178,7 @@ export const handleCancelEdit = (setEditingId: Dispatch<SetStateAction<string | 
   setEditingId(null)
 }
 
-export const handleSaveEdit = async (data: any) => {
-  console.log('handleSaveEdit', data)
-  return
-}
-
-// export const handleSaveEdit = async ({
-//   transactionId,
-//   editForms,
-//   selectedTransactions,
-//   setSelectedTransactions,
-//   setEditedTransactions,
-//   setEditingId
-// }: IPropsHandleSaveEdit) => {
-//   try {
-//     const currentForm = editForms[transactionId]
-//     if (!currentForm) return
-
-//     if (!currentForm.description || !currentForm.amount) {
-//       console.error('Missing required fields')
-//       return
-//     }
-
-//     const existingTransaction = selectedTransactions.find((t) => t.id === transactionId)
-//     if (!existingTransaction) {
-//       console.error('No transaction found in selectedTransactions for transactionId:', transactionId)
-//       return
-//     }
-
-//     setSelectedTransactions((prev) => {
-//       const updated = prev.map((t) => {
-//         if (t.id === transactionId) {
-//           return {
-//             ...t,
-//             description: currentForm.description,
-//             amount: currentForm.amount,
-//             categoryId: existingTransaction?.category?.id ?? currentForm.categoryId,
-//             categoryName: existingTransaction?.category?.name ?? currentForm.categoryName,
-//             accountSourceId: existingTransaction?.wallet?.id ?? currentForm.accountSourceId,
-//             accountSourceName: existingTransaction?.wallet?.id ?? currentForm.accountSourceName
-//           }
-//         }
-//         return t
-//       })
-//       console.log('🚀 ~ updated ~ updated:', updated)
-//       setEditedTransactions(updated)
-//       return updated
-//     })
-//     const updatedTransaction = {
-//       ...currentForm,
-//       id: transactionId,
-//       categoryName: existingTransaction?.category?.name ?? '',
-//       categoryId: existingTransaction?.category?.id ?? '',
-//       accountSourceId: existingTransaction?.wallet?.id ?? '',
-//       accountSourceName: existingTransaction?.wallet?.name ?? '',
-//       description: existingTransaction.description ?? '',
-//       amount: existingTransaction.amount || 0
-//     }
-
-//     setEditedTransactions((prev) => {
-//       const exists = prev.find((et) => et.id === transactionId)
-
-//       if (!exists) {
-//         const newEditedTransactions = [...prev, updatedTransaction]
-//         return newEditedTransactions
-//       }
-
-//       const updatedEditedTransactions = prev.map((et) => (et.id === transactionId ? updatedTransaction : et))
-
-//       return updatedEditedTransactions
-//     })
-
-//     handleCancelEdit(setEditingId)
-//   } catch (error) {
-//     console.error('Failed to update transaction:', error)
-//   }
-// }
-
 export const handleConfirm = async ({ editedTransactions, fundId, postTrackerTransactions }: IPropsHandleConfirm) => {
-  console.log('🚀 ~ editedTransactions123:', editedTransactions)
-
   const payload = editedTransactions.map((item) => {
     return {
       trackerTypeId: item?.categoryId,
@@ -270,6 +189,5 @@ export const handleConfirm = async ({ editedTransactions, fundId, postTrackerTra
       fundId
     }
   })
-  console.log('🚀 ~ payload ~ payload:', payload)
   await postTrackerTransactions(payload)
 }

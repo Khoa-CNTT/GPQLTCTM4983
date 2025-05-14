@@ -56,7 +56,7 @@ import {
   Transaction,
   typeCallBack
 } from '@/app/chatbox/constants'
-import { confirmChange, handleConfirm, handleSaveEdit, handleSend, handleStartEdit } from '@/app/chatbox/handler'
+import { confirmChange, handleConfirm, handleSend, handleStartEdit } from '@/app/chatbox/handler'
 import { Card } from '@/components/ui/card'
 import { DetailTransaction } from './write-transaction-option/detail-update-transaction/detailTransaction'
 import { UpdateTransaction } from './write-transaction-option/detail-update-transaction/updateTransaction'
@@ -477,7 +477,6 @@ export function ChatBox() {
                               {/* Kiểm tra nếu message có phân cách */}
                               {apiData.length > 0 &&
                                 apiData.map((data: any) => {
-                                  console.log('🚀 ~ apiData.map ~ data:', data)
                                   return (
                                     data.message.id === message.id &&
                                     data.transactions.length > 0 && (
