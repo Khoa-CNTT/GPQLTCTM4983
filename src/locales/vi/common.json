@@ -17,7 +17,8 @@
     "sign_in": "Đăng nhập",
     "back_to_home": "Quay lại trang chính",
     "add_permission": "Thêm quyền truy cập",
-    "add_admin": "Thêm quản trị viên"
+    "add_admin": "Thêm quản trị viên",
+    "agent": "Agent AI"
   },
   "calendar": {
     "months": {

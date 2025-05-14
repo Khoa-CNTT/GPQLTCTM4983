@@ -16,7 +16,8 @@
     "sign_in": "Sign In",
     "back_to_home": "Back to Home",
     "add_permission": "Add Permission",
-    "add_admin": "Add Admin"
+    "add_admin": "Add Admin",
+    "agent": "Agent AI"
   },
   "card_header": {
     "create_project": "Create project",

@@ -109,6 +109,7 @@ import {
 } from '@/core/expenditure-fund/constants'
 import { useOverviewPage } from '@/core/overview/hooks'
 import { Checkbox } from '@/components/ui/checkbox'
+import { AgentDialog } from '@/components/dashboard/tracker-transaction/AgentDialog'
 
 export default function TrackerTransactionForm() {
   // states
@@ -187,20 +188,20 @@ export default function TrackerTransactionForm() {
     getAllAccountSource(fundId)
   const { getAllExpenditureFundData } = getAllExpenditureFund()
   // custom hooks
-  const { resetData: resetCacheExpenditureFund } = useUpdateModel([GET_ADVANCED_EXPENDITURE_FUND_KEY], () => {})
+  const { resetData: resetCacheExpenditureFund } = useUpdateModel([GET_ADVANCED_EXPENDITURE_FUND_KEY], () => { })
   const { resetData: resetCacheStatisticExpenditureFund } = useUpdateModel(
     [GET_STATISTIC_EXPENDITURE_FUND_KEY],
-    () => {}
+    () => { }
   )
   const { resetData: resetCacheTrackerTx } = useUpdateModel<IAdvancedTrackerTransactionResponse>(
     [GET_ADVANCED_TRACKER_TRANSACTION_KEY, mergeQueryParams(queryOptions)],
     updateCacheDataCreateClassify
   )
-  const { resetData: resetCacheStatistic } = useUpdateModel([STATISTIC_TRACKER_TRANSACTION_KEY], () => {})
-  const { resetData: resetCacheUnclassifiedTxs } = useUpdateModel([GET_UNCLASSIFIED_TRANSACTION_KEY], () => {})
+  const { resetData: resetCacheStatistic } = useUpdateModel([STATISTIC_TRACKER_TRANSACTION_KEY], () => { })
+  const { resetData: resetCacheUnclassifiedTxs } = useUpdateModel([GET_UNCLASSIFIED_TRANSACTION_KEY], () => { })
   const { resetData: resetCacheTodayTxs } = useUpdateModel(
     [GET_TODAY_TRANSACTION_KEY, mergeQueryParams(initQueryOptions)],
-    () => {}
+    () => { }
   )
   const { setData: setCacheTrackerTxTypeCreate } = useUpdateModel<any>(
     [GET_ALL_TRACKER_TRANSACTION_TYPE_KEY],
@@ -209,11 +210,13 @@ export default function TrackerTransactionForm() {
     }
   )
 
-  const { resetData: resetAccountSource } = useUpdateModel([GET_ADVANCED_ACCOUNT_SOURCE_KEY], () => {})
+  const { resetData: resetAccountSource } = useUpdateModel([GET_ADVANCED_ACCOUNT_SOURCE_KEY], () => { })
   const { resetData: resetCacheTransaction } = useUpdateModel<IGetTransactionResponse>(
     [GET_ADVANCED_TRANSACTION_KEY],
     updateCacheDataTransactionForClassify
   )
+
+  const [isOpenAgentDialog, setIsOpenAgentDialog] = useState(false)
 
   // functions
   const actionMap: Record<TTrackerTransactionActions, () => void> = {
@@ -452,12 +455,12 @@ export default function TrackerTransactionForm() {
     socket.off(EPaymentEvents.CREATED_TRANSACTIONS)
     socket.off(EPaymentEvents.REFETCH_FAILED)
 
-    socket.on(EPaymentEvents.REFETCH_COMPLETE, () => {})
+    socket.on(EPaymentEvents.REFETCH_COMPLETE, () => { })
     socket.on(EPaymentEvents.CREATED_TRANSACTIONS, handleCreatedTransactions)
     socket.on(EPaymentEvents.REFETCH_FAILED, handleRefetchFailed)
 
     return () => {
-      socket.off(EPaymentEvents.REFETCH_COMPLETE, () => {})
+      socket.off(EPaymentEvents.REFETCH_COMPLETE, () => { })
       socket.off(EPaymentEvents.CREATED_TRANSACTIONS, handleCreatedTransactions)
       socket.off(EPaymentEvents.REFETCH_FAILED, handleRefetchFailed)
     }
@@ -506,11 +509,10 @@ export default function TrackerTransactionForm() {
                       <ArrowDownIcon className='mr-1 h-4 w-4 animate-bounce' />
                     )}
                     <span>
-                      {`${
-                        statisticData?.data?.total?.rate && statisticData.data.total.rate !== 'none'
-                          ? (statisticData.data.total.rate.startsWith('-') ? '' : '+') + statisticData.data.total.rate
-                          : '0'
-                      }% ${t('leftThisMonth')}`}
+                      {`${statisticData?.data?.total?.rate && statisticData.data.total.rate !== 'none'
+                        ? (statisticData.data.total.rate.startsWith('-') ? '' : '+') + statisticData.data.total.rate
+                        : '0'
+                        }% ${t('leftThisMonth')}`}
                     </span>
                   </p>
                 </div>
@@ -658,11 +660,12 @@ export default function TrackerTransactionForm() {
                     variant={'secondary'}
                     className='w-full flex-1 items-center justify-center whitespace-nowrap sm:w-auto sm:flex-none'
                     onClick={() => {
-                      setIsDialogOpen((prev) => ({ ...prev, isDialogUnclassifiedOpen: true }))
+                      // setIsDialogOpen((prev) => ({ ...prev, isDialogUnclassifiedOpen: true }))
+                      setIsOpenAgentDialog(true)
                     }}
                   >
                     <span className='mr-2 truncate max-[1280px]:hidden max-[420px]:hidden'>
-                      {t('common:button.classify')}
+                      {t('common:button.agent')}
                     </span>
                     <Layers2Icon className='h-4 w-4' />
                   </Button>
@@ -829,6 +832,11 @@ export default function TrackerTransactionForm() {
         detailData={dataDetailTransaction || initEmptyDetailTransactionData}
         isDialogOpen={isDialogOpen}
         setIsDialogOpen={setIsDialogOpen}
+      />
+      <AgentDialog
+        isOpen={isOpenAgentDialog}
+        setOpen={setIsOpenAgentDialog}
+        data={[]}
       />
     </div>
   )
