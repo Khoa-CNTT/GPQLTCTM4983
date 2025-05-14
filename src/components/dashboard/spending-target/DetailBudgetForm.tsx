@@ -84,14 +84,14 @@ const DetailBudgetForm: React.FC<DetailBudgetFormProps> = ({ selectedTarget, onC
                                 <Target className="h-5 w-5 text-muted-foreground mr-2" />
                                 <h3 className="font-medium">{t('spendingPlan:targetForm.detailBudget.target')}</h3>
                             </div>
-                            <p className="text-2xl font-semibold">{formatCurrency(selectedTarget.targetAmount, 'VND')}</p>
+                            <p className="text-2xl font-semibold">{formatCurrency(selectedTarget.targetAmount, 'đ')}</p>
                         </div>
                         <div className="p-4 bg-muted/30 rounded-lg">
                             <div className="flex items-center mb-2">
                                 <Wallet className="h-5 w-5 text-muted-foreground mr-2" />
                                 <h3 className="font-medium">{t('spendingPlan:targetForm.detailBudget.saved')}</h3>
                             </div>
-                            <p className="text-2xl font-semibold">{formatCurrency(selectedTarget.currentAmount , 'VND')}</p>
+                            <p className="text-2xl font-semibold">{formatCurrency(selectedTarget.currentAmount , 'đ')}</p>
                         </div>
                     </div>
 
@@ -115,7 +115,7 @@ const DetailBudgetForm: React.FC<DetailBudgetFormProps> = ({ selectedTarget, onC
 
                         {!isCompleted && (
                             <p className="text-sm text-muted-foreground mt-2">
-                                {t('spendingPlan:targetForm.detailBudget.missing')}: {formatCurrency(remaining, 'VND')}
+                                {t('spendingPlan:targetForm.detailBudget.missing')}: {formatCurrency(remaining, 'đ')}
                             </p>
                         )}
                     </div>

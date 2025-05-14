@@ -251,7 +251,6 @@ const EditPlanForm: React.FC<EditPlanFormProps> = ({
             (planData.description = data.description),
             (planData.trackerTypeId = data.trackerTypeId),
             (planData.targetAmount = parseFloat(data.targetAmount)),
-            console.log('planData', planData)
 
           onUpdatePlan(planData)
         }
@@ -471,12 +470,12 @@ const EditPlanForm: React.FC<EditPlanFormProps> = ({
           )}
 
           {selectedFrequency === 'ANNUAL' && (
-            <div>
+            <div className="grid grid-cols-2 gap-4 col-span-2 w-full">
               <FormField
                 control={form.control}
                 name='month'
                 render={({ field }) => (
-                  <FormItem className='col-span-1 mb-4'>
+                  <FormItem className='mb-4'>
                     <div className='flex justify-between'>
                       <FormLabel className='text-muted-foreground'>{t('spendingPlan:form.planFields.month')}</FormLabel>
                       <FormMessage />
@@ -518,7 +517,7 @@ const EditPlanForm: React.FC<EditPlanFormProps> = ({
                 control={form.control}
                 name='day'
                 render={({ field }) => (
-                  <FormItem className='col-span-1 mb-4'>
+                  <FormItem className='mb-4'>
                     <div className='flex justify-between'>
                       <FormLabel className='text-muted-foreground'>{t('spendingPlan:form.planFields.day')}</FormLabel>
                       <FormMessage />
@@ -557,7 +556,7 @@ const EditPlanForm: React.FC<EditPlanFormProps> = ({
               name='dayOfMonth'
               render={({ field }) => (
                 <FormItem className='col-span-2 mb-4'>
-                  <div className='flex justify-between'>
+                  <div className='flex justify-between '>
                     <FormLabel className='text-muted-foreground'>{t('spendingPlan:form.planFields.day')}</FormLabel>
                     <FormMessage />
                   </div>

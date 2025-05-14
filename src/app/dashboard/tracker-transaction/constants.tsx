@@ -207,7 +207,8 @@ export const initEmptyDetailTrackerTransaction = {
     user: initEmptyUser
   },
   time: new Date().toISOString(),
-  trackerTime: new Date().toISOString()
+  trackerTime: new Date().toISOString(),
+  accountSource: null
 }
 
 export const ExtendsJSXTrackerTransaction = ({
@@ -265,5 +266,6 @@ export const formatTrackerTransactionData = (data: ITrackerTransaction): ICustom
 export enum EPaymentEvents {
   REFETCH_COMPLETE = 'refetchComplete',
   REFETCH_FAILED = 'refetchFailed',
-  REFETCH_STARTED = 'refetchStarted'
+  REFETCH_STARTED = 'refetchStarted',
+  CREATED_TRANSACTIONS = 'createdTransactions'
 }

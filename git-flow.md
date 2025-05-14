@@ -1,4 +1,4 @@
-# Git flow handling
+# Git flow handling 
 
 ## Branches
 
@@ -38,4 +38,4 @@
 
 2. Checkout to source branch: merge or rebase target branch -> handle conflicts
 
-3. Commit, push to remote -> create PR to target branch
+3. Commit, push to remote -> create PR to target branch.

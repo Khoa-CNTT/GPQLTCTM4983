@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useMemo, memo } from 'react'
 import { motion, useReducedMotion } from 'framer-motion'
 import {
   Github,
@@ -44,9 +44,97 @@ const fadeInRightVariants = {
 }
 
 // Memo expensive components for better performance
-const DashboardPreview = () => {
+const DashboardPreview = memo(() => {
   // Avoid unnecessary animations in reduced motion mode
   const prefersReducedMotion = useReducedMotion()
+  
+  // Use useState and useEffect to handle client-side rendering
+  const [isMounted, setIsMounted] = useState(false)
+  
+  useEffect(() => {
+    setIsMounted(true)
+  }, [])
+  
+  // Di chuyển useMemo ra khỏi điều kiện để tránh lỗi "Rendered more hooks than previous render"
+  const statItems = useMemo(() => [
+    {
+      color: 'from-violet-500/20 to-violet-500/10',
+      value: '+28.5%',
+      label: 'Tăng trưởng',
+      icon: <TrendingUp className='h-3 w-3 text-violet-600 dark:text-violet-400' />
+    },
+    {
+      color: 'from-indigo-500/20 to-indigo-500/10',
+      value: '2.4M',
+      label: 'Tổng tài sản',
+      icon: <Database className='h-3 w-3 text-indigo-600 dark:text-indigo-400' />
+    },
+    {
+      color: 'from-rose-500/20 to-rose-500/10',
+      value: '86/100',
+      label: 'Hiệu suất',
+      icon: <Activity className='h-3 w-3 text-rose-600 dark:text-rose-400' />
+    }
+  ], []);
+  
+  const transactionItems = useMemo(() => [
+    {
+      name: 'Tiết kiệm định kỳ',
+      amount: '+2,450,000₫',
+      type: 'deposit',
+      aiTag: 'Smart'
+    },
+    {
+      name: 'Cafe Highland',
+      amount: '-85,000₫',
+      type: 'expense',
+      aiTag: 'Routine'
+    },
+    {
+      name: 'Lương tháng 8',
+      amount: '+15,000,000₫',
+      type: 'income',
+      aiTag: '+5%'
+    }
+  ], []);
+  
+  const timePeriods = useMemo(() => ['1D', '1W', '1M', '1Y'], []);
+  
+  const chartBars = useMemo(() => [40, 25, 35, 45, 35, 55, 45, 60, 75, 70, 65, 80], []);
+  
+  // Return initial state during SSR to prevent hydration mismatch
+  if (!isMounted) {
+    return (
+      <div className='relative overflow-hidden rounded-3xl border border-slate-100/60 bg-white shadow-xl dark:border-slate-800/60 dark:bg-slate-900 dark:shadow-slate-900/50'>
+        <div className='h-[500px] w-full'>
+          <div className='flex h-12 items-center justify-between border-b border-slate-100 bg-white px-5 dark:border-slate-800 dark:bg-slate-900'>
+            <div className='h-5 w-24 animate-pulse rounded-md bg-slate-200 dark:bg-slate-700'></div>
+            <div className='flex gap-1.5'>
+              <div className='h-3 w-3 rounded-full bg-rose-400'></div>
+              <div className='h-3 w-3 rounded-full bg-amber-400'></div>
+              <div className='h-3 w-3 rounded-full bg-emerald-400'></div>
+            </div>
+          </div>
+          <div className='p-4'>
+            <div className='space-y-4'>
+              <div className='h-12 w-full animate-pulse rounded-lg bg-slate-200 dark:bg-slate-800'></div>
+              <div className='grid grid-cols-3 gap-2'>
+                {[0, 1, 2].map(i => (
+                  <div key={i} className='h-20 animate-pulse rounded-xl bg-slate-200 dark:bg-slate-800'></div>
+                ))}
+              </div>
+              <div className='h-32 w-full animate-pulse rounded-xl bg-slate-200 dark:bg-slate-800'></div>
+              <div className='space-y-2'>
+                {[0, 1, 2].map(i => (
+                  <div key={i} className='h-16 w-full animate-pulse rounded-lg bg-slate-200 dark:bg-slate-800'></div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
   
   return (
     <div className='relative overflow-hidden rounded-3xl border border-slate-100/60 bg-white shadow-xl dark:border-slate-800/60 dark:bg-slate-900 dark:shadow-slate-900/50'>
@@ -70,13 +158,14 @@ const DashboardPreview = () => {
         </div>
       </div>
 
-      {/* Dashboard Content */}
+      {/* Dashboard Content - Optimized animation triggers */}
       <div className='p-4'>
         {/* AI Assistant Banner - Simplified */}
         <motion.div
           variants={fadeInUpVariants}
           initial={prefersReducedMotion ? "visible" : "hidden"}
-          animate="visible"
+          whileInView="visible"
+          viewport={{ once: true }}
           transition={{ duration: 0.4 }}
           className='mb-3 flex items-center justify-between rounded-lg border border-indigo-100 bg-gradient-to-r from-indigo-50 to-indigo-100/30 p-2 dark:border-indigo-900/30 dark:from-indigo-900/20 dark:to-indigo-800/10'
         >
@@ -100,31 +189,13 @@ const DashboardPreview = () => {
 
         {/* Stats Overview - Simplified */}
         <div className='grid grid-cols-3 gap-2'>
-          {[
-            {
-              color: 'from-violet-500/20 to-violet-500/10',
-              value: '+28.5%',
-              label: 'Tăng trưởng',
-              icon: <TrendingUp className='h-3 w-3 text-violet-600 dark:text-violet-400' />
-            },
-            {
-              color: 'from-indigo-500/20 to-indigo-500/10',
-              value: '2.4M',
-              label: 'Tổng tài sản',
-              icon: <Database className='h-3 w-3 text-indigo-600 dark:text-indigo-400' />
-            },
-            {
-              color: 'from-rose-500/20 to-rose-500/10',
-              value: '86/100',
-              label: 'Hiệu suất',
-              icon: <Activity className='h-3 w-3 text-rose-600 dark:text-rose-400' />
-            }
-          ].map((stat, i) => (
+          {statItems.map((stat, i) => (
             <motion.div
               key={i}
               variants={fadeInUpVariants}
               initial={prefersReducedMotion ? "visible" : "hidden"}
-              animate="visible"
+              whileInView="visible"
+              viewport={{ once: true }}
               transition={{ duration: 0.3, delay: prefersReducedMotion ? 0 : 0.1 * i }}
               className={`rounded-xl bg-gradient-to-br ${stat.color} p-2 dark:bg-opacity-30`}
             >
@@ -137,11 +208,12 @@ const DashboardPreview = () => {
           ))}
         </div>
 
-        {/* Chart Section - Simplified */}
+        {/* Chart Section - Optimized with memoization */}
         <motion.div
           variants={fadeInUpVariants}
           initial={prefersReducedMotion ? "visible" : "hidden"}
-          animate="visible"
+          whileInView="visible"
+          viewport={{ once: true }}
           transition={{ duration: 0.4, delay: prefersReducedMotion ? 0 : 0.3 }}
           className='mt-3 rounded-xl bg-gradient-to-br from-slate-50 to-slate-100 p-3 dark:from-slate-800/80 dark:to-slate-900'
         >
@@ -155,7 +227,7 @@ const DashboardPreview = () => {
               </span>
             </div>
             <div className='flex gap-2'>
-              {['1D', '1W', '1M', '1Y'].map((period, i) => (
+              {timePeriods.map((period, i) => (
                 <span
                   key={i}
                   className={`text-xs ${i === 2 ? 'rounded-md bg-gradient-to-r from-indigo-500 to-violet-500 px-1.5 py-0.5 font-medium text-white' : 'text-slate-500 dark:text-slate-400'}`}
@@ -166,16 +238,17 @@ const DashboardPreview = () => {
             </div>
           </div>
 
-          {/* Chart visualization with simplified bars */}
+          {/* Chart visualization with simplified bars - using React.memo for better performance */}
           <div className='h-28 w-full rounded-md bg-slate-50/50 dark:bg-slate-800/20'>
             <div className='relative h-[80%] w-full'>
               {/* Main chart with bars - simplified animation */}
               <div className='flex h-full items-end justify-between gap-1 p-1'>
-                {[40, 25, 35, 45, 35, 55, 45, 60, 75, 70, 65, 80].map((height, i) => (
+                {chartBars.map((height, i) => (
                   <div key={i} className='relative flex h-full w-full flex-col justify-end'>
                     <motion.div
                       initial={prefersReducedMotion ? { height: `${height}%` } : { height: 0 }}
-                      animate={{ height: `${height}%` }}
+                      whileInView={{ height: `${height}%` }}
+                      viewport={{ once: true }}
                       transition={{ 
                         duration: 0.4, 
                         delay: prefersReducedMotion ? 0 : 0.5 + Math.min(i * 0.03, 0.3) 
@@ -183,11 +256,12 @@ const DashboardPreview = () => {
                       className={`w-full rounded-sm ${i % 3 === 0 ? 'bg-violet-500' : i % 3 === 1 ? 'bg-indigo-500' : 'bg-rose-500'} shadow-sm`}
                     />
                     
-                    {/* Restored highlight dots */}
+                    {/* Highlights with conditional rendering */}
                     {i >= 9 && (
                       <motion.div
                         initial={prefersReducedMotion ? { opacity: 1 } : { opacity: 0, scale: 0 }}
-                        animate={{ opacity: 1, scale: 1 }}
+                        whileInView={{ opacity: 1, scale: 1 }}
+                        viewport={{ once: true }}
                         transition={{ duration: 0.3, delay: prefersReducedMotion ? 0 : 0.7 }}
                         className='absolute -top-1 right-0 h-1.5 w-1.5 rounded-full bg-yellow-400 shadow-sm shadow-yellow-400/50'
                       />
@@ -196,18 +270,20 @@ const DashboardPreview = () => {
                 ))}
               </div>
 
-              {/* Restored AI trend line */}
+              {/* AI trend line */}
               <motion.div
                 initial={prefersReducedMotion ? { opacity: 1, width: '100%' } : { opacity: 0, width: 0 }}
-                animate={{ opacity: 1, width: '100%' }}
+                whileInView={{ opacity: 1, width: '100%' }}
+                viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: prefersReducedMotion ? 0 : 0.7 }}
                 className='absolute left-0 right-0 top-[30%] h-[1px] w-full border-t-2 border-dashed border-indigo-500'
               />
 
-              {/* Restored AI badge */}
+              {/* AI badge */}
               <motion.div
                 initial={prefersReducedMotion ? { opacity: 1 } : { opacity: 0, y: 5 }}
-                animate={{ opacity: 1, y: 0 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
                 transition={{ duration: 0.3, delay: prefersReducedMotion ? 0 : 0.8 }}
                 className='absolute -right-1 -top-1 rounded-sm bg-indigo-500 px-1 py-0.5 text-[6px] font-medium text-white shadow-sm'
               >
@@ -217,11 +293,12 @@ const DashboardPreview = () => {
           </div>
         </motion.div>
 
-        {/* Simplified Transactions */}
+        {/* Simplified Transactions with memoization */}
         <motion.div
           variants={fadeInUpVariants}
           initial={prefersReducedMotion ? "visible" : "hidden"}
-          animate="visible"
+          whileInView="visible"
+          viewport={{ once: true }}
           transition={{ duration: 0.4, delay: prefersReducedMotion ? 0 : 0.4 }}
           className='mt-3'
         >
@@ -232,127 +309,286 @@ const DashboardPreview = () => {
             </div>
           </div>
 
-          {/* Transaction list - Reduced animations */}
+          {/* Transaction list with optimized rendering */}
           <div className='space-y-2'>
-            {[
-              {
-                name: 'Tiết kiệm định kỳ',
-                amount: '+2,450,000₫',
-                type: 'deposit',
-                aiTag: 'Smart'
-              },
-              {
-                name: 'Cafe Highland',
-                amount: '-85,000₫',
-                type: 'expense',
-                aiTag: 'Routine'
-              },
-              {
-                name: 'Lương tháng 8',
-                amount: '+15,000,000₫',
-                type: 'income',
-                aiTag: '+5%'
-              }
-            ].map((transaction, i) => (
-              <div
+            {transactionItems.map((transaction, i) => (
+              <motion.div
                 key={i}
-                className='relative flex items-center justify-between rounded-lg bg-white p-2 shadow-sm dark:bg-slate-800'
+                variants={fadeInUpVariants}
+                initial={prefersReducedMotion ? "visible" : "hidden"}
+                whileInView="visible"
+                viewport={{ once: true }}
+                transition={{ duration: 0.3, delay: prefersReducedMotion ? 0 : 0.5 + i * 0.1 }}
+                className='flex items-center justify-between rounded-lg border border-slate-100 p-2 dark:border-slate-800'
               >
                 <div className='flex items-center gap-2'>
-                  <div
-                    className={`flex h-6 w-6 items-center justify-center rounded-full bg-gradient-to-br ${
-                      transaction.type === 'expense'
-                        ? 'from-rose-400 to-rose-500'
-                        : transaction.type === 'income'
-                          ? 'from-emerald-400 to-emerald-500'
-                          : 'from-indigo-400 to-indigo-600'
-                    }`}
-                  >
-                    {transaction.type === 'expense' ? (
-                      <ArrowRight className='h-3 w-3 rotate-45 text-white' />
-                    ) : transaction.type === 'income' ? (
-                      <ArrowRight className='-rotate-135 h-3 w-3 text-white' />
-                    ) : (
-                      <Database className='h-3 w-3 text-white' />
-                    )}
+                  <div className={`flex h-6 w-6 items-center justify-center rounded-full ${transaction.type === 'deposit' ? 'bg-gradient-to-br from-emerald-400 to-emerald-600' : 'bg-gradient-to-br from-rose-400 to-rose-600'} p-1`}>
+                    {transaction.type === 'deposit' ? <TrendingUp className='h-3 w-3 text-white' /> : transaction.type === 'income' ? <ArrowRight className='h-3 w-3 text-white' /> : <Star className='h-3 w-3 text-white' />}
                   </div>
-                  <span className='text-xs font-medium text-slate-700 dark:text-slate-300'>
-                    {transaction.name}
-                  </span>
+                  <div>
+                    <div className='text-xs font-medium text-slate-700 dark:text-slate-300'>{transaction.name}</div>
+                    <div className='flex items-center'>
+                      <span className='text-[9px] text-slate-500 dark:text-slate-400'>Hôm nay</span>
+                      <span className='mx-1 h-0.5 w-0.5 rounded-full bg-slate-300 dark:bg-slate-600'></span>
+                      <span className='text-[9px] text-slate-500 dark:text-slate-400'>10:30</span>
+                    </div>
+                  </div>
                 </div>
-                <div className='flex items-center gap-2'>
-                  <div className='rounded-sm bg-slate-100 px-1 text-[8px] font-medium text-indigo-600 dark:bg-slate-700 dark:text-indigo-300'>
-                    {transaction.aiTag}
-                  </div>
-                  <span
-                    className={`text-xs font-semibold ${transaction.type === 'expense' ? 'text-rose-600 dark:text-rose-400' : 'text-emerald-600 dark:text-emerald-400'}`}
-                  >
+                <div className='text-right'>
+                  <div className={`text-xs font-semibold ${transaction.type === 'deposit' ? 'text-emerald-600 dark:text-emerald-400' : transaction.type === 'income' ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'}`}>
                     {transaction.amount}
-                  </span>
+                  </div>
+                  <div className='flex items-center justify-end gap-1'>
+                    <span className='text-[8px] text-slate-500 dark:text-slate-400'>{transaction.aiTag}</span>
+                    <Zap className='h-2 w-2 text-amber-500' />
+                  </div>
                 </div>
-              </div>
-            ))}
-          </div>
-        </motion.div>
-
-        {/* AI Features Highlight */}
-        <motion.div
-          variants={fadeInUpVariants}
-          initial={prefersReducedMotion ? "visible" : "hidden"}
-          animate="visible"
-          transition={{ duration: 0.4, delay: prefersReducedMotion ? 0 : 0.5 }}
-          className='mt-3 rounded-xl border border-indigo-100/50 bg-gradient-to-br from-white to-indigo-50/30 p-2 dark:border-indigo-900/30 dark:from-slate-800 dark:to-indigo-900/10'
-        >
-          <div className='mb-1 flex items-center'>
-            <Sparkles className='mr-1 h-3 w-3 text-indigo-500' />
-            <span className='text-[10px] font-semibold text-slate-700 dark:text-slate-300'>
-              AI-powered Features
-            </span>
-          </div>
-
-          <div className='grid grid-cols-3 gap-1'>
-            {[
-              { icon: <PieChart className='h-3 w-3' />, label: 'Phân tích' },
-              { icon: <TrendingUp className='h-3 w-3' />, label: 'Dự báo' },
-              { icon: <Shield className='h-3 w-3' />, label: 'Bảo mật' }
-            ].map((feature, i) => (
-              <div
-                key={i}
-                className='flex flex-col items-center rounded-lg bg-white/80 p-1.5 shadow-sm dark:bg-slate-800/80'
-              >
-                <div className='flex h-5 w-5 items-center justify-center rounded-full bg-gradient-to-br from-indigo-400 to-violet-500 text-white'>
-                  {feature.icon}
-                </div>
-                <span className='mt-1 text-[8px] font-medium text-slate-600 dark:text-slate-300'>
-                  {feature.label}
-                </span>
-              </div>
+              </motion.div>
             ))}
           </div>
         </motion.div>
       </div>
     </div>
   )
-}
+})
 
-export default function HeroSection() {
+// Add display name for React DevTools
+DashboardPreview.displayName = 'DashboardPreview';
+
+export default memo(function HeroSection() {
   const isLoginUser = isLogin()
   // Use reduced motion setting to respect user preferences
   const prefersReducedMotion = useReducedMotion()
-  // Lazy load component to improve initial render performance
-  const [showDashboard, setShowDashboard] = useState(false)
   
-  // Delay dashboard rendering to prioritize critical content first
+  // Handle client-side rendering to prevent hydration mismatch
+  const [isMounted, setIsMounted] = useState(false)
+  
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setShowDashboard(true)
-    }, 100)
-    
-    return () => clearTimeout(timer)
+    setIsMounted(true)
   }, [])
-
+  
   // Common transition settings to reduce code duplication
   const commonTransition = { duration: 0.4, ease: "easeOut" }
+  
+  // Memoize expensive calculations
+  const featureItems = useMemo(() => [
+    {
+      icon: <TrendingUp className="h-4 w-4 text-indigo-500" />,
+      label: "Theo dõi chi tiêu"
+    },
+    {
+      icon: <PieChart className="h-4 w-4 text-violet-500" />,
+      label: "Phân tích tài chính"
+    },
+    {
+      icon: <Sparkles className="h-4 w-4 text-amber-500" />,
+      label: "Trợ lý AI thông minh"
+    },
+  ], []);
+  
+  // Initial skeleton loader
+  if (!isMounted) {
+    return (
+      <section className='relative min-h-screen overflow-hidden'>
+        {/* Skeleton background với gradient mờ để mô phỏng trang thật */}
+        <div className='pointer-events-none absolute inset-0 bg-gradient-to-b from-rose-50/10 via-white to-gray-50/70 dark:from-gray-950 dark:via-gray-900 dark:to-black'></div>
+        
+        {/* Hiệu ứng lưới mờ */}
+        <div className='fixed inset-0 z-0 bg-grid-white/[0.02] dark:bg-grid-white/[0.01]'>
+          <div className='absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(139,92,246,0.01),transparent_50%)]' />
+        </div>
+        
+        <div className='relative mx-auto flex min-h-screen max-w-7xl flex-col items-center justify-center px-6 py-20 text-center md:px-10'>
+          <div className='grid grid-cols-1 gap-10 md:grid-cols-2 md:gap-8 lg:gap-14'>
+            {/* Left column skeleton - với thiết kế giống nội dung thật hơn */}
+            <div className='flex flex-col items-center justify-center space-y-6 md:items-start md:text-left'>
+              {/* Badge skeleton */}
+              <div className='mb-2 inline-flex h-9 w-56 animate-pulse rounded-full bg-gradient-to-r from-violet-100/80 to-violet-200/50 shadow-sm dark:from-violet-900/20 dark:to-violet-800/10'></div>
+              
+              {/* Title skeleton - với nhiều gradient */}
+              <div className='space-y-4 self-start'>
+                <div className='h-12 w-full animate-pulse rounded-lg bg-gradient-to-r from-indigo-100/80 via-violet-100/60 to-purple-100/50 dark:from-indigo-900/20 dark:via-violet-900/20 dark:to-purple-900/20 md:w-4/5'></div>
+                <div className='h-12 w-4/5 animate-pulse rounded-lg bg-gradient-to-r from-indigo-100/70 via-violet-100/50 to-purple-100/40 dark:from-indigo-900/15 dark:via-violet-900/15 dark:to-purple-900/15 md:w-3/5'></div>
+                <div className='h-9 w-56 animate-pulse rounded-full bg-gradient-to-r from-rose-100/70 to-rose-200/40 dark:from-rose-900/20 dark:to-rose-800/10'></div>
+              </div>
+              
+              {/* Description skeleton */}
+              <div className='relative'>
+                <div className='h-20 w-full animate-pulse rounded-lg bg-gradient-to-r from-slate-100/80 to-slate-100/40 dark:from-slate-800/20 dark:to-slate-800/10 md:w-11/12'></div>
+                <div className='absolute -left-5 top-0 h-8 w-8 animate-pulse rounded-full bg-slate-200/50 dark:bg-slate-800/30'></div>
+                <div className='absolute -bottom-5 right-0 h-8 w-8 animate-pulse rounded-full bg-slate-200/50 dark:bg-slate-800/30'></div>
+              </div>
+              
+              {/* Features grid skeleton */}
+              <div className='mt-2 grid w-full grid-cols-1 gap-3 sm:grid-cols-3'>
+                {[0, 1, 2].map((_, i) => (
+                  <div key={i} className='flex flex-col items-center rounded-xl border border-slate-100/50 bg-gradient-to-br from-indigo-100/30 to-indigo-50/10 p-3 shadow-sm dark:border-slate-800/30 dark:from-indigo-900/10 dark:to-indigo-900/5 sm:items-start'>
+                    <div className='mb-2 h-8 w-8 animate-pulse rounded-full bg-white/90 shadow-sm dark:bg-slate-800/50'></div>
+                    <div className='h-5 w-28 animate-pulse rounded-md bg-slate-200/80 dark:bg-slate-800/40'></div>
+                  </div>
+                ))}
+              </div>
+              
+              {/* Social proof skeleton */}
+              <div className='w-full rounded-xl border border-slate-100/60 bg-gradient-to-b from-white/80 to-slate-50/60 p-3 dark:border-slate-800/40 dark:from-slate-900/60 dark:to-slate-800/40'>
+                <div className='flex items-center justify-between'>
+                  <div className='space-y-2'>
+                    <div className='flex'>
+                      {[...Array(5)].map((_, i) => (
+                        <div key={i} className='mr-1 h-3 w-3 animate-pulse rounded-full bg-amber-200/80 dark:bg-amber-700/30'></div>
+                      ))}
+                    </div>
+                    <div className='h-4 w-48 animate-pulse rounded-md bg-slate-200/80 dark:bg-slate-800/40'></div>
+                  </div>
+                  <div className='flex -space-x-2'>
+                    {[...Array(5)].map((_, i) => (
+                      <div key={i} className='h-8 w-8 animate-pulse rounded-full border-2 border-white bg-gradient-to-br from-slate-200/80 to-slate-300/50 dark:border-slate-800/60 dark:from-slate-700/30 dark:to-slate-700/20'></div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+              
+              {/* CTA buttons skeleton */}
+              <div className='mt-2 flex w-full flex-col gap-3 sm:flex-row sm:gap-4'>
+                <div className='relative h-12 w-full animate-pulse overflow-hidden rounded-full bg-gradient-to-r from-indigo-300/50 to-violet-300/30 dark:from-indigo-600/30 dark:to-violet-600/20 sm:w-auto'></div>
+                <div className='h-12 w-full animate-pulse rounded-full border border-slate-200/50 bg-white/80 dark:border-slate-800/40 dark:bg-slate-800/30 sm:w-auto'></div>
+              </div>
+            </div>
+
+            {/* Right column skeleton - Dashboard preview */}
+            <div className='relative h-auto w-full md:block'>
+              {/* Top info box */}
+              <div className='mb-4 rounded-xl border border-violet-100/50 bg-gradient-to-r from-violet-50/40 to-white/80 p-4 shadow-sm dark:border-violet-800/20 dark:from-violet-900/20 dark:to-slate-900/50'>
+                <div className='mb-2 h-6 w-56 animate-pulse rounded-lg bg-violet-200/60 dark:bg-violet-800/30'></div>
+                <div className='h-4 w-full animate-pulse rounded-md bg-slate-200/70 dark:bg-slate-800/30'></div>
+              </div>
+              
+              {/* Dashboard main preview */}
+              <div className='relative overflow-hidden rounded-3xl border border-slate-100/60 bg-white shadow-xl dark:border-slate-800/40 dark:bg-slate-900/80'>
+                {/* Header */}
+                <div className='flex h-12 items-center justify-between border-b border-slate-100/80 bg-white/90 px-5 dark:border-slate-800/40 dark:bg-slate-900/80'>
+                  <div className='flex items-center gap-2'>
+                    <div className='h-6 w-6 animate-pulse rounded-full bg-gradient-to-br from-violet-400/40 to-indigo-500/30 dark:from-violet-500/20 dark:to-indigo-600/20'></div>
+                    <div className='h-4 w-16 animate-pulse rounded-md bg-slate-200/80 dark:bg-slate-800/50'></div>
+                  </div>
+                  <div className='flex gap-1.5'>
+                    <div className='h-3 w-3 rounded-full bg-rose-400/80 dark:bg-rose-500/50'></div>
+                    <div className='h-3 w-3 rounded-full bg-amber-400/80 dark:bg-amber-500/50'></div>
+                    <div className='h-3 w-3 rounded-full bg-emerald-400/80 dark:bg-emerald-500/50'></div>
+                  </div>
+                </div>
+                
+                {/* Content */}
+                <div className='p-4'>
+                  {/* AI Assistant banner */}
+                  <div className='mb-3 rounded-lg border border-indigo-100/50 bg-gradient-to-r from-indigo-50/60 to-indigo-100/20 p-2 dark:border-indigo-900/20 dark:from-indigo-900/10 dark:to-indigo-800/5'>
+                    <div className='flex items-center gap-2'>
+                      <div className='h-6 w-6 animate-pulse rounded-full bg-gradient-to-br from-indigo-400/40 to-violet-500/30 dark:from-indigo-500/20 dark:to-violet-600/20'></div>
+                      <div className='space-y-1'>
+                        <div className='h-3 w-20 animate-pulse rounded bg-indigo-200/70 dark:bg-indigo-800/30'></div>
+                        <div className='h-2.5 w-24 animate-pulse rounded bg-slate-200/70 dark:bg-slate-800/30'></div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  {/* Stats grid */}
+                  <div className='grid grid-cols-3 gap-2'>
+                    {[0, 1, 2].map((i) => (
+                      <div key={i} className={`rounded-xl bg-gradient-to-br ${i === 0 ? 'from-violet-100/30 to-violet-50/10' : i === 1 ? 'from-indigo-100/30 to-indigo-50/10' : 'from-rose-100/30 to-rose-50/10'} p-2 dark:from-slate-800/40 dark:to-slate-800/20`}>
+                        <div className='mb-1 flex items-center justify-between'>
+                          <div className='h-3 w-16 animate-pulse rounded bg-slate-200/70 dark:bg-slate-800/50'></div>
+                          <div className='h-3 w-3 animate-pulse rounded-full bg-slate-200/70 dark:bg-slate-800/50'></div>
+                        </div>
+                        <div className='h-5 w-12 animate-pulse rounded bg-slate-300/80 dark:bg-slate-700/40'></div>
+                      </div>
+                    ))}
+                  </div>
+                  
+                  {/* Chart section */}
+                  <div className='mt-3 rounded-xl bg-gradient-to-br from-slate-50/80 to-slate-100/50 p-3 dark:from-slate-800/40 dark:to-slate-900/60'>
+                    <div className='mb-2 flex items-center justify-between'>
+                      <div className='flex items-center gap-2'>
+                        <div className='h-5 w-5 animate-pulse rounded-full bg-gradient-to-br from-indigo-400/40 to-violet-500/30 dark:from-indigo-500/20 dark:to-violet-600/20'></div>
+                        <div className='h-4 w-24 animate-pulse rounded bg-slate-200/70 dark:bg-slate-800/50'></div>
+                      </div>
+                      <div className='flex gap-2'>
+                        {['1D', '1W', '1M', '1Y'].map((period, i) => (
+                          <div 
+                            key={i} 
+                            className={`h-4 w-6 animate-pulse rounded ${i === 2 ? 'bg-gradient-to-r from-indigo-400/40 to-violet-500/30 dark:from-indigo-500/20 dark:to-violet-600/20' : 'bg-slate-200/50 dark:bg-slate-800/30'}`}
+                          ></div>
+                        ))}
+                      </div>
+                    </div>
+                    
+                    {/* Chart visualization skeleton */}
+                    <div className='h-28 w-full rounded-md bg-slate-50/70 p-2 dark:bg-slate-800/20'>
+                      <div className='relative flex h-[80%] w-full items-end justify-between gap-1'>
+                        {[40, 25, 35, 45, 35, 55, 45, 60, 75, 70, 65, 80].map((height, i) => (
+                          <div key={i} className='relative h-full w-full'>
+                            <div 
+                              style={{ height: `${height}%` }} 
+                              className={`w-full animate-pulse rounded-sm ${i % 3 === 0 ? 'bg-violet-300/50 dark:bg-violet-600/30' : i % 3 === 1 ? 'bg-indigo-300/50 dark:bg-indigo-600/30' : 'bg-rose-300/50 dark:bg-rose-600/30'}`}
+                            ></div>
+                            {i >= 9 && (
+                              <div className='absolute -top-1 right-0 h-1.5 w-1.5 animate-pulse rounded-full bg-yellow-300/70 dark:bg-yellow-500/50'></div>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                      {/* Trend line skeleton */}
+                      <div className='absolute left-4 right-4 top-[40%] border-t-2 border-dashed border-indigo-200/50 dark:border-indigo-700/30'></div>
+                    </div>
+                  </div>
+                  
+                  {/* Transaction list skeleton */}
+                  <div className='mt-3'>
+                    <div className='mb-2 flex items-center justify-between'>
+                      <div className='h-4 w-32 animate-pulse rounded bg-slate-200/70 dark:bg-slate-800/50'></div>
+                      <div className='h-4 w-20 animate-pulse rounded-sm bg-indigo-100/50 dark:bg-indigo-900/30'></div>
+                    </div>
+                    
+                    <div className='space-y-2'>
+                      {[0, 1, 2].map((i) => (
+                        <div key={i} className='flex items-center justify-between rounded-lg border border-slate-100/60 p-2 dark:border-slate-800/40'>
+                          <div className='flex items-center gap-2'>
+                            <div className={`h-6 w-6 animate-pulse rounded-full ${i === 0 ? 'bg-gradient-to-br from-emerald-300/50 to-emerald-400/30' : 'bg-gradient-to-br from-rose-300/50 to-rose-400/30'} dark:from-emerald-600/30 dark:to-emerald-700/20`}></div>
+                            <div className='space-y-1'>
+                              <div className='h-4 w-28 animate-pulse rounded bg-slate-200/70 dark:bg-slate-800/50'></div>
+                              <div className='flex items-center gap-1'>
+                                <div className='h-2.5 w-10 animate-pulse rounded bg-slate-200/50 dark:bg-slate-800/30'></div>
+                                <div className='h-0.5 w-0.5 rounded-full bg-slate-300/70 dark:bg-slate-600/50'></div>
+                                <div className='h-2.5 w-8 animate-pulse rounded bg-slate-200/50 dark:bg-slate-800/30'></div>
+                              </div>
+                            </div>
+                          </div>
+                          <div className='text-right'>
+                            <div className={`h-4 w-20 animate-pulse rounded ${i === 0 ? 'bg-emerald-200/50 dark:bg-emerald-800/30' : 'bg-rose-200/50 dark:bg-rose-800/30'}`}></div>
+                            <div className='mt-1 flex items-center justify-end gap-1'>
+                              <div className='h-2.5 w-10 animate-pulse rounded bg-slate-200/50 dark:bg-slate-800/30'></div>
+                              <div className='h-2 w-2 animate-pulse rounded-full bg-amber-300/60 dark:bg-amber-600/40'></div>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          {/* Scroll indicator skeleton */}
+          <div className='absolute bottom-8 left-1/2 -translate-x-1/2 transform'>
+            <div className='flex flex-col items-center space-y-2'>
+              <div className='h-4 w-16 animate-pulse rounded-md bg-slate-200/50 dark:bg-slate-800/30'></div>
+              <div className='h-4 w-4 animate-pulse rounded bg-slate-200/50 dark:bg-slate-800/30'></div>
+            </div>
+          </div>
+        </div>
+      </section>
+    )
+  }
   
   return (
     <section className='relative min-h-screen overflow-hidden'>
@@ -431,35 +667,15 @@ export default function HeroSection() {
               transition={{ ...commonTransition, delay: prefersReducedMotion ? 0 : 0.2 }}
               className='mt-2 grid w-full grid-cols-1 gap-3 sm:grid-cols-3'
             >
-              {[
-                {
-                  icon: <Sparkles className='h-4 w-4 text-rose-400' />,
-                  text: 'Quản lý thông minh',
-                  description: 'Hệ thống AI tracking',
-                  color: 'from-rose-500/20 to-rose-500/5'
-                },
-                {
-                  icon: <TrendingUp className='h-4 w-4 text-indigo-500' />,
-                  text: 'Phân tích chuyên sâu',
-                  description: 'Insight data analysis',
-                  color: 'from-indigo-500/20 to-indigo-500/5'
-                },
-                {
-                  icon: <Shield className='h-4 w-4 text-violet-500' />,
-                  text: 'Bảo mật tuyệt đối',
-                  description: 'Mã hóa đa lớp',
-                  color: 'from-violet-500/20 to-violet-500/5'
-                }
-              ].map((feature, i) => (
+              {featureItems.map((feature, i) => (
                 <div
                   key={i}
-                  className={`flex flex-col items-center rounded-xl border border-slate-100 bg-gradient-to-br ${feature.color} p-3 shadow-sm transition-all duration-300 hover:shadow-md dark:border-slate-800/60 dark:bg-opacity-30 sm:items-start`}
+                  className={`flex flex-col items-center rounded-xl border border-slate-100 bg-gradient-to-br from-indigo-500/20 p-3 shadow-sm transition-all duration-300 hover:shadow-md dark:border-slate-800/60 dark:bg-opacity-30 sm:items-start`}
                 >
                   <div className='mb-1 flex h-8 w-8 items-center justify-center rounded-full bg-white/90 shadow-sm dark:bg-slate-800/90'>
                     {feature.icon}
                   </div>
-                  <p className='mt-2 text-sm font-semibold text-slate-700 dark:text-white'>{feature.text}</p>
-                  <p className='text-xs text-slate-600/70 dark:text-slate-400'>{feature.description}</p>
+                  <p className='mt-2 text-sm font-semibold text-slate-700 dark:text-white'>{feature.label}</p>
                 </div>
               ))}
             </motion.div>
@@ -532,38 +748,46 @@ export default function HeroSection() {
               className='mt-2 flex w-full flex-col gap-3 sm:flex-row sm:gap-4'
             >
               {isLoginUser ? (
-                <Link className='group relative z-10 w-full sm:w-auto' href='/dashboard/tracker-transaction'>
+                <div className='group relative z-10 w-full sm:w-auto'>
                   <div className='absolute -inset-0.5 rounded-full bg-gradient-to-r from-indigo-500 to-violet-500 opacity-75 transition-all duration-300 group-hover:opacity-100'></div>
-                  <Button className='relative w-full overflow-hidden rounded-full bg-gradient-to-r from-indigo-500 to-violet-500 px-6 py-6 text-sm font-medium text-white shadow-md transition-all duration-300 hover:shadow-lg hover:shadow-indigo-500/20 sm:py-2.5'>
-                    <span className='relative z-10'>Đến Dashboard</span>
-                    <ArrowRight className='relative z-10 ml-1.5 h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5' />
+                  <Button 
+                    className='relative w-full overflow-hidden rounded-full bg-gradient-to-r from-indigo-500 to-violet-500 px-6 py-6 text-sm font-medium text-white shadow-md transition-all duration-300 hover:shadow-lg hover:shadow-indigo-500/20 sm:py-2.5'
+                    onClick={() => window.location.href = '/dashboard/tracker-transaction'}
+                  >
+                    <span className="flex items-center">
+                      <span className='relative z-10'>Đến Dashboard</span>
+                      <ArrowRight className='relative z-10 ml-1.5 h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5' />
+                    </span>
                   </Button>
-                </Link>
+                </div>
               ) : (
-                <Link className='group relative z-10 w-full sm:w-auto' href='/sign-in'>
+                <div className='group relative z-10 w-full sm:w-auto'>
                   <div className='absolute -inset-0.5 rounded-full bg-gradient-to-r from-indigo-500 to-violet-500 opacity-75 transition-all duration-300 group-hover:opacity-100'></div>
-                  <Button className='relative w-full overflow-hidden rounded-full bg-gradient-to-r from-indigo-500 to-violet-500 px-6 py-6 text-sm font-medium text-white shadow-md transition-all duration-300 hover:shadow-lg hover:shadow-indigo-500/20 sm:py-2.5'>
-                    <span className='relative z-10'>Bắt đầu miễn phí</span>
-                    <ArrowRight className='relative z-10 ml-1.5 h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5' />
+                  <Button 
+                    className='relative w-full overflow-hidden rounded-full bg-gradient-to-r from-indigo-500 to-violet-500 px-6 py-6 text-sm font-medium text-white shadow-md transition-all duration-300 hover:shadow-lg hover:shadow-indigo-500/20 sm:py-2.5'
+                    onClick={() => window.location.href = '/sign-in'}
+                  >
+                    <span className="flex items-center">
+                      <span className='relative z-10'>Bắt đầu miễn phí</span>
+                      <ArrowRight className='relative z-10 ml-1.5 h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5' />
+                    </span>
                   </Button>
-                </Link>
+                </div>
               )}
 
-              <a
-                href='https://github.com/auroraphtgrp01/fe-uniko'
-                className='group relative w-full sm:w-auto'
-                target='_blank'
-                rel='noopener noreferrer'
-              >
+              <div className='group relative z-10 w-full sm:w-auto'>
                 <div className='absolute -inset-0.5 rounded-full bg-gradient-to-r from-slate-200 to-slate-300 opacity-70 transition-all duration-300 group-hover:opacity-100 dark:from-slate-800 dark:to-slate-700'></div>
                 <Button
                   variant='outline'
                   className='relative w-full rounded-full border-slate-200 bg-white px-6 py-6 text-sm font-medium text-slate-700 transition-all duration-300 hover:bg-white dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300 dark:hover:bg-slate-900 sm:py-2.5'
+                  onClick={() => window.open('https://github.com/auroraphtgrp01/fe-uniko', '_blank')}
                 >
-                  <Github className='mr-1.5 h-3.5 w-3.5 transition-transform group-hover:rotate-6' />
-                  GitHub
+                  <span className="flex items-center">
+                    <Github className='mr-1.5 h-3.5 w-3.5 transition-transform group-hover:rotate-6' />
+                    GitHub
+                  </span>
                 </Button>
-              </a>
+              </div>
             </motion.div>
 
             {/* Created By - No animation */}
@@ -576,19 +800,21 @@ export default function HeroSection() {
             </div>
           </motion.div>
 
-          {/* Right column - Dashboard preview with lazy loading */}
-          {showDashboard && (
-            <motion.div
-              variants={fadeInRightVariants}
-              initial={prefersReducedMotion ? "visible" : "hidden"}
-              animate="visible"
-              transition={{ ...commonTransition, delay: prefersReducedMotion ? 0 : 0.2 }}
-              className='relative hidden h-auto w-full md:block'
-            >
-              <div className='absolute -inset-0.5 rounded-3xl bg-gradient-to-r from-violet-500/30 to-indigo-500/30 opacity-30'></div>
-              <DashboardPreview />
-            </motion.div>
-          )}
+          {/* Right column - Dashboard preview without lazy loading */}
+          <motion.div
+            variants={fadeInRightVariants}
+            initial={prefersReducedMotion ? "visible" : "hidden"}
+            animate="visible"
+            transition={{ ...commonTransition, delay: prefersReducedMotion ? 0 : 0.2 }}
+            className='relative h-auto w-full md:block'
+          >
+            <div className="mb-4 rounded-xl border border-violet-100/50 bg-white p-4 shadow-sm dark:border-violet-800/30 dark:bg-slate-900/80">
+              <h3 className="mb-2 text-lg font-semibold text-violet-700 dark:text-violet-300">Tài chính thông minh</h3>
+              <p className="text-sm text-slate-600 dark:text-slate-400">Hệ thống AI phân tích chi tiêu và đề xuất cách tối ưu quản lý tài chính của bạn.</p>
+            </div>
+            
+            <DashboardPreview />
+          </motion.div>
         </div>
 
         {/* Scroll Indicator - Simplified */}
@@ -605,4 +831,4 @@ export default function HeroSection() {
       </div>
     </section>
   )
-}
+})

@@ -289,7 +289,6 @@ export default function AccountSourceForm() {
 
   // Tạo một key duy nhất cho DataTable để đảm bảo re-render khi ngôn ngữ thay đổi
   const tableKey = useMemo(() => {
-    console.log('Generating new table key for language:', i18n.language)
     return `account-source-table-${i18n.language}-${Math.random()}`
   }, [i18n.language])
 
@@ -303,7 +302,6 @@ export default function AccountSourceForm() {
       }
     }
 
-    console.log('Language changed, refetching data...')
     refetchData()
   }, [i18n.language])
 
@@ -397,7 +395,7 @@ export default function AccountSourceForm() {
                 </div>
                 <div className='text-right'>
                   <p className='text-2xl font-bold text-white transition-all duration-300 group-hover:scale-105'>
-                    {formatCurrency(accountBanks.totalBalanceBanking, 'VND')}
+                    {formatCurrency(accountBanks.totalBalanceBanking, 'đ')}
                   </p>
                   <p className='mt-1 flex items-center text-sm text-blue-100'>
                     <ArrowUpIcon className='mr-1 h-4 w-4 animate-bounce' />
@@ -425,7 +423,7 @@ export default function AccountSourceForm() {
                 </div>
                 <div className='text-right'>
                   <p className='text-2xl font-bold text-white transition-all duration-300 group-hover:scale-105'>
-                    {formatCurrency(accountBanks.totalBalanceWallet, 'VND')}
+                    {formatCurrency(accountBanks.totalBalanceWallet, 'đ')}
                   </p>
                   <p className='mt-1 flex items-center text-sm text-emerald-100'>
                     <ArrowDownIcon className='mr-1 h-4 w-4 animate-bounce' />
@@ -585,8 +583,8 @@ export default function AccountSourceForm() {
                         transition={{ type: 'spring', stiffness: 300 }}
                       >
                         {isWallet
-                          ? formatCurrency(accountBanks.totalBalanceWallet, 'VND')
-                          : formatCurrency(accountBanks.totalBalanceBanking, 'VND')}
+                          ? formatCurrency(accountBanks.totalBalanceWallet, 'đ')
+                          : formatCurrency(accountBanks.totalBalanceBanking, 'đ')}
                       </motion.span>
                       <motion.div
                         className='ml-2'
@@ -611,7 +609,7 @@ export default function AccountSourceForm() {
                     {isIncreased
                       ? t('accountSource:AccountSourceCardDetail.Increased')
                       : t('accountSource:AccountSourceCardDetail.Decreased')}{' '}
-                    {t('accountSource:AccountSourceCardDetail.from')} {formatCurrency(previousBalance, 'VND')}
+                    {t('accountSource:AccountSourceCardDetail.from')} {formatCurrency(previousBalance, 'đ')}
                   </motion.div>
                 </motion.div>
               </div>

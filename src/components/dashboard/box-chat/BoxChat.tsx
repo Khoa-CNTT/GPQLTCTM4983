@@ -320,10 +320,6 @@ export function ChatBox() {
       initTrackerTypeData(dataTrackerTransactionType.data, setIncomingTrackerType, setExpenseTrackerType)
   }, [dataTrackerTransactionType])
 
-  useEffect(() => {
-    console.log('🚀 ~ >>>>>>>>>>>>>>>>>>>>ChatBox ~ apiData:', apiData)
-  }, [messages])
-
   return (
     <div className='fixed bottom-4 right-4 z-50'>
       <AnimatePresence mode='wait'>

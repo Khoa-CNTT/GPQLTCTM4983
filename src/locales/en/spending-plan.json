@@ -50,7 +50,7 @@
     "today": "Today",
     "upcoming": "Upcoming",
     "remainingDays": {
-      "days": "days",
+      "days": "day",
       "months": "months",
       "years": "years"
     }

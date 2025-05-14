@@ -61,7 +61,6 @@ export default function BreadcrumbHeader() {
   const breadcrumbItems = useMemo(() => {
     const segments = path.split('/').filter((seg) => seg)
     const paths = segments.map((segment, index) => `/${segments.slice(0, index + 1).join('/')}`)
-  console.log('paths', paths);
 
     return paths.map((path, index) => {
       const navItem = findNavItem(path)
@@ -77,11 +76,13 @@ export default function BreadcrumbHeader() {
   return (
     <div className='select-none'>
       <Breadcrumb>
+        {/* Using regular Link components instead of BreadcrumbLink with asChild 
+            to avoid issues with React.Children.only errors from Radix UI Slot */}
         <BreadcrumbList>
           <BreadcrumbItem>
-            <BreadcrumbLink asChild className='font-semibold text-foreground hover:text-foreground'>
-              <Link href='/'>{t('common:breadcrumb.home', 'Home')}</Link>
-            </BreadcrumbLink>
+            <Link href='/' className='font-semibold text-foreground hover:text-foreground transition-colors'>
+              <span>{t('common:breadcrumb.home', 'Home')}</span>
+            </Link>
           </BreadcrumbItem>
           <BreadcrumbSeparator />
           {breadcrumbItems.map((item) => (
@@ -90,9 +91,9 @@ export default function BreadcrumbHeader() {
                 {item.isLast ? (
                   <BreadcrumbPage className='font-semibold text-foreground'>{item.title}</BreadcrumbPage>
                 ) : (
-                  <BreadcrumbLink asChild className='font-semibold text-foreground hover:text-foreground'>
-                    <Link href={item.href}>{item.title}</Link>
-                  </BreadcrumbLink>
+                  <Link href={item.href} className='font-semibold text-foreground hover:text-foreground transition-colors'>
+                    <span>{item.title}</span>
+                  </Link>
                 )}
               </BreadcrumbItem>
               {!item.isLast && <BreadcrumbSeparator />}

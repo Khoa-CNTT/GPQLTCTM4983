@@ -60,7 +60,8 @@ export const initEmptyAccountSource: IAccountSource = {
   initAmount: 0,
   accountBank: null,
   currency: '',
-  currentAmount: 0
+  currentAmount: 0,
+  accountBankId: ''
 }
 
 export const initEmptyDetailAccountSourceType = {

@@ -63,24 +63,24 @@ const SkeletonOne = () => {
     >
       <motion.div
         variants={variants}
-        className='flex flex-row items-center space-x-2 rounded-full border border-gray-700/10 bg-white/90 p-2 dark:border-gray-600/10 dark:bg-slate-900/80'
+        className='flex flex-row items-center space-x-2 rounded-full border border-indigo-100 bg-white/95 p-2 dark:border-gray-600/10 dark:bg-slate-900/80'
       >
-        <div className='h-6 w-6 flex-shrink-0 rounded-full bg-gradient-to-r from-indigo-400/90 to-indigo-500/90' />
-        <div className='h-4 w-full rounded-full bg-slate-100 dark:bg-slate-800' />
+        <div className='h-6 w-6 flex-shrink-0 rounded-full bg-gradient-to-r from-indigo-400 to-indigo-500 shadow-sm' />
+        <div className='h-4 w-full rounded-full bg-indigo-50 dark:bg-slate-800' />
       </motion.div>
       <motion.div
         variants={variantsSecond}
-        className='ml-auto flex w-3/4 flex-row items-center space-x-2 rounded-full border border-gray-700/10 bg-white/90 p-2 dark:border-gray-600/10 dark:bg-slate-900/80'
+        className='ml-auto flex w-3/4 flex-row items-center space-x-2 rounded-full border border-indigo-100 bg-white/95 p-2 dark:border-gray-600/10 dark:bg-slate-900/80'
       >
-        <div className='h-4 w-full rounded-full bg-slate-100 dark:bg-slate-800' />
-        <div className='h-6 w-6 flex-shrink-0 rounded-full bg-gradient-to-r from-indigo-400/90 to-indigo-500/90' />
+        <div className='h-4 w-full rounded-full bg-indigo-50 dark:bg-slate-800' />
+        <div className='h-6 w-6 flex-shrink-0 rounded-full bg-gradient-to-r from-indigo-400 to-indigo-500 shadow-sm' />
       </motion.div>
       <motion.div
         variants={variants}
-        className='flex flex-row items-center space-x-2 rounded-full border border-gray-700/10 bg-white/90 p-2 dark:border-gray-600/10 dark:bg-slate-900/80'
+        className='flex flex-row items-center space-x-2 rounded-full border border-indigo-100 bg-white/95 p-2 dark:border-gray-600/10 dark:bg-slate-900/80'
       >
-        <div className='h-6 w-6 flex-shrink-0 rounded-full bg-gradient-to-r from-indigo-400/90 to-indigo-500/90' />
-        <div className='h-4 w-full rounded-full bg-slate-100 dark:bg-slate-800' />
+        <div className='h-6 w-6 flex-shrink-0 rounded-full bg-gradient-to-r from-indigo-400 to-indigo-500 shadow-sm' />
+        <div className='h-4 w-full rounded-full bg-indigo-50 dark:bg-slate-800' />
       </motion.div>
     </motion.div>
   )
@@ -119,7 +119,7 @@ const SkeletonTwo = () => {
           style={{
             maxWidth: Math.random() * (100 - 40) + 40 + '%'
           }}
-          className='flex h-4 w-full flex-row items-center space-x-2 rounded-full border border-gray-700/10 bg-slate-100/90 p-2 dark:border-gray-600/10 dark:bg-slate-800/80'
+          className='flex h-4 w-full flex-row items-center space-x-2 rounded-full border border-indigo-100 bg-indigo-50/80 p-2 dark:border-gray-600/10 dark:bg-slate-800/80'
         ></motion.div>
       ))}
     </motion.div>
@@ -186,7 +186,7 @@ const SkeletonFour = () => {
     >
       <motion.div
         variants={first}
-        className='flex h-full w-1/3 flex-col items-center justify-center rounded-2xl border border-gray-700/10 bg-white/90 p-4 dark:border-gray-600/10 dark:bg-slate-900/80'
+        className='flex h-full w-1/3 flex-col items-center justify-center rounded-2xl border border-red-100 bg-white/95 p-4 dark:border-gray-600/10 dark:bg-slate-900/80'
       >
         <Image
           src={'/avatars/e4d7bc95-b438-4846-b4dd-424fa20ea5b5.png'}
@@ -195,12 +195,12 @@ const SkeletonFour = () => {
           width='100'
           className='h-10 w-10 rounded-full'
         />
-        <p className='mt-4 text-center text-xs font-semibold text-slate-600 sm:text-sm dark:text-slate-300'>Chi tiêu không có kế hoạch</p>
-        <p className='mt-4 rounded-full border border-indigo-500/20 bg-indigo-50/30 px-2 py-0.5 text-xs text-indigo-600 dark:border-indigo-500/20 dark:bg-indigo-900/20 dark:text-indigo-300'>
+        <p className='mt-4 text-center text-xs font-semibold text-slate-700 sm:text-sm dark:text-slate-300'>Chi tiêu không có kế hoạch</p>
+        <p className='mt-4 rounded-full border border-red-200 bg-red-50 px-2 py-0.5 text-xs text-red-600 dark:border-indigo-500/20 dark:bg-indigo-900/20 dark:text-indigo-300'>
           Nguy hiểm
         </p>
       </motion.div>
-      <motion.div className='relative z-20 flex h-full w-1/3 flex-col items-center justify-center rounded-2xl border border-gray-700/10 bg-white/90 p-4 dark:border-gray-600/10 dark:bg-slate-900/80'>
+      <motion.div className='relative z-20 flex h-full w-1/3 flex-col items-center justify-center rounded-2xl border border-emerald-100 bg-white/95 p-4 dark:border-gray-600/10 dark:bg-slate-900/80'>
         <Image
           src={'/avatars/e8d4c0e3-141c-4700-a2f2-55c97103bbf6.png'}
           alt='Lập kế hoạch tài chính'
@@ -208,16 +208,16 @@ const SkeletonFour = () => {
           width='100'
           className='h-10 w-10 rounded-full'
         />
-        <p className='mt-4 text-center text-xs font-semibold text-slate-600 sm:text-sm dark:text-slate-300'>
+        <p className='mt-4 text-center text-xs font-semibold text-slate-700 sm:text-sm dark:text-slate-300'>
           Lập kế hoạch chi tiêu hợp lý
         </p>
-        <p className='mt-4 rounded-full border border-indigo-500/20 bg-indigo-50/30 px-2 py-0.5 text-xs text-indigo-600 dark:border-indigo-500/20 dark:bg-indigo-900/20 dark:text-indigo-300'>
+        <p className='mt-4 rounded-full border border-emerald-200 bg-emerald-50 px-2 py-0.5 text-xs text-emerald-600 dark:border-indigo-500/20 dark:bg-indigo-900/20 dark:text-indigo-300'>
           Khôn ngoan
         </p>
       </motion.div>
       <motion.div
         variants={second}
-        className='flex h-full w-1/3 flex-col items-center justify-center rounded-2xl border border-gray-700/10 bg-white/90 p-4 dark:border-gray-600/10 dark:bg-slate-900/80'
+        className='flex h-full w-1/3 flex-col items-center justify-center rounded-2xl border border-amber-100 bg-white/95 p-4 dark:border-gray-600/10 dark:bg-slate-900/80'
       >
         <Image
           src={'/avatars/4a2386d2-8288-46fc-84e3-8f271bd90c9c.png'}
@@ -226,10 +226,10 @@ const SkeletonFour = () => {
           width='100'
           className='h-10 w-10 rounded-full'
         />
-        <p className='mt-4 text-center text-xs font-semibold text-slate-600 sm:text-sm dark:text-slate-300'>
+        <p className='mt-4 text-center text-xs font-semibold text-slate-700 sm:text-sm dark:text-slate-300'>
           Để tiền trong ví không sinh lời
         </p>
-        <p className='mt-4 rounded-full border border-indigo-500/20 bg-indigo-50/30 px-2 py-0.5 text-xs text-indigo-600 dark:border-indigo-500/20 dark:bg-indigo-900/20 dark:text-indigo-300'>
+        <p className='mt-4 rounded-full border border-amber-200 bg-amber-50 px-2 py-0.5 text-xs text-amber-600 dark:border-indigo-500/20 dark:bg-indigo-900/20 dark:text-indigo-300'>
           Lãng phí
         </p>
       </motion.div>
@@ -271,7 +271,7 @@ const SkeletonFive = () => {
     >
       <motion.div
         variants={variants}
-        className='flex flex-row items-start space-x-2 rounded-2xl border border-gray-700/10 bg-white/90 p-2 dark:border-gray-600/10 dark:bg-slate-900/80'
+        className='flex flex-row items-start space-x-2 rounded-2xl border border-slate-200 bg-white/95 p-2 dark:border-gray-600/10 dark:bg-slate-900/80'
       >
         <Image
           src={'/avatars/e8d4c0e3-141c-4700-a2f2-55c97103bbf6.png'}
@@ -287,10 +287,10 @@ const SkeletonFive = () => {
       </motion.div>
       <motion.div
         variants={variantsSecond}
-        className='ml-auto flex w-3/4 flex-row items-center justify-end space-x-2 rounded-full border border-gray-700/10 bg-white/90 p-2 dark:border-gray-600/10 dark:bg-slate-900/80'
+        className='ml-auto flex w-3/4 flex-row items-center justify-end space-x-2 rounded-full border border-slate-200 bg-white/95 p-2 dark:border-gray-600/10 dark:bg-slate-900/80'
       >
         <p className='text-xs text-slate-600 dark:text-slate-300'>Hãy bắt đầu với theo dõi chi tiêu hàng ngày!</p>
-        <div className='h-6 w-6 flex-shrink-0 rounded-full bg-gradient-to-r from-indigo-400/90 to-indigo-500/90' />
+        <div className='h-6 w-6 flex-shrink-0 rounded-full bg-gradient-to-r from-indigo-400 to-indigo-500 shadow-sm' />
       </motion.div>
     </motion.div>
   )
@@ -304,8 +304,8 @@ const items = [
     ),
     header: <SkeletonOne />,
     className: 'md:col-span-1',
-    icon: <Table className='h-4 w-4 text-indigo-300' />,
-    gradient: "from-[#1a1b25]/90 to-[#1f2133]/90 dark:from-[#0d0e17]/90 dark:to-[#141623]/90"
+    icon: <Table className='h-4 w-4 text-indigo-500' />,
+    gradient: "from-blue-50/95 to-indigo-50/90 dark:from-[#0d0e17]/90 dark:to-[#141623]/90"
   },
   {
     title: 'Lập Kế Hoạch Tài Chính',
@@ -314,8 +314,8 @@ const items = [
     ),
     header: <SkeletonTwo />,
     className: 'md:col-span-1',
-    icon: <Table className='h-4 w-4 text-indigo-300' />,
-    gradient: "from-[#1a1b25]/90 to-[#1f2133]/90 dark:from-[#0d0e17]/90 dark:to-[#141623]/90"
+    icon: <Table className='h-4 w-4 text-indigo-500' />,
+    gradient: "from-violet-50/95 to-purple-50/90 dark:from-[#0d0e17]/90 dark:to-[#141623]/90"
   },
   {
     title: 'Phân Tích Chi Tiêu',
@@ -324,8 +324,8 @@ const items = [
     ),
     header: <SkeletonThree />,
     className: 'md:col-span-1',
-    icon: <Table className='h-4 w-4 text-indigo-300' />,
-    gradient: "from-[#1a1b25]/90 to-[#1f2133]/90 dark:from-[#0d0e17]/90 dark:to-[#141623]/90"
+    icon: <Table className='h-4 w-4 text-indigo-500' />,
+    gradient: "from-pink-50/95 to-rose-50/90 dark:from-[#0d0e17]/90 dark:to-[#141623]/90"
   },
   {
     title: 'Hũ Tài Chính Thông Minh',
@@ -334,8 +334,8 @@ const items = [
     ),
     header: <SkeletonFour />,
     className: 'md:col-span-2',
-    icon: <Table className='h-4 w-4 text-indigo-300' />,
-    gradient: "from-[#1a1b25]/90 to-[#1f2133]/90 dark:from-[#0d0e17]/90 dark:to-[#141623]/90"
+    icon: <Table className='h-4 w-4 text-indigo-500' />,
+    gradient: "from-teal-50/95 to-emerald-50/90 dark:from-[#0d0e17]/90 dark:to-[#141623]/90"
   },
   {
     title: 'Nhắc Nhở Thông Minh',
@@ -344,7 +344,7 @@ const items = [
     ),
     header: <SkeletonFive />,
     className: 'md:col-span-1',
-    icon: <Table className='h-4 w-4 text-indigo-300' />,
-    gradient: "from-[#1a1b25]/90 to-[#1f2133]/90 dark:from-[#0d0e17]/90 dark:to-[#141623]/90"
+    icon: <Table className='h-4 w-4 text-indigo-500' />,
+    gradient: "from-amber-50/95 to-yellow-50/90 dark:from-[#0d0e17]/90 dark:to-[#141623]/90"
   }
 ]

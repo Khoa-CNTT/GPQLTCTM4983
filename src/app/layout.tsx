@@ -24,9 +24,21 @@ const inter = Inter({
 })
 
 export const metadata: Metadata = {
-  title: 'UNIKO - Financial Management',
-  description: '',
-  icons: 'favicon.ico'
+  title: 'UNIKO - Quản Lý Tài Chính Thông Minh | Lê Minh Tuấn',
+  description: 'UNIKO - Ứng dụng quản lý tài chính thông minh với AI giúp theo dõi chi tiêu, ghi chép tự động và phân tích dữ liệu tài chính cá nhân. Phát triển bởi Lê Minh Tuấn (auroraphtgrp).',
+  keywords: 'UNIKO, Lê Minh Tuấn, auroraphtgrp, quản lý tài chính, quản lý tài chính thông minh, ứng dụng quản lý tài chính, theo dõi chi tiêu, ghi chép chi tiêu tự động, AI, trợ lý thông minh, phân tích tài chính',
+  icons: 'favicon.ico',
+  openGraph: {
+    title: 'UNIKO - Quản Lý Tài Chính Thông Minh | Lê Minh Tuấn',
+    description: 'Ứng dụng quản lý tài chính thông minh với AI giúp theo dõi chi tiêu, ghi chép tự động và phân tích dữ liệu tài chính cá nhân.',
+    url: 'https://uniko.vn',
+    type: 'website'
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'UNIKO - Quản Lý Tài Chính Thông Minh',
+    description: 'Ứng dụng quản lý tài chính thông minh với AI giúp theo dõi chi tiêu và phân tích dữ liệu tài chính cá nhân.'
+  }
 }
 
 const TopProgressBar = dynamic(
@@ -47,13 +59,20 @@ export default function RootLayout({
     name: 'UNIKO',
     applicationCategory: 'FinanceApplication',
     description:
-      'Phần mềm quản lý tài chính thông minh UNIKO giúp tối ưu hóa việc theo dõi và quản lý tài chính cá nhân',
+      'Phần mềm quản lý tài chính thông minh UNIKO giúp tối ưu hóa việc theo dõi và quản lý tài chính cá nhân với AI',
     operatingSystem: 'Web',
     offers: {
       '@type': 'Offer',
       price: '0',
-      priceCurrency: 'USD'
-    }
+      priceCurrency: 'VND'
+    },
+    author: {
+      '@type': 'Person',
+      name: 'Lê Minh Tuấn',
+      alternateName: 'auroraphtgrp',
+      url: 'https://github.com/auroraphtgrp01'
+    },
+    keywords: 'UNIKO, quản lý tài chính, theo dõi chi tiêu, AI, trợ lý thông minh'
   }
 
   return (

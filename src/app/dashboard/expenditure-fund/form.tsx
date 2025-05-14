@@ -271,10 +271,6 @@ export default function ExpenditureFundForm() {
       try {
         // Sử dụng formatExpenditureFundData có sẵn để đảm bảo kiểu dữ liệu đúng
         const formattedData = advancedExpenditureFundData.data.map((item) => formatExpenditureFundData(item))
-
-        console.log('Current language:', i18n.language)
-        console.log('Data keys:', formattedData.length > 0 ? Object.keys(formattedData[0]) : [])
-
         setDataTableConfig((prev) => ({
           ...prev,
           totalPage: Number(advancedExpenditureFundData.pagination?.totalPage)
@@ -334,7 +330,6 @@ export default function ExpenditureFundForm() {
 
   // Tạo một key duy nhất cho DataTable - thêm thời gian hiện tại để đảm bảo key thay đổi mỗi khi re-render
   const tableKey = useMemo(() => {
-    console.log('Generating new table key for language:', i18n.language)
     return `data-table-${i18n.language}-${Math.random()}` // Math.random() đảm bảo key luôn thay đổi
   }, [i18n.language])
 

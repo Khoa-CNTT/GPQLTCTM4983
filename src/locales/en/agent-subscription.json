@@ -1,0 +1,31 @@
+{
+  "title": "AI Agent",
+  "description": "Register your bank account to receive daily AI financial analysis.",
+  "noAccountDescription": "You have no eligible bank account to register for AI Agent.",
+  "register": "Register agent subscription",
+  "cancel": "Cancel agent subscription",
+  "registered": "You have registered for agent subscription.",
+  "notRegistered": "No more account to register.",
+  "success": "Agent subscription registration successful!",
+  "cancelSuccess": "Agent subscription cancellation successful!",
+  "error": "An error occurred. Please try again.",
+  "featureList": {
+    "title": "Outstanding Features",
+    "item1": "Unlimited access to AI tools",
+    "item2": "Advanced financial reports",
+    "item3": "Custom reminder scheduling"
+  },
+  "confirmCancel": "You can cancel your subscription at any time. The service will continue until you cancel.",
+  "status": {
+    "active": "Active",
+    "inactive": "Not registered"
+  },
+  "dailyAt": "Daily at {{hour}}:{{minute}}",
+  "accountLabel": "Account number",
+  "accountPlaceholder": "Select account number",
+  "hourLabel": "Hour",
+  "hourPlaceholder": "Select hour",
+  "minuteLabel": "Minute",
+  "minutePlaceholder": "Select minute",
+  "cannotRegisterMore": "Cannot register more."
+}

@@ -82,6 +82,7 @@ import { useOverviewPage } from '@/core/overview/hooks'
 import { GET_ADVANCED_EXPENDITURE_FUND_KEY } from '@/core/expenditure-fund/constants'
 import { Checkbox } from '@/components/ui/checkbox'
 import { ArrowUpDown } from 'lucide-react'
+import { EPaymentEvents } from '../tracker-transaction/constants'
 
 export default function TransactionForm() {
   // states
@@ -262,7 +263,6 @@ export default function TransactionForm() {
       }
     }
 
-    console.log('Language changed, refetching data...')
     refetchData()
   }, [i18n.language])
 
@@ -291,13 +291,25 @@ export default function TransactionForm() {
 
   useEffect(() => {
     if (socket) {
-      socket.off('refetchComplete')
-      socket.on('refetchComplete', (data: { message: string; status: string }) => {
+      socket.off(EPaymentEvents.REFETCH_COMPLETE)
+      socket.on(EPaymentEvents.REFETCH_COMPLETE, (data: { message: string; status: string }) => {
         if (data.status == 'NO_NEW_TRANSACTION') {
           toast.success('No new transaction to fetch!', {
             duration: 2000
           })
         } else if (data.status == 'NEW_TRANSACTION') {
+          toast.success(
+            'Refetch transaction successfully - Found new transaction! Creating and reloading transactions...',
+            {
+              duration: 2000
+            }
+          )
+        }
+        setIsPendingRefetch(false)
+      })
+      socket.off(EPaymentEvents.CREATED_TRANSACTIONS)
+      socket.on(EPaymentEvents.CREATED_TRANSACTIONS, (data: { message: string; status: string }) => {
+        if (data.status === 'TRANSACTIONS_IS_CREATED') {
           reloadDataFunction()
           callBackRefetchTransactionPage([
             'getUnclassifiedTransactions',
@@ -310,7 +322,7 @@ export default function TransactionForm() {
           setUncDataTableConfig((prev) => ({ ...prev, currentPage: 1 }))
           setTodayDataTableConfig((prev) => ({ ...prev, currentPage: 1 }))
           setDataTableConfig((prev) => ({ ...prev, currentPage: 1 }))
-          toast.success('Refetch transaction successfully - Found new transaction!', {
+          toast.success('Transactions successfully created and data refreshed!', {
             duration: 2000
           })
         }
@@ -318,7 +330,8 @@ export default function TransactionForm() {
       })
     }
     return () => {
-      socket?.off('refetchComplete')
+      socket?.off(EPaymentEvents.REFETCH_COMPLETE)
+      socket?.off(EPaymentEvents.CREATED_TRANSACTIONS)
     }
   }, [socket])
 
@@ -341,8 +354,6 @@ export default function TransactionForm() {
     if (dataTransaction && dataTransaction.data) {
       try {
         const formattedData = modifyTransactionHandler(dataTransaction.data)
-        console.log('Current language:', i18n.language)
-        console.log('Data keys:', formattedData.length > 0 ? Object.keys(formattedData[0]) : [])
 
         setDataTable(formattedData)
         setDataTableConfig((prev) => ({
@@ -503,7 +514,6 @@ export default function TransactionForm() {
 
   // Tạo một key duy nhất cho DataTable để đảm bảo re-render khi ngôn ngữ thay đổi
   const tableKey = useMemo(() => {
-    console.log('Generating new table key for language:', i18n.language)
     return `transaction-table-${i18n.language}-${Math.random()}`
   }, [i18n.language])
 

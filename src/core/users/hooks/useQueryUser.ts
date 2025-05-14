@@ -29,11 +29,6 @@ export const useGetMeUser = (execute: boolean) => {
   useEffect(() => {
     if (!isGetMeUserPending && userGetMeData) {
       setUserInfoToLocalStorage(userGetMeData.data)
-      console.log(
-        '🚀 ~ file: useQueryUser.ts:20 ~ useEffect ~ userGetMeData:',
-        userGetMeData.data.defaultExpenditureFundId
-      )
-
       setDefaultFundIdToLocalStorage(userGetMeData.data.defaultExpenditureFundId)
       setFundId(userGetMeData.data.defaultExpenditureFundId)
       setUser(userGetMeData.data)

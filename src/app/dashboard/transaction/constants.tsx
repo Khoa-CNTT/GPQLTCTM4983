@@ -95,7 +95,8 @@ export const initEmptyDetailTransactionData = {
     initAmount: 0,
     accountBank: null,
     currency: 'N/A',
-    currentAmount: 0
+    currentAmount: 0,
+    accountBankId: 'N/A'
   },
   accountBank: {
     id: '',

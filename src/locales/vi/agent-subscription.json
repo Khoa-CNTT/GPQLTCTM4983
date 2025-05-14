@@ -1,0 +1,31 @@
+{
+  "title": "AI Agent",
+  "description": "Đăng ký tài khoản ngân hàng để nhận phân tích tài chính AI hàng ngày.",
+  "noAccountDescription": "Bạn không còn tài khoản ngân hàng nào để đăng ký AI Agent.",
+  "register": "Đăng ký Agent",
+  "cancel": "Hủy đăng ký Agent",
+  "registered": "Bạn đã đăng ký Agent.",
+  "notRegistered": "Đã hết tài khoản đăng ký Agent.",
+  "success": "Đăng ký Agent thành công!",
+  "cancelSuccess": "Hủy đăng ký Agent thành công!",
+  "error": "Đã xảy ra lỗi. Vui lòng thử lại.",
+  "featureList": {
+    "title": "Tính năng nổi bật",
+    "item1": "Truy cập không giới hạn các công cụ AI",
+    "item2": "Báo cáo tài chính nâng cao",
+    "item3": "Tùy chỉnh lịch nhắc nhở"
+  },
+  "confirmCancel": "Bạn có thể hủy đăng ký bất kỳ lúc nào. Dịch vụ sẽ tiếp tục cho đến khi bạn hủy đăng ký.",
+  "status": {
+    "active": "Đang sử dụng",
+    "inactive": "Chưa đăng ký"
+  },
+  "dailyAt": "Hàng ngày lúc {{hour}}:{{minute}}",
+  "accountLabel": "Số tài khoản",
+  "accountPlaceholder": "Chọn số tài khoản",
+  "hourLabel": "Giờ",
+  "hourPlaceholder": "Chọn giờ",
+  "minuteLabel": "Phút",
+  "minutePlaceholder": "Chọn phút",
+  "cannotRegisterMore": "Không thể đăng ký thêm."
+}

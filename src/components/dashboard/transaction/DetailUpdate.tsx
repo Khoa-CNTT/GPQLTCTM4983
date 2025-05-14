@@ -54,11 +54,28 @@ export default function DetailUpdateTransaction({
   const [trackerTypeData, setTrackerTypeData] = useState<ITrackerTransactionType[]>([])
   const [transactionState, setTransactionState] = useState<ITrackerTranSactionEditType>({
     isUpdateTrackerTransaction:
-      (updateTransactionProps.transaction.direction as ETypeOfTrackerTransactionType) ||
-      ETypeOfTrackerTransactionType.INCOMING,
-    direction: updateTransactionProps.transaction.direction as ETypeOfTrackerTransactionType,
-    trackerTypeId: updateTrackerTransactionProps?.trackerTransaction.trackerTypeId || ''
+      ((updateTransactionProps?.transaction?.direction as ETypeOfTrackerTransactionType) ||
+      ETypeOfTrackerTransactionType.INCOMING),
+    direction: (updateTransactionProps?.transaction?.direction as ETypeOfTrackerTransactionType) || ETypeOfTrackerTransactionType.INCOMING,
+    trackerTypeId: updateTrackerTransactionProps?.trackerTransaction?.trackerTypeId || ''
   })
+
+  const t = translate(['transaction', 'common'])
+
+  useEffect(() => {
+    setTrackerTypeData(
+      modifiedTrackerTypeForComboBox(
+        transactionState.isUpdateTrackerTransaction === ETypeOfTrackerTransactionType.INCOMING
+          ? updateTrackerTransactionProps?.editTrackerTransactionTypeProps?.incomeTrackerType
+          : updateTrackerTransactionProps?.editTrackerTransactionTypeProps?.expenseTrackerType
+      )
+    )
+  }, [transactionState.isUpdateTrackerTransaction])
+
+  if (!updateTransactionProps || !updateTransactionProps.transaction) {
+    return
+  }
+
   const handleSubmit = async () => {
     if (updateTransactionProps.isEditing) {
       if (
@@ -79,17 +96,6 @@ export default function DetailUpdateTransaction({
       }
     }
   }
-
-  useEffect(() => {
-    setTrackerTypeData(
-      modifiedTrackerTypeForComboBox(
-        transactionState.isUpdateTrackerTransaction === ETypeOfTrackerTransactionType.INCOMING
-          ? updateTrackerTransactionProps?.editTrackerTransactionTypeProps.incomeTrackerType
-          : updateTrackerTransactionProps?.editTrackerTransactionTypeProps.expenseTrackerType
-      )
-    )
-  }, [transactionState.isUpdateTrackerTransaction])
-  const t = translate(['transaction', 'common'])
 
   const TransactionDetails = () => (
     <div className='select-none space-y-6'>
@@ -321,7 +327,12 @@ export default function DetailUpdateTransaction({
               })}
               formSchema={updateTransactionSchema}
               onSubmit={(data) => {
-                const currentTrackerTypeid = formUpdateTrackerTransactionRef.current?.getValues?.()?.trackerTypeId || ''
+                let currentTrackerTypeid = ''
+                if (formUpdateTrackerTransactionRef.current &&
+                    typeof formUpdateTrackerTransactionRef.current.getValues === 'function') {
+                  const values = formUpdateTrackerTransactionRef.current.getValues()
+                  currentTrackerTypeid = values?.trackerTypeId || ''
+                }
 
                 const payload: IUpdateTransactionBody = {
                   accountSourceId: data.accountSourceId,

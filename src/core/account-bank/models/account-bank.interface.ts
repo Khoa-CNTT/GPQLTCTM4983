@@ -7,6 +7,9 @@ export interface IAccountBank {
   login_id: string
   pass: string
   accounts: { accountNo: string }[]
+  sessionId?: string
+  deviceId?: string
+  userId?: string
 }
 
 export type IGetAccountBankResponse = IBaseResponseData<IAccountBank[]>

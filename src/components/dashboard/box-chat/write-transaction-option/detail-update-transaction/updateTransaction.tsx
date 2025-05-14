@@ -38,8 +38,6 @@ export const UpdateTransaction = (props: IUpdateTransactionProps) => {
     setTransaction
   } = props
   const formRef = useRef<HTMLFormElement>(null)
-  console.log('🚀 ~ UpdateTransaction ~ transaction:', transaction)
-
   // state
   const [typeOfEditTrackerType, setTypeOfEditTrackerType] = useState<ETypeOfTrackerTransactionType>(
     trackerType[0].type as ETypeOfTrackerTransactionType

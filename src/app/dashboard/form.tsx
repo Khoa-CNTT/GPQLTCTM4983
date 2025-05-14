@@ -117,7 +117,7 @@ export default function DashboardForm() {
                   <p className="text-xs font-medium text-muted-foreground">{t('dashboard.balance.title', 'Current Balance')}</p>
                 </div>
                 <h3 className="text-lg font-bold tracking-tight">
-                  {formatCurrency(getStatisticOverviewPageData?.data.currentBalance || 0, "VND")}
+                  {formatCurrency(getStatisticOverviewPageData?.data.currentBalance || 0, 'đ')}
                 </h3>
                 <div className="flex items-center gap-1.5 mt-1">
                   <div className="px-1.5 py-0.5 bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 rounded text-[10px]">
@@ -144,7 +144,7 @@ export default function DashboardForm() {
                   <p className="text-xs font-medium text-muted-foreground">{t('dashboard.income.title', 'Total Income')}</p>
                 </div>
                 <h3 className="text-lg font-bold tracking-tight">
-                  {formatCurrency(getStatisticOverviewPageData?.data.totalIncome?.amount || 0, "VND")}
+                  {formatCurrency(getStatisticOverviewPageData?.data.totalIncome?.amount || 0, 'đ')}
                 </h3>
                 <div className="flex items-center gap-1.5 mt-1">
                   <div className="px-1.5 py-0.5 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 rounded text-[10px]">
@@ -171,7 +171,7 @@ export default function DashboardForm() {
                   <p className="text-xs font-medium text-muted-foreground">{t('dashboard.expenses.title', 'Total Expenses')}</p>
                 </div>
                 <h3 className="text-lg font-bold tracking-tight">
-                  {formatCurrency(getStatisticOverviewPageData?.data.totalExpenses?.amount || 0, "VND")}
+                  {formatCurrency(getStatisticOverviewPageData?.data.totalExpenses?.amount || 0, 'đ')}
                 </h3>
                 <div className="flex items-center gap-1.5 mt-1">
                   <div className="px-1.5 py-0.5 bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 rounded text-[10px]">

@@ -6,6 +6,7 @@ import ButtonCollapseSlideBar from '../dashboard/ButtonCollapseSlideBar'
 import NotificationDropdown from '../dashboard/Notification'
 import ThemeMode from '@/components/core/ThemeMode'
 import FundToggle from './FundToggle'
+import ButtonPremium from './ButtonPremium'
 
 export default function Header() {
   return (
@@ -18,6 +19,7 @@ export default function Header() {
           <ButtonCollapseSlideBar />
         </div>
         <div className='ml-auto mt-[0.3rem] flex items-center gap-3'>
+          <ButtonPremium />
           <FundToggle />
           <NotificationDropdown />
           <ThemeMode />

@@ -1,3 +1,4 @@
 export const notificationsRoutes = {
-  getAdvanced: 'notifications'
+  getAdvanced: 'notifications',
+  update: 'notifications/:id'
 }
