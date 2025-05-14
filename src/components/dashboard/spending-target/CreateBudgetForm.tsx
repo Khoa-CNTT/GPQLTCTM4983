@@ -63,7 +63,8 @@ const CreateBudgetForm: React.FC<CreateBudgetFormProps> = ({
 
   const [directionCategoryMap, setDirectionCategoryMap] = useState<Record<ETypeOfTrackerTransactionType, string>>({
     [ETypeOfTrackerTransactionType.INCOMING]: '',
-    [ETypeOfTrackerTransactionType.EXPENSE]: ''
+    [ETypeOfTrackerTransactionType.EXPENSE]: '',
+    [ETypeOfTrackerTransactionType.TRANSFER]: ''
   })
 
   const handleDirectionChange = (value: ETypeOfTrackerTransactionType) => {

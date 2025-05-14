@@ -2,6 +2,7 @@
 import { useSignInGoogle } from './useSignInGoogle'
 import { useState } from 'react'
 import { useSignIn } from '@/core/auth/hooks/useSignIn'
+import { useAdminSignIn } from '@/core/auth/hooks/useAdminSignIn'
 import { useSignUp } from '@/core/auth/hooks/useSignUp'
 import { IUseQueryHookOptions } from '@/types/query.interface'
 import { useForgotPassword } from '@/core/auth/hooks/useForgotPassword'
@@ -15,6 +16,7 @@ import { useSignInFacebook } from './useSignInFacebook '
 export const useAuth = (opts?: IUseQueryHookOptions) => {
   const [isRememberMe, setIsRememberMe] = useState(true)
   const { mutate: signIn, isPending: isSigningIn } = useSignIn(isRememberMe, opts)
+  const { mutate: adminSignIn, isPending: isAdminSigningIn } = useAdminSignIn(isRememberMe, opts)
   const { mutate: signUp, isPending: isSigningUp } = useSignUp(opts)
   const { mutate: resetPassword, isPending: isResetPassword } = useResetPassword()
   const { mutate: signInGoogle, isPending: isSigningInGoogle } = useSignInGoogle()
@@ -22,6 +24,8 @@ export const useAuth = (opts?: IUseQueryHookOptions) => {
   return {
     signIn,
     isSigningIn,
+    adminSignIn,
+    isAdminSigningIn,
     isRememberMe,
     setIsRememberMe,
     signUp,
