@@ -19,6 +19,7 @@ export interface IUserPayloadForSocket {
   roleId?: string
   status: EUserStatus
   fundId?: string
+  token?: string
 }
 
 /* eslint-disable no-unused-vars */
@@ -53,4 +54,9 @@ export interface IUser {
   defaultExpenditureFundId: string
 }
 
+export interface IVerifyToken {
+  accessToken: string
+}
+
 export type IUserGetMeResponse = IBaseResponseData<IUser>
+export type IVerifyTokenResponse = IBaseResponseData<IVerifyToken>

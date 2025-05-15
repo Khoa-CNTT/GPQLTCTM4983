@@ -97,7 +97,7 @@ import { ETypeOfTrackerTransactionType } from '@/core/tracker-transaction-type/m
 import toast from 'react-hot-toast'
 import DeleteDialog from '@/components/dashboard/DeleteDialog'
 import { useSocket } from '@/libraries/useSocketIo'
-import { getTimeCountRefetchLimit, setTimeCountRefetchLimit } from '@/libraries/helpers'
+import { getAccessTokenFromLocalStorage, getTimeCountRefetchLimit, setTimeCountRefetchLimit } from '@/libraries/helpers'
 import { useUser } from '@/core/users/hooks'
 import { EUserStatus, IUserPayloadForSocket } from '@/types/user.i'
 import { useStoreLocal } from '@/hooks/useStoreLocal'
@@ -381,6 +381,7 @@ export default function TrackerTransactionForm() {
   const dataTableButtons = initButtonInDataTableHeader({ setIsDialogOpen })
 
   const refetchTransactionBySocket = () => {
+    const token = getAccessTokenFromLocalStorage()
     const lastCalled = getTimeCountRefetchLimit()
     const now = Date.now()
     const timeLimit = 10000
@@ -392,7 +393,8 @@ export default function TrackerTransactionForm() {
           email: user?.email ?? '',
           fullName: user?.fullName ?? '',
           status: (user?.status as EUserStatus) ?? EUserStatus.ACTIVE,
-          fundId
+          fundId,
+          token: token ?? ''
         }
         if (socket) {
           setTimeCountRefetchLimit()

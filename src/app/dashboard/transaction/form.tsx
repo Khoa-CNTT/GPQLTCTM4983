@@ -60,7 +60,7 @@ import { useSocket } from '@/libraries/useSocketIo'
 import { useStoreLocal } from '@/hooks/useStoreLocal'
 import { EUserStatus, IUserPayloadForSocket } from '@/types/user.i'
 import { useUser } from '@/core/users/hooks'
-import { getTimeCountRefetchLimit, setTimeCountRefetchLimit } from '@/libraries/helpers'
+import { getAccessTokenFromLocalStorage, getTimeCountRefetchLimit, setTimeCountRefetchLimit } from '@/libraries/helpers'
 import {
   GET_ADVANCED_TRANSACTION_KEY,
   GET_TODAY_TRANSACTION_KEY,
@@ -155,6 +155,7 @@ export default function TransactionForm() {
     query: uncTableQueryOptions,
     fundId
   })
+
   const { dataTodayTxs } = getTodayTransactions({ query: todayTableQueryOptions, fundId })
   const { isGetMeUserPending } = getMe(true)
   const { getAllExpenditureFundData, refetchAllExpendingFund } = getAllExpenditureFund()
@@ -200,6 +201,7 @@ export default function TransactionForm() {
   }
 
   const refetchTransactionBySocket = () => {
+    const token = getAccessTokenFromLocalStorage()
     const lastCalled = getTimeCountRefetchLimit()
     const now = Date.now()
     const timeLimit = 10000
@@ -211,7 +213,8 @@ export default function TransactionForm() {
           email: user?.email ?? '',
           fullName: user?.fullName ?? '',
           status: (user?.status as EUserStatus) ?? EUserStatus.ACTIVE,
-          fundId
+          fundId,
+          token: token ?? ''
         }
         console.log('userPayload', userPayload)
 
