@@ -30,7 +30,7 @@ export function UserNav() {
   const { user, setUser } = useStoreLocal()
   const { useLogout } = useAuth()
   const { getMe } = useUser()
-  const { executeGetMe, userGetMeData } = getMe(false)
+  const { executeGetMe, userGetMeData } = getMe(false, 'user-nav')
   const { executeLogout, userLogoutData } = useLogout()
   const { i18n } = useTranslation()
   const currentLanguage = locales[i18n.language as keyof typeof locales]

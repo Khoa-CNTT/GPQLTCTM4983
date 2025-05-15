@@ -6,7 +6,7 @@ import { IUseQueryHookOptions } from '@/types/query.interface'
 import toast from 'react-hot-toast'
 
 export const useUpdatePassword = (opts?: IUseQueryHookOptions) => {
-  const { executeGetMe, userGetMeData } = useGetMeUser(true)
+  const { executeGetMe } = useGetMeUser(false, 'update-passwords')
   return useMutationCustom<ICredentialInformationForm, any>({
     pathUrl: userRoutes.updatePassword,
     method: 'patch',

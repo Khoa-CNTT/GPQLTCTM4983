@@ -57,7 +57,7 @@ export const useSignIn = (isRememberMe: boolean, opts?: IUseQueryHookOptions) =>
   })
 
   const { getMe } = useUser()
-  getMe(executeGetMe)
+  getMe(executeGetMe, 'use-sign-in')
 
   return mutation
 }

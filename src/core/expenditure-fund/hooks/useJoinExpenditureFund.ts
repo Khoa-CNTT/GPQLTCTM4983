@@ -36,7 +36,7 @@ export const useJoinExpenditureFund = ({ token }: { token: string }) => {
   }, [joinExpenditureFundData, joinExpenditureFundError])
 
   const { getMe } = useUser()
-  getMe(executeGetMe)
+  getMe(executeGetMe, 'use-join-expenditure-fund')
 
   return { isJoinExpenditureFundPending, joinExpenditureFundData, joinExpenditureFundError }
 }

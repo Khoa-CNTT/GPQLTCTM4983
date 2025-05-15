@@ -24,7 +24,7 @@ export const useSignInFacebook = () => {
   })
 
   const { getMe } = useUser()
-  getMe(executeGetMe)
+  getMe(executeGetMe, 'use-sign-in-facebook')
 
   return mutation
 }
