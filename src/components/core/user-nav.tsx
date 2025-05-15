@@ -38,6 +38,8 @@ export function UserNav() {
     Cookies.remove('authTokenVerify')
     Cookies.remove('refreshToken')
     localStorage.clear()
+    Cookies.remove('adminRole', { path: '/' })
+    Cookies.remove('accessToken', { path: '/' })
     router.push('/')
   }
   useEffect(() => {
