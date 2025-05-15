@@ -6,8 +6,19 @@ import { useEffect, useCallback } from 'react'
 import { IUserGetMeResponse } from '@/types/user.i'
 import { useRouter } from 'next/navigation'
 import { setAccessTokenToLocalStorage } from '@/libraries/helpers'
+import Cookies from 'js-cookie'
 
 export const useVerifyToken = () => {
+  const refreshToken = Cookies.get('refreshToken')
+  const accessToken = Cookies.get('accessToken')
+
+  if (!refreshToken || !accessToken) {
+    return {
+      isVerifyingToken: false,
+      verifyTokenData: null,
+      verifyTokenError: null
+    }
+  }
   const router = useRouter()
   const {
     isPending: isVerifyingToken,
@@ -16,7 +27,6 @@ export const useVerifyToken = () => {
   } = useModelQuery<IUserGetMeResponse>(AUTH_FEATURE_3, authServices.verifyToken, {
     retry: AUTH_RETRY
   })
-
   useEffect(() => {
     if (verifyTokenData) {
       const { accessToken } = verifyTokenData.data
@@ -30,9 +40,9 @@ export const useVerifyToken = () => {
     router.push('/sign-in')
   }, [verifyTokenError, router])
 
-  return { 
-    isVerifyingToken, 
-    verifyTokenData, 
+  return {
+    isVerifyingToken,
+    verifyTokenData,
     verifyTokenError,
     handleRedirectToLogin
   }

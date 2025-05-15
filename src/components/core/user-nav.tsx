@@ -16,36 +16,32 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import AvatarDefault from '@/images/avatar.jpg'
 import Image from 'next/image'
-import { useAuth } from '@/core/auth/hooks'
 import { useStoreLocal } from '@/hooks/useStoreLocal'
 import { useQueryClient } from '@tanstack/react-query'
 import { useUser } from '@/core/users/hooks'
 import { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { locales } from '@/libraries/i18n'
+import Cookies from 'js-cookie'
 
 export function UserNav() {
   const router = useRouter()
   const queryClient = useQueryClient()
   const { user, setUser } = useStoreLocal()
-  const { useLogout } = useAuth()
   const { getMe } = useUser()
   const { executeGetMe, userGetMeData } = getMe(false, 'user-nav')
-  const { executeLogout, userLogoutData } = useLogout()
   const { i18n } = useTranslation()
   const currentLanguage = locales[i18n.language as keyof typeof locales]
   const changeLanguage = (languageCode: 'en' | 'vi') => i18n.changeLanguage(languageCode)
   const logOut = () => {
     queryClient.clear()
-    executeLogout()
-    setUser(null)
-    localStorage.removeItem('accessToken')
-    localStorage.removeItem('refreshToken')
-    localStorage.removeItem('userInfo')
+    Cookies.remove('authTokenVerify')
+    Cookies.remove('refreshToken')
+    localStorage.clear()
     router.push('/')
   }
   useEffect(() => {
-    if (!user && !userLogoutData) {
+    if (!user) {
       executeGetMe()
       if (userGetMeData?.data) {
         setUser(userGetMeData.data)
