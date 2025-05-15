@@ -66,7 +66,8 @@ export const handleSend = async ({
   fundId,
   setIsTyping,
   setCurrentResponse,
-  setApiData
+  setApiData,
+  chatbotPersonality
 }: IPropsHandleSend) => {
   if (!input.trim()) {
     setError('Bạn phải nhập tin nhắn trước khi gửi.')
@@ -100,7 +101,8 @@ export const handleSend = async ({
       },
       body: JSON.stringify({
         message: input,
-        fundId
+        fundId,
+        chatbot: chatbotPersonality
       })
     })
 

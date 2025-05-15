@@ -60,6 +60,7 @@ import { confirmChange, handleConfirm, handleSend, handleStartEdit } from '@/app
 import { Card } from '@/components/ui/card'
 import { DetailTransaction } from './write-transaction-option/detail-update-transaction/detailTransaction'
 import { UpdateTransaction } from './write-transaction-option/detail-update-transaction/updateTransaction'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 
 export function ChatBox() {
   let typingInterval: NodeJS.Timeout | null = null
@@ -73,6 +74,7 @@ export function ChatBox() {
   const [input, setInput] = useState<string>('')
   const [error, setError] = useState<string>('')
   const [currentResponse, setCurrentResponse] = useState<string>('')
+  const [chatbotPersonality, setChatbotPersonality] = useState<string>('uniko')
   const scrollRef = useRef<HTMLDivElement>(null)
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
@@ -230,7 +232,8 @@ export function ChatBox() {
       fundId,
       setIsTyping,
       setCurrentResponse,
-      setApiData
+      setApiData,
+      chatbotPersonality
     })
   }
 
@@ -259,6 +262,15 @@ export function ChatBox() {
         }
       })
     }
+  }
+
+  const handlePersonalityChange = (value: string) => {
+    setChatbotPersonality(value)
+    // Xóa lịch sử chat khi đổi nhân cách
+    setMessages([
+      { id: Date.now(), text: 'Xin chào! Tôi có thể giúp gì cho bạn?', sender: 'bot' }
+    ])
+    setApiData([])
   }
 
   // useEffect
@@ -568,7 +580,6 @@ export function ChatBox() {
               {error && <p className='mb-2 text-sm font-semibold text-green-600'>{error}</p>}
               <div className='flex items-center gap-2'>
                 <motion.div className='flex-grow' whileFocus={{ scale: 1.01 }} variants={inputVariants}>
-                  {/* xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx */}
                   <Input
                     ref={inputRef}
                     value={input}
@@ -578,6 +589,19 @@ export function ChatBox() {
                     onKeyPress={(e) => e.key === 'Enter' && onClickSend()}
                   />
                 </motion.div>
+                
+                <Select value={chatbotPersonality} onValueChange={handlePersonalityChange}>
+                  <SelectTrigger className="w-[120px]">
+                    <SelectValue placeholder="Nhân cách" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="uniko">Uniko ✨</SelectItem>
+                    <SelectItem value="lover">Lover 💕</SelectItem>
+                    <SelectItem value="mama">Mama 💖</SelectItem>
+                    <SelectItem value="badFriend">Bad Friend 🤬</SelectItem>
+                  </SelectContent>
+                </Select>
+                
                 <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                   <Button
                     onClick={isTyping ? handleStopTyping : () => onClickSend()}
