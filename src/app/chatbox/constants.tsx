@@ -104,6 +104,7 @@ export interface IPropsHandleSend {
       }[]
     >
   >
+  chatbotPersonality?: string
 }
 
 export interface IPropsHandleSaveEdit {
@@ -163,7 +164,7 @@ export const quickActions: ActionItem[] = [
     id: 'financial-stats',
     title: 'Thống kê tài chính tháng này',
     // description: 'Xem báo cáo chi tiết về thu chi trong tháng',
-    description: '',
+    description: 'Thống kê tài chính tháng này',
     icon: LineChart,
     iconBgColor: 'bg-blue-600/20',
     iconColor: 'text-blue-500',

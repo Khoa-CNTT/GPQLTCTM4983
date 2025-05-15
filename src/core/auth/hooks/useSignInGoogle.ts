@@ -48,7 +48,7 @@ export const useSignInGoogle = () => {
   })
 
   const { getMe } = useUser()
-  getMe(executeGetMe)
+  getMe(executeGetMe, 'use-sign-in-google')
 
   return mutation
 }

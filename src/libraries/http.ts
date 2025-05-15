@@ -44,6 +44,8 @@ const axiosInstance = axios.create({
 
 // Thêm biến để kiểm soát việc chuyển hướng
 let isRedirecting = false
+// Thêm biến để theo dõi nếu đã thử refresh token
+let hasAttemptedTokenRefresh = false
 
 // Hàm xóa tất cả thông tin phiên đăng nhập
 const clearAllAuthData = () => {
@@ -55,6 +57,17 @@ const clearAllAuthData = () => {
   Cookies.remove('next-auth.session-token', { path: '/' })
   Cookies.remove('next-auth.csrf-token', { path: '/' })
   Cookies.remove('next-auth.callback-url', { path: '/' })
+}
+
+// Hàm reset trạng thái refresh token
+const resetTokenRefreshState = () => {
+  hasAttemptedTokenRefresh = false
+}
+
+// Thêm hàm này vào export để có thể reset trạng thái khi cần
+export const resetAuthState = () => {
+  isRedirecting = false
+  resetTokenRefreshState()
 }
 
 axiosInstance.interceptors.request.use((config) => {
@@ -70,28 +83,33 @@ axiosInstance.interceptors.request.use((config) => {
 })
 
 axiosInstance.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    // Reset trạng thái refresh token khi request thành công
+    if (response.status >= 200 && response.status < 300) {
+      resetTokenRefreshState()
+    }
+    return response
+  },
   async (error: AxiosError) => {
     const { response } = error
-    
+
     // Kiểm tra nếu lỗi là do token hết hạn
-    if (response?.status === 401 || 
-        (response?.data && (response?.data as any).errorCode === 112)) {
-      
+    if (response?.status === 401 ||
+      (response?.data && (response?.data as any).errorCode === 112)) {
+
       // Kiểm tra xem request hiện tại có phải là request verify-token không
       const originalRequest = error.config as AxiosRequestConfig
-      if (originalRequest && !originalRequest.url?.includes('auth/verify-token')) {
+      if (originalRequest && !originalRequest.url?.includes('auth/verify-token') && !hasAttemptedTokenRefresh) {
         try {
-          // Gọi API verify-token để lấy token mới
+          hasAttemptedTokenRefresh = true
+
           const refreshResponse = await axiosInstance.get('auth/verify-token/')
-          
+
           if (refreshResponse.data && refreshResponse.data.data && refreshResponse.data.data.accessToken) {
             const { accessToken } = refreshResponse.data.data
-            
-            // Lưu token mới vào localStorage
+
             setAccessTokenToLocalStorage(accessToken)
-            
-            // Cập nhật token trong header của request cũ
+
             if (!originalRequest.headers) {
               originalRequest.headers = {}
             }
@@ -99,25 +117,15 @@ axiosInstance.interceptors.response.use(
               ...originalRequest.headers,
               Authorization: `Bearer ${accessToken}`
             }
-            
-            // Thực hiện lại request ban đầu với token mới
+
             return axiosInstance(originalRequest)
           }
         } catch (refreshError) {
-          // Nếu không thể refresh token, xóa token và chuyển hướng đến trang đăng nhập
-          // if (window.location.pathname !== '/sign-in' && !isRedirecting) {
-          //   isRedirecting = true
-          //   clearAllAuthData()
-          //   // Hiển thị thông báo lỗi
-          //   toast.error('Phiên làm việc đã hết hạn. Vui lòng đăng nhập lại.')
-          //   // Chuyển hướng đến trang đăng nhập sau một khoảng thời gian nhỏ
-          //   setTimeout(() => {
-          //     window.location.replace('/sign-in')
-          //   }, 100)
-          // }
+
         }
       } else {
-        // Nếu chính API verify-token trả về lỗi, xóa token và chuyển hướng đến trang đăng nhập
+        // Nếu chính API verify-token trả về lỗi hoặc đã thử refresh token trước đó
+        // hoặc là request verify-token, chuyển hướng đến trang đăng nhập
         if (window.location.pathname !== '/sign-in' && !isRedirecting) {
           isRedirecting = true
           clearAllAuthData()
@@ -130,7 +138,7 @@ axiosInstance.interceptors.response.use(
         }
       }
     }
-    
+
     return Promise.reject(
       new HttpError({
         status: response?.status || 0,
@@ -167,15 +175,33 @@ const request = async <TResponseponse>(
 const handleClientSideActions = (url: string, data: any) => {
   const normalizedUrl = normalizePath(url)
   if (['api/auth/login'].includes(normalizedUrl)) {
+    // Xóa token cũ trước khi lưu token mới
+    removeTokensFromLocalStorage()
+    Cookies.remove('authTokenVerify', { path: '/' })
+    Cookies.remove('refreshToken', { path: '/' })
+
     const { accessToken, refreshToken } = data.data
     setAccessTokenToLocalStorage(accessToken)
     setRefreshTokenToLocalStorage(refreshToken)
+
+    // Reset trạng thái refresh token sau khi đăng nhập thành công
+    resetTokenRefreshState()
   } else if (normalizedUrl === 'api/auth/token') {
+    // Xóa token cũ trước khi lưu token mới
+    removeTokensFromLocalStorage()
+    Cookies.remove('authTokenVerify', { path: '/' })
+    Cookies.remove('refreshToken', { path: '/' })
+
     const { accessToken, refreshToken } = data as { accessToken: string; refreshToken: string }
     setAccessTokenToLocalStorage(accessToken)
     setRefreshTokenToLocalStorage(refreshToken)
+
+    // Reset trạng thái refresh token sau khi lấy token mới
+    resetTokenRefreshState()
   } else if (['api/auth/logout', 'api/guest/auth/logout'].includes(normalizedUrl)) {
-    removeTokensFromLocalStorage()
+    clearAllAuthData()
+    // Reset trạng thái refresh token sau khi đăng xuất
+    resetTokenRefreshState()
   }
 }
 

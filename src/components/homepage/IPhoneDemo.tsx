@@ -254,12 +254,12 @@ export const IPhoneDemo = () => {
                             >
                                 <Link href="/sign-in" className="inline-flex">
                                     <Button className="bg-gradient-to-r from-teal-500 to-cyan-500 hover:from-teal-600 hover:to-cyan-600 text-white rounded-full px-5 py-2 text-xs shadow-lg shadow-teal-400/20 hover:shadow-xl hover:shadow-teal-500/30 transition-all duration-300">
-                                        Dùng thử miễn phí
+                                        Trải nghiệm ngay
                                         <ArrowRight className="ml-1.5 h-3.5 w-3.5" />
                                     </Button>
                                 </Link>
                                 <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
-                                    Không cần thẻ tín dụng. Bắt đầu trải nghiệm ngay.
+                               Bắt đầu trải nghiệm ngay để nhận ngay ưu đãi
                                 </p>
                             </motion.div>
                         </motion.div>

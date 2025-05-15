@@ -79,7 +79,8 @@ const EditPlanForm: React.FC<EditPlanFormProps> = ({
       (item: any) => selectedPlan?.trackerTypeId === item.id
     )
       ? (selectedPlan?.trackerTypeId as string)
-      : ''
+      : '',
+    [ETypeOfTrackerTransactionType.TRANSFER]: ''
   })
   const [typeOfEditTrackerType, setTypeOfEditTrackerType] = useState<ETypeOfTrackerTransactionType>(
     incomeTrackerType.find((item: any) => selectedPlan?.trackerTypeId === item.id)

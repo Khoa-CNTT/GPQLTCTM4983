@@ -42,8 +42,6 @@ const OptimizedImage = memo(({
 
   // Common props for both fill and fixed images
   const commonProps = {
-    src,
-    alt,
     quality,
     priority,
     onLoadingComplete: () => setIsLoading(false),
@@ -77,6 +75,8 @@ const OptimizedImage = memo(({
       <div className="relative" style={{ width: '100%', height: '100%', ...style }}>
         <Image
           {...commonProps}
+          src={src}
+          alt={alt || "Hình ảnh tối ưu"}
           fill={true}
           sizes={sizes}
           style={{ objectFit }}
@@ -92,6 +92,8 @@ const OptimizedImage = memo(({
   return (
     <Image
       {...commonProps}
+      src={src}
+      alt={alt || "Hình ảnh tối ưu"}
       width={width}
       height={height}
       loading={priority ? 'eager' : 'lazy'}

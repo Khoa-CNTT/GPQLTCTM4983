@@ -146,10 +146,13 @@ export const initPerformanceOptimizations = () => {
   measurePerformance();
 };
 
-export default {
+// Tạo object trước khi export default
+const performanceOptimization = {
   prefetchCriticalResources,
   deferNonCriticalAssets,
   measurePerformance,
   optimizeRendering,
   initPerformanceOptimizations
-}; 
+};
+
+export default performanceOptimization; 

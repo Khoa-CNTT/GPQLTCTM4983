@@ -9,7 +9,7 @@ import { useRouter } from 'next/navigation'
 
 const userApi = apiService.user
 
-export const useGetMeUser = (execute: boolean) => {
+export const useGetMeUser = (execute: boolean, trace?: any) => {
   const router = useRouter()
   const { setUser, setFundId } = useStoreLocal()
   const {

@@ -100,3 +100,33 @@ export const arraysEqual = <T>(a: T[], b: T[]) => {
 
   return a.every((value, index) => value === b[index])
 }
+
+export const isAdmin = (): boolean => {
+  if (!isClient) return false
+  
+  try {
+    const userString = localStorage.getItem('user')
+    if (!userString) return false
+    
+    const user = JSON.parse(userString)
+    return user && user.roleId !== null
+  } catch (error) {
+    console.error('Lỗi khi kiểm tra quyền admin:', error)
+    return false
+  }
+}
+
+export const getUserRole = (): string | null => {
+  if (!isClient) return null
+  
+  try {
+    const userString = localStorage.getItem('user')
+    if (!userString) return null
+    
+    const user = JSON.parse(userString)
+    return user?.roleId || null
+  } catch (error) {
+    console.error('Lỗi khi lấy thông tin roleId:', error)
+    return null
+  }
+}
