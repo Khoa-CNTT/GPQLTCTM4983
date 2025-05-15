@@ -22,22 +22,26 @@ export function middleware(req: NextRequest) {
   const token = req.cookies.get('authTokenVerify')
   const hasValidToken = Boolean(token?.value && token.value !== 'undefined' && token.value.length > 0)
 
-  // Xử lý trường hợp người dùng đã đăng nhập cố truy cập trang login
+
   if (pathname.startsWith('/login') && hasValidToken) {
     return NextResponse.redirect(new URL('/dashboard/', req.url))
   }
 
   if (pathname.startsWith('/admin/login')) {
-    if (hasValidToken) {
-      return NextResponse.next()
-    }
     return NextResponse.next()
   }
 
-  if (pathname.startsWith('/admin/dashboard')) {
+  if (pathname.startsWith('/admin/dashboard') || pathname.startsWith('/admin/')) {
     if (!hasValidToken) {
       return NextResponse.redirect(new URL('/admin/login', req.url))
     }
+    
+
+    const adminRole = req.cookies.get('adminRole')
+    if (!adminRole || adminRole.value !== 'true') {
+      return NextResponse.redirect(new URL('/', req.url))
+    }
+
     return NextResponse.next()
   }
 

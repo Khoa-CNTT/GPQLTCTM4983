@@ -15,6 +15,8 @@ export const useLogout = () => {
   const executeLogout = () => {
     Cookies.remove('authTokenVerify')
     Cookies.remove('refreshToken')
+    Cookies.remove('adminRole', { path: '/' })
+    Cookies.remove('accessToken', { path: '/' })
     removeTokensFromLocalStorage()
     localStorage.removeItem('fundId')
     refetch()

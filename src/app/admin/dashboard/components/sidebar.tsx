@@ -104,6 +104,7 @@ const Sidebar = () => {
       // Xóa cookies
       Cookies.remove('authTokenVerify', { path: '/' })
       Cookies.remove('refreshToken', { path: '/' })
+      Cookies.remove('adminRole', { path: '/' })
       
       // Xóa thông tin user
       localStorage.removeItem('user')

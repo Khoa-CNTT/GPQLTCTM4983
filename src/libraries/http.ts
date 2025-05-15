@@ -53,6 +53,9 @@ const clearAllAuthData = () => {
   removeTokensFromLocalStorage()
   // Xóa cookie xác thực
   Cookies.remove('authTokenVerify', { path: '/' })
+  Cookies.remove('refreshToken', { path: '/' })
+  Cookies.remove('adminRole', { path: '/' })
+  Cookies.remove('accessToken', { path: '/' })
   // Xóa các cookie liên quan khác nếu có
   Cookies.remove('next-auth.session-token', { path: '/' })
   Cookies.remove('next-auth.csrf-token', { path: '/' })

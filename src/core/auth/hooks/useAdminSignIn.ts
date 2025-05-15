@@ -37,6 +37,14 @@ export const useAdminSignIn = (isRememberMe: boolean, opts?: IUseQueryHookOption
               expires: 7
             })
             
+            // Thêm cookie adminRole để xác thực quyền admin trong middleware
+            Cookies.set('adminRole', 'true', {
+              path: '/',
+              secure: true,
+              sameSite: 'lax',
+              expires: 1
+            })
+            
             // Lưu token vào localStorage
             setAccessTokenToLocalStorage(data.data.accessToken)
             setRefreshTokenToLocalStorage(data.data.refreshToken)
@@ -63,6 +71,7 @@ export const useAdminSignIn = (isRememberMe: boolean, opts?: IUseQueryHookOption
             // Xóa token nếu đã được lưu
             Cookies.remove('authTokenVerify', { path: '/' })
             Cookies.remove('refreshToken', { path: '/' })
+            Cookies.remove('adminRole', { path: '/' })
           }
         } else if (data.data.user.status === 'UNVERIFY') {
           toast.error('Tài khoản chưa được kích hoạt, vui lòng liên hệ quản trị viên!')
