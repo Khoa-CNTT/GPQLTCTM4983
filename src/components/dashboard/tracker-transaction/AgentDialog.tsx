@@ -17,6 +17,7 @@ import agentGif from "@/images/gif/agent1.gif"
 import { motion } from "framer-motion"
 import { useState } from "react"
 import { AgentDetailDialog } from "./AgentDetailDialog"
+import Image from 'next/image'
 
 interface Transaction {
     id: number;
@@ -219,10 +220,12 @@ export function AgentDialog({ isOpen, setOpen, data }: AgentDialogProps) {
                     <div className="flex flex-col md:flex-row md:items-start gap-5 pb-5 border-b">
                         <div className="hidden md:flex flex-col items-center space-y-3 flex-shrink-0">
                             <div className="w-32 h-32 p-1.5 flex items-center justify-center">
-                                <img
+                                <Image
                                     src={agentGif.src}
                                     alt="Agent Animation"
-                                    className="w-full h-full object-contain rounded-full"
+                                    width={120}
+                                    height={120}
+                                    className="object-contain rounded-full"
                                 />
                             </div>
 

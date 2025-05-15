@@ -75,7 +75,7 @@ export default function ProfileForm() {
     )
   }
   const { t } = useTranslation(['profile'])
-  const { userGetMeData, isGetMeUserPending, refetch: refetchGetMeData } = getMe(true)
+  const { userGetMeData, isGetMeUserPending, refetch: refetchGetMeData } = getMe(true, 'profile')
   const { setData } = useUpdateModel<IUserGetMeResponse>([USER_QUERY_ME], (oldData, newData) => {
     return { ...oldData, data: newData }
   })

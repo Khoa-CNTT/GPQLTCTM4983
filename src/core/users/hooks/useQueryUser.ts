@@ -9,10 +9,9 @@ import { useRouter } from 'next/navigation'
 
 const userApi = apiService.user
 
-export const useGetMeUser = (execute: boolean, trace: any) => {
+export const useGetMeUser = (execute: boolean, trace?: any) => {
   const router = useRouter()
   const { setUser, setFundId } = useStoreLocal()
-  console.log(">>>", trace)
   const {
     isPending: isGetMeUserPending,
     data: userGetMeData,

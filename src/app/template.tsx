@@ -21,7 +21,7 @@ export default function Template({ children }: { children: React.ReactNode }) {
 
   const { useVerifyToken } = useAuth()
 
-  const { verifyTokenError, handleRedirectToLogin } = useVerifyToken(isAuthenticatedRoute)
+  const { verifyTokenError, handleRedirectToLogin } = useVerifyToken()
 
   useEffect(() => {
     if (isAuthenticatedRoute && verifyTokenError) {
