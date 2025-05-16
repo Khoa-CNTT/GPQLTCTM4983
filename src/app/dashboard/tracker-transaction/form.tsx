@@ -141,6 +141,7 @@ export default function TrackerTransactionForm() {
   )
 
   const [transactionIdClassifying, setTransactionIdClassifying] = useState<string>('')
+  const [isLoadingUnclassified, setIsLoadingUnclassified] = useState<boolean>(false)
   const [idDeletes, setIdDeletes] = useState<string[]>([])
   // hooks
   const socket = useSocket()
@@ -346,10 +347,10 @@ export default function TrackerTransactionForm() {
 
   useEffect(() => {
     if (dataUnclassifiedTxs) {
-      setUnclassifiedTxTableData(modifyTransactionHandler(dataUnclassifiedTxs.data))
+      setUnclassifiedTxTableData(modifyTransactionHandler(dataUnclassifiedTxs.data.data))
       setDataTableUnclassifiedConfig((prev) => ({
         ...prev,
-        totalPage: Number(dataUnclassifiedTxs.pagination?.totalPage)
+        totalPage: Number(dataUnclassifiedTxs.data.pagination?.totalPage)
       }))
     }
   }, [dataUnclassifiedTxs])
@@ -417,7 +418,7 @@ export default function TrackerTransactionForm() {
   useEffect(() => {
     if (!socket) return
 
-    const handleCreatedTransactions = (data: { messages: string; status: string }) => {
+    const handleRefetchComplete = (data: { messages: string; status: string }) => {
       setIsPendingRefetch(false)
       switch (data.status) {
         case 'NO_NEW_TRANSACTION':
@@ -428,13 +429,12 @@ export default function TrackerTransactionForm() {
           break
 
         case 'NEW_TRANSACTION':
-          resetCacheUnclassifiedTxs()
-          resetCacheStatistic()
-          setDataTableConfig((prev) => ({ ...prev, currentPage: 1 }))
           toast.success(`${data.messages}`, {
             duration: 2000,
             id: 'new-transaction-success'
           })
+          setIsOpenAgentDialog(true)
+          setIsLoadingUnclassified(true)
           break
 
         default:
@@ -453,16 +453,26 @@ export default function TrackerTransactionForm() {
       })
     }
 
+    const handleCreatedTransactions = (data: { messages: string; status: string }) => {
+      resetCacheUnclassifiedTxs()
+      resetCacheStatistic()
+      setIsLoadingUnclassified(false)
+      setDataTableConfig((prev) => ({ ...prev, currentPage: 1 }))
+      toast.success('Transactions successfully created and data refreshed!', {
+        duration: 2000
+      })
+    }
+
     socket.off(EPaymentEvents.REFETCH_COMPLETE)
     socket.off(EPaymentEvents.CREATED_TRANSACTIONS)
     socket.off(EPaymentEvents.REFETCH_FAILED)
 
-    socket.on(EPaymentEvents.REFETCH_COMPLETE, () => { })
+    socket.on(EPaymentEvents.REFETCH_COMPLETE,handleRefetchComplete)
     socket.on(EPaymentEvents.CREATED_TRANSACTIONS, handleCreatedTransactions)
     socket.on(EPaymentEvents.REFETCH_FAILED, handleRefetchFailed)
 
     return () => {
-      socket.off(EPaymentEvents.REFETCH_COMPLETE, () => { })
+      socket.off(EPaymentEvents.REFETCH_COMPLETE, handleRefetchComplete)
       socket.off(EPaymentEvents.CREATED_TRANSACTIONS, handleCreatedTransactions)
       socket.off(EPaymentEvents.REFETCH_FAILED, handleRefetchFailed)
     }
@@ -687,10 +697,10 @@ export default function TrackerTransactionForm() {
             <CardContent>
               <FlatList
                 viewportHeight={viewportHeight}
-                data={modifyFlatListData(dataUnclassifiedTxs?.data || [])}
+                data={modifyFlatListData(dataUnclassifiedTxs?.data.data || [])}
                 onClick={(data: IFlatListData) => {
                   const item =
-                    dataUnclassifiedTxs?.data.find((item) => item.id === data.id) || initEmptyDetailTransactionData
+                    dataUnclassifiedTxs?.data.data.find((item) => item.id === data.id) || initEmptyDetailTransactionData
                   setTransactionIdClassifying(data.id)
                   setDataDetailTransaction(item)
                   setTypeOfTrackerType(item.direction as ETypeOfTrackerTransactionType)
@@ -838,6 +848,11 @@ export default function TrackerTransactionForm() {
       <AgentDialog
         isOpen={isOpenAgentDialog}
         setOpen={setIsOpenAgentDialog}
+        data={{
+          transactions: dataUnclassifiedTxs?.data.data || [],
+          messageAnalysis: dataUnclassifiedTxs?.data.messages ? dataUnclassifiedTxs.data.messages.replace(/<[^>]*>/g, '') : '',
+        }}
+        isLoading={isLoadingUnclassified}
       />
     </div>
   )

@@ -7,7 +7,7 @@ import {
     DialogFooter,
 } from "@/components/ui/dialog"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { CalendarIcon, ArrowDownIcon, ArrowUpIcon, PiggyBankIcon, ShoppingBagIcon, CoffeeIcon, HomeIcon, CarIcon, FileTextIcon, SearchIcon, TrendingUpIcon } from "lucide-react"
+import { CalendarIcon, ArrowDownIcon, ArrowUpIcon, PiggyBankIcon, ShoppingBagIcon, CoffeeIcon, HomeIcon, CarIcon, FileTextIcon, SearchIcon, TrendingUpIcon, Loader2Icon, SmileIcon } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Badge } from "@/components/ui/badge"
 import { format } from "date-fns"
@@ -18,6 +18,8 @@ import { motion } from "framer-motion"
 import { useState } from "react"
 import { AgentDetailDialog } from "./AgentDetailDialog"
 import Image from 'next/image'
+import { IUnclassifiedTransaction } from "@/core/transaction/models"
+import { ETypeOfTrackerTransactionType } from "@/core/tracker-transaction-type/models/tracker-transaction-type.enum"
 
 interface Transaction {
     id: number;
@@ -35,7 +37,7 @@ interface Transaction {
 // Định nghĩa kiểu dữ liệu nhóm transaction
 interface TransactionGroup {
     date: Date;
-    transactions: Transaction[];
+    transactions: IUnclassifiedTransaction[];
 }
 
 // Dữ liệu mẫu cho transaction
@@ -119,11 +121,11 @@ const sampleTransactions: Transaction[] = [
 ];
 
 // Hàm nhóm các giao dịch theo ngày
-const groupTransactionsByDate = (transactions: Transaction[]): TransactionGroup[] => {
-    const groups: Record<string, Transaction[]> = {};
+const groupTransactionsByDate = (transactions: IUnclassifiedTransaction[]): TransactionGroup[] => {
+    const groups: Record<string, IUnclassifiedTransaction[]> = {};
 
     transactions.forEach(transaction => {
-        const dateString = format(transaction.date, 'yyyy-MM-dd');
+        const dateString = format(transaction.transactionDateTime, 'yyyy-MM-dd');
         if (!groups[dateString]) {
             groups[dateString] = [];
         }
@@ -171,35 +173,38 @@ interface AgentDialogProps {
     isOpen: boolean;
     setOpen: (open: boolean) => void;
     data?: {
-        transactions?: Transaction[];
+        transactions?: IUnclassifiedTransaction[];
+        messageAnalysis?: string;
     } | null;
+    isLoading?: boolean
 }
 
-export function AgentDialog({ isOpen, setOpen, data }: AgentDialogProps) {
+export function AgentDialog({ isOpen, setOpen, data, isLoading }: AgentDialogProps) {
     // Sử dụng dữ liệu mẫu hoặc data từ props
-    const transactions = data?.transactions || sampleTransactions;
+    const transactions = data?.transactions || [];
     const groupedTransactions = groupTransactionsByDate(transactions);
-    const [selectedTransaction, setSelectedTransaction] = useState<Transaction | null>(null);
+    const [selectedTransaction, setSelectedTransaction] = useState<IUnclassifiedTransaction | null>(null);
     const [detailDialogOpen, setDetailDialogOpen] = useState(false);
 
     // Tính tổng thu nhập và chi tiêu
     const totalIncoming = transactions
-        .filter(t => t.type === 'incoming')
+        .filter(t => t.direction === ETypeOfTrackerTransactionType.INCOMING)
         .reduce((sum, t) => sum + t.amount, 0);
 
     const totalOutgoing = transactions
-        .filter(t => t.type === 'outgoing')
+        .filter(t => t.direction === ETypeOfTrackerTransactionType.EXPENSE)
         .reduce((sum, t) => sum + t.amount, 0);
 
     // Số giao dịch hôm nay
     const todayTransactions = transactions.filter(t => {
         const today = new Date();
-        return t.date.getDate() === today.getDate() &&
-            t.date.getMonth() === today.getMonth() &&
-            t.date.getFullYear() === today.getFullYear();
+        const transactionDateTime = new Date(t.transactionDateTime);
+        return transactionDateTime.getDate() === today.getDate() &&
+            transactionDateTime.getMonth() === today.getMonth() &&
+            transactionDateTime.getFullYear() === today.getFullYear();
     });
 
-    const handleTransactionClick = (transaction: Transaction) => {
+    const handleTransactionClick = (transaction: IUnclassifiedTransaction) => {
         setSelectedTransaction(transaction);
         setDetailDialogOpen(true);
     };
@@ -295,7 +300,7 @@ export function AgentDialog({ isOpen, setOpen, data }: AgentDialogProps) {
                                             <div className="h-2 w-2 rounded-full bg-amber-300 animate-pulse absolute" style={{ animationDelay: "300ms" }}></div>
                                         </div>
                                         <p className="text-xs italic text-green-600 font-semibold pl-5">
-                                            Hôm nay lại có tận {todayTransactions.length} giao dịch hả? Bạn có biết cách chi tiêu hợp lý hơn không vậy...
+                                            { data?.messageAnalysis }
                                         </p>
                                     </motion.div>
                                 </div>
@@ -310,94 +315,108 @@ export function AgentDialog({ isOpen, setOpen, data }: AgentDialogProps) {
                             </div>
                         </div>
                     </div>
+                    { isLoading ? (
+                        <motion.div 
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            className="h-[400px] flex flex-col items-center justify-center space-y-4 px-4 text-center"
+                        >
+                            <div className="relative">
+                                <Loader2Icon className="h-10 w-10 text-primary animate-spin" />
+                                <SmileIcon className="h-5 w-5 text-yellow-500 absolute bottom-0 right-0" />
+                            </div>
+                            <p className="text-primary/80 font-medium text-base">
+                                Uniko đang chuẩn bị giao dịch cho bạn, vui lòng đợi một tý nhé
+                            </p>
+                        </motion.div>
+                    ) : <ScrollArea className="h-[400px] pr-4 pt-2">
+                    <div className="space-y-6">
+                        {groupedTransactions.map((group, groupIndex) => (
+                            <motion.div
+                                key={groupIndex}
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                transition={{ duration: 0.4, delay: groupIndex * 0.1 }}
+                                className="space-y-2.5"
+                            >
+                                <div className="sticky top-0 bg-accent/70 backdrop-blur-sm p-2.5 rounded-md z-10">
+                                    <h3 className="text-xs font-medium flex items-center text-white">
+                                        <CalendarIcon className="mr-2 h-3.5 w-3.5 text-white" />
+                                        {format(group.date, 'EEEE, dd MMMM yyyy', { locale: vi })}
+                                    </h3>
+                                </div>
 
-                    <ScrollArea className="h-[400px] pr-4 pt-2">
-                        <div className="space-y-6">
-                            {groupedTransactions.map((group, groupIndex) => (
-                                <motion.div
-                                    key={groupIndex}
-                                    initial={{ opacity: 0 }}
-                                    animate={{ opacity: 1 }}
-                                    transition={{ duration: 0.4, delay: groupIndex * 0.1 }}
-                                    className="space-y-2.5"
-                                >
-                                    <div className="sticky top-0 bg-accent/70 backdrop-blur-sm p-2.5 rounded-md z-10">
-                                        <h3 className="text-xs font-medium flex items-center text-white">
-                                            <CalendarIcon className="mr-2 h-3.5 w-3.5 text-white" />
-                                            {format(group.date, 'EEEE, dd MMMM yyyy', { locale: vi })}
-                                        </h3>
-                                    </div>
+                                <div className="space-y-3 px-5">
+                                    {group.transactions.map((transaction, idx) => (
+                                        <motion.div
+                                            key={transaction.id}
+                                            initial={{ opacity: 0, y: 5 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            transition={{ duration: 0.3, delay: idx * 0.05 }}
+                                            className={cn(
+                                                "p-2 rounded-xl border hover:border-accent/40 transition-all duration-300 shadow-sm hover:shadow group cursor-pointer",
+                                                transaction.direction === ETypeOfTrackerTransactionType.INCOMING
+                                                    ? "border-accent/40 bg-accent/40 hover:from-green-50/50"
+                                                    : "border-accent/40 bg-accent/40 hover:from-red-50/50"
+                                            )}
+                                            onClick={() => handleTransactionClick(transaction)}
+                                        >
+                                            <div className="flex justify-between items-center gap-3">
+                                                <div className="flex items-center gap-3.5">
+                                                    <div className={cn(
+                                                        "w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 transition-all duration-300 group-hover:scale-110 group-hover:shadow-sm",
 
-                                    <div className="space-y-3 px-5">
-                                        {group.transactions.map((transaction, idx) => (
-                                            <motion.div
-                                                key={transaction.id}
-                                                initial={{ opacity: 0, y: 5 }}
-                                                animate={{ opacity: 1, y: 0 }}
-                                                transition={{ duration: 0.3, delay: idx * 0.05 }}
-                                                className={cn(
-                                                    "p-2 rounded-xl border hover:border-accent/40 transition-all duration-300 shadow-sm hover:shadow group cursor-pointer",
-                                                    transaction.type === "incoming"
-                                                        ? "border-accent/40 bg-accent/40 hover:from-green-50/50"
-                                                        : "border-accent/40 bg-accent/40 hover:from-red-50/50"
-                                                )}
-                                                onClick={() => handleTransactionClick(transaction)}
-                                            >
-                                                <div className="flex justify-between items-center gap-3">
-                                                    <div className="flex items-center gap-3.5">
-                                                        <div className={cn(
-                                                            "w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 transition-all duration-300 group-hover:scale-110 group-hover:shadow-sm",
-
-                                                        )}>
-                                                            {transaction.type === "incoming"
-                                                                ? <ArrowDownIcon className="h-4.5 w-4.5 text-green-600" />
-                                                                : <ArrowUpIcon className="h-4.5 w-4.5 text-rose-600" />
-                                                            }
-                                                        </div>
-
-                                                        <div className="min-w-0">
-                                                            <div className="flex items-center gap-2">
-                                                                <h4 className="text-sm font-medium truncate group-hover:text-primary transition-colors">{transaction.description}</h4>
-                                                                <Badge
-                                                                    variant="secondary"
-                                                                    className={cn(
-                                                                        "h-5 px-2 text-[0.65rem] flex items-center gap-1 leading-none ml-auto transition-colors shadow-sm",
-                                                                        transaction.type === "incoming"
-                                                                            ? "bg-green-500 text-white"
-                                                                            : "bg-red-500 text-white"
-                                                                    )}
-                                                                >
-                                                                    {getCategoryIcon(transaction.category)}
-                                                                    <span className="truncate max-w-20">{transaction.category}</span>
-                                                                </Badge>
-                                                            </div>
-                                                            <div className="flex items-center text-[0.7rem] text-muted-foreground mt-1.5 gap-2">
-                                                                <span className="flex items-center bg-muted/30 px-1.5 py-0.5 rounded-full">
-                                                                    <CalendarIcon className="mr-1 h-3 w-3" />
-                                                                    {format(transaction.date, 'HH:mm')}
-                                                                </span>
-                                                                <div className="h-1 w-1 rounded-full bg-muted-foreground/40"></div>
-                                                                <span className="font-mono truncate bg-muted/30 px-1.5 py-0.5 rounded-full">{transaction.accountNumber}</span>
-                                                            </div>
-                                                        </div>
+                                                    )}>
+                                                        {transaction.direction === ETypeOfTrackerTransactionType.INCOMING
+                                                            ? <ArrowDownIcon className="h-4.5 w-4.5 text-green-600" />
+                                                            : <ArrowUpIcon className="h-4.5 w-4.5 text-rose-600" />
+                                                        }
                                                     </div>
 
-                                                    <div className={cn(
-                                                        "text-sm font-semibold tabular-nums transition-all duration-300 group-hover:scale-105 py-1.5 px-3 rounded-lg",
-                                                        transaction.type === "incoming"
-                                                            ? "text-green-600 "
-                                                            : "text-red-600 "
-                                                    )}>
-                                                        {transaction.type === "incoming" ? "+" : "-"}{formatCurrency(transaction.amount)}
+                                                    <div className="min-w-0">
+                                                        <div className="flex items-center gap-2">
+                                                            <h4 className="text-sm font-medium truncate group-hover:text-primary transition-colors">{transaction.agentSuggest[0].reasonName}</h4>
+                                                            <Badge
+                                                                variant="secondary"
+                                                                className={cn(
+                                                                    "h-5 px-2 text-[0.65rem] flex items-center gap-1 leading-none ml-auto transition-colors shadow-sm",
+                                                                    transaction.direction === ETypeOfTrackerTransactionType.INCOMING
+                                                                        ? "bg-green-500 text-white"
+                                                                        : "bg-red-500 text-white"
+                                                                )}
+                                                            >
+                                                                {getCategoryIcon(transaction.agentSuggest[0].trackerTypeName || "")}
+                                                                <span className="truncate max-w-20">{transaction.agentSuggest[0].trackerTypeName || ""}</span>
+                                                            </Badge>
+                                                        </div>
+                                                        <div className="flex items-center text-[0.7rem] text-muted-foreground mt-1.5 gap-2">
+                                                            <span className="flex items-center bg-muted/30 px-1.5 py-0.5 rounded-full">
+                                                                <CalendarIcon className="mr-1 h-3 w-3" />
+                                                                {format(transaction.transactionDateTime, 'HH:mm')}
+                                                            </span> 
+                                                            <div className="h-1 w-1 rounded-full bg-muted-foreground/40"></div>
+                                                            <span className="font-mono truncate bg-muted/30 px-1.5 py-0.5 rounded-full">{transaction.ofAccount?.accountNo || "N/A"}</span>
+                                                        </div>
                                                     </div>
                                                 </div>
-                                            </motion.div>
-                                        ))}
-                                    </div>
-                                </motion.div>
-                            ))}
-                        </div>
-                    </ScrollArea>
+
+                                                <div className={cn(
+                                                    "text-sm font-semibold tabular-nums transition-all duration-300 group-hover:scale-105 py-1.5 px-3 rounded-lg",
+                                                    transaction.direction === ETypeOfTrackerTransactionType.INCOMING
+                                                        ? "text-green-600 "
+                                                        : "text-red-600 "
+                                                )}>
+                                                    {transaction.direction === ETypeOfTrackerTransactionType.INCOMING ? "+" : "-"}{formatCurrency(transaction.amount)}
+                                                </div>
+                                            </div>
+                                        </motion.div>
+                                    ))}
+                                </div>
+                            </motion.div>
+                        ))}
+                    </div>
+                </ScrollArea> }
+                    
                 </DialogContent>
             </Dialog>
 
