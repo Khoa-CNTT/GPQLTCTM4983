@@ -1,6 +1,6 @@
 # Git flow handling 
 
-## Branches
+## Branche
 
 **develop**: for development
 
