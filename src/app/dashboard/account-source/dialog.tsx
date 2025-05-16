@@ -23,7 +23,7 @@ interface IAccountSourceDialogProps {
     isDeletingMultiple: boolean
   }
 
-  callBack: (payload: IAccountSourceBody) => void
+  callBack: (payload: IAccountSourceBody, setIsVerified: (isVerified: boolean) => void) => void
   detailAccountSourceDialog: {
     dataDetail: IAccountSource
   }
