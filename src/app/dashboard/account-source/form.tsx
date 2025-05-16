@@ -637,7 +637,7 @@ export default function AccountSourceForm() {
           isDeletingOne,
           isDeletingMultiple
         }}
-        callBack={(payload: IAccountSourceBody) => {
+        callBack={(payload: IAccountSourceBody, setIsVerified: (isVerified: boolean) => void) => {
           handleSubmitAccountSource({
             payload: { ...payload },
             setIsDialogOpen,
@@ -645,7 +645,8 @@ export default function AccountSourceForm() {
             hookUpdate: updateAccountSource,
             fundId,
             isDialogOpen,
-            callBackOnSuccess: callBackRefetchAccountSourcePage
+            callBackOnSuccess: callBackRefetchAccountSourcePage,
+            setIsVerified
           })
         }}
         detailAccountSourceDialog={{

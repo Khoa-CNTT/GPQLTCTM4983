@@ -53,6 +53,9 @@ const clearAllAuthData = () => {
   removeTokensFromLocalStorage()
   // Xóa cookie xác thực
   Cookies.remove('authTokenVerify', { path: '/' })
+  Cookies.remove('refreshToken', { path: '/' })
+  Cookies.remove('adminRole', { path: '/' })
+  Cookies.remove('accessToken', { path: '/' })
   // Xóa các cookie liên quan khác nếu có
   Cookies.remove('next-auth.session-token', { path: '/' })
   Cookies.remove('next-auth.csrf-token', { path: '/' })
@@ -103,23 +106,22 @@ axiosInstance.interceptors.response.use(
         try {
           hasAttemptedTokenRefresh = true
 
-          const refreshResponse = await axiosInstance.get('auth/verify-token/')
+          // const refreshResponse = await axiosInstance.get('auth/verify-token/')
 
-          if (refreshResponse.data && refreshResponse.data.data && refreshResponse.data.data.accessToken) {
-            const { accessToken } = refreshResponse.data.data
+          // if (refreshResponse.data && refreshResponse.data.data && refreshResponse.data.data.accessToken) {
+            // const { accessToken } = refreshResponse.data.data
 
-            setAccessTokenToLocalStorage(accessToken)
+            // setAccessTokenToLocalStorage(accessToken)
 
             if (!originalRequest.headers) {
               originalRequest.headers = {}
             }
-            originalRequest.headers = {
-              ...originalRequest.headers,
-              Authorization: `Bearer ${accessToken}`
-            }
+            // originalRequest.headers = {
+            //   ...originalRequest.headers,
+            //   Authorization: `Bearer ${accessToken}`
+            // }
 
-            return axiosInstance(originalRequest)
-          }
+          // return axiosInstance(originalRequest)
         } catch (refreshError) {
 
         }
