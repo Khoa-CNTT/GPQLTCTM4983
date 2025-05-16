@@ -454,13 +454,15 @@ export default function TrackerTransactionForm() {
     }
 
     const handleCreatedTransactions = (data: { messages: string; status: string }) => {
-      resetCacheUnclassifiedTxs()
-      resetCacheStatistic()
-      setIsLoadingUnclassified(false)
-      setDataTableConfig((prev) => ({ ...prev, currentPage: 1 }))
-      toast.success('Transactions successfully created and data refreshed!', {
-        duration: 2000
-      })
+      if(data.status === 'TRANSACTIONS_ARE_CREATED') {
+        resetCacheUnclassifiedTxs()
+        resetCacheStatistic()
+        setIsLoadingUnclassified(false)
+        setDataTableConfig((prev) => ({ ...prev, currentPage: 1 }))
+        toast.success('Transactions successfully created and data refreshed!', {
+          duration: 2000
+        })
+      }
     }
 
     socket.off(EPaymentEvents.REFETCH_COMPLETE)
