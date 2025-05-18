@@ -23,7 +23,6 @@ import { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { locales } from '@/libraries/i18n'
 import Cookies from 'js-cookie'
-import Cookies from 'js-cookie'
 
 export function UserNav() {
   const router = useRouter()
