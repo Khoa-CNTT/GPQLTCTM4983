@@ -18,3 +18,31 @@ export const useUpdateUser = (opts?: IUseQueryHookOptions) => {
     }
   })
 }
+
+interface ISyncBalanceResponse {
+  message: string;
+  data: {
+    message: string;
+    amount: number;
+  };
+  statusCode: number;
+}
+
+export const useSyncBalance = (opts?: IUseQueryHookOptions) => {
+  return useMutationCustom<{ accountSourceId: string }, ISyncBalanceResponse>({
+    pathUrl: 'account-sources/sync-balance/:accountSourceId',
+    method: 'post',
+    mutateOption: {
+      onSuccess: (data) => {
+        toast.success(data.message)
+        opts?.callBackOnSuccess?.()
+      },
+      onError: (error) => {
+        if (error.response?.status) {
+          return toast.error(`${(error.response?.data as { message: string }).message} !`)
+        }
+        opts?.callBackOnError?.()
+      }
+    }
+  })
+}

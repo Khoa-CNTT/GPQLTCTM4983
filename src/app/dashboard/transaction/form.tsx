@@ -60,7 +60,7 @@ import { useSocket } from '@/libraries/useSocketIo'
 import { useStoreLocal } from '@/hooks/useStoreLocal'
 import { EUserStatus, IUserPayloadForSocket } from '@/types/user.i'
 import { useUser } from '@/core/users/hooks'
-import { getTimeCountRefetchLimit, setTimeCountRefetchLimit } from '@/libraries/helpers'
+import { getAccessTokenFromLocalStorage, getTimeCountRefetchLimit, setTimeCountRefetchLimit } from '@/libraries/helpers'
 import {
   GET_ADVANCED_TRANSACTION_KEY,
   GET_TODAY_TRANSACTION_KEY,
@@ -83,9 +83,12 @@ import { GET_ADVANCED_EXPENDITURE_FUND_KEY } from '@/core/expenditure-fund/const
 import { Checkbox } from '@/components/ui/checkbox'
 import { ArrowUpDown } from 'lucide-react'
 import { EPaymentEvents } from '../tracker-transaction/constants'
+import { AgentDialog } from '@/components/dashboard/tracker-transaction/AgentDialog'
 
 export default function TransactionForm() {
   // states
+  const [isLoadingUnclassified, setIsLoadingUnclassified] = useState<boolean>(false)
+  const [isOpenAgentDialog, setIsOpenAgentDialog] = useState(false)
   const [idDeletes, setIdDeletes] = useState<string[]>([])
   const [typeOfTrackerType, setTypeOfTrackerType] = useState<ETypeOfTrackerTransactionType>(
     ETypeOfTrackerTransactionType.INCOMING
@@ -155,6 +158,7 @@ export default function TransactionForm() {
     query: uncTableQueryOptions,
     fundId
   })
+
   const { dataTodayTxs } = getTodayTransactions({ query: todayTableQueryOptions, fundId })
   const { isGetMeUserPending } = getMe(true)
   const { getAllExpenditureFundData, refetchAllExpendingFund } = getAllExpenditureFund()
@@ -200,6 +204,7 @@ export default function TransactionForm() {
   }
 
   const refetchTransactionBySocket = () => {
+    const token = getAccessTokenFromLocalStorage()
     const lastCalled = getTimeCountRefetchLimit()
     const now = Date.now()
     const timeLimit = 10000
@@ -211,7 +216,8 @@ export default function TransactionForm() {
           email: user?.email ?? '',
           fullName: user?.fullName ?? '',
           status: (user?.status as EUserStatus) ?? EUserStatus.ACTIVE,
-          fundId
+          fundId,
+          token: token ?? ''
         }
         console.log('userPayload', userPayload)
 
@@ -235,21 +241,21 @@ export default function TransactionForm() {
       setTransactionSummary((prev) => ({
         ...prev,
         unclassifiedTransaction: {
-          data: modifyTransactionHandler(dataUnclassifiedTxs.data),
-          count: dataUnclassifiedTxs.data.length,
-          incomeAmount: dataUnclassifiedTxs.data
+          data: modifyTransactionHandler(dataUnclassifiedTxs.data.data),
+          count: dataUnclassifiedTxs.data.data.length,
+          incomeAmount: dataUnclassifiedTxs.data.data
             .filter((e) => e.direction === ETypeOfTrackerTransactionType.INCOMING)
             .reduce((acc, cur) => {
               return acc + cur.amount
             }, 0),
-          expenseAmount: dataUnclassifiedTxs.data
+          expenseAmount: dataUnclassifiedTxs.data.data
             .filter((e) => e.direction === ETypeOfTrackerTransactionType.EXPENSE)
             .reduce((acc, cur) => {
               return acc + cur.amount
             }, 0)
         }
       }))
-      setUncDataTableConfig((prev) => ({ ...prev, totalPage: Number(dataUnclassifiedTxs.pagination?.totalPage) }))
+      setUncDataTableConfig((prev) => ({ ...prev, totalPage: Number(dataUnclassifiedTxs.data.pagination?.totalPage) }))
     }
   }, [dataUnclassifiedTxs])
 
@@ -304,12 +310,14 @@ export default function TransactionForm() {
               duration: 2000
             }
           )
+          setIsOpenAgentDialog(true)
+          setIsLoadingUnclassified(true)
         }
         setIsPendingRefetch(false)
       })
       socket.off(EPaymentEvents.CREATED_TRANSACTIONS)
       socket.on(EPaymentEvents.CREATED_TRANSACTIONS, (data: { message: string; status: string }) => {
-        if (data.status === 'TRANSACTIONS_IS_CREATED') {
+        if (data.status === 'TRANSACTIONS_ARE_CREATED') {
           reloadDataFunction()
           callBackRefetchTransactionPage([
             'getUnclassifiedTransactions',
@@ -322,6 +330,7 @@ export default function TransactionForm() {
           setUncDataTableConfig((prev) => ({ ...prev, currentPage: 1 }))
           setTodayDataTableConfig((prev) => ({ ...prev, currentPage: 1 }))
           setDataTableConfig((prev) => ({ ...prev, currentPage: 1 }))
+          setIsLoadingUnclassified(false)
           toast.success('Transactions successfully created and data refreshed!', {
             duration: 2000
           })
@@ -585,7 +594,7 @@ export default function TransactionForm() {
               <span>{t('unclassifiedTransaction')}</span>
               <Button
                 variant='outline'
-                onClick={() => setIsDialogOpen((prev) => ({ ...prev, isDialogUnclassifiedTransactionOpen: true }))}
+                onClick={() => setIsOpenAgentDialog(true)}
               >
                 {t('classify')}
               </Button>
@@ -748,6 +757,15 @@ export default function TransactionForm() {
           setIsDialogOpen((prev) => ({ ...prev, isDialogDeleteAllOpen: false }))
         }}
         isDialogOpen={isDialogOpen.isDialogDeleteAllOpen}
+      />
+      <AgentDialog
+        isOpen={isOpenAgentDialog}
+        setOpen={setIsOpenAgentDialog}
+        data={{
+          transactions: dataUnclassifiedTxs?.data.data || [],
+          messageAnalysis: dataUnclassifiedTxs?.data.messages ? dataUnclassifiedTxs.data.messages.replace(/<[^>]*>/g, '') : '',
+        }}
+        isLoading={isLoadingUnclassified}
       />
     </div>
   )

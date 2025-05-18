@@ -37,7 +37,9 @@ export interface ITransaction {
   }
 }
 
-export interface IUnclassifiedTransaction extends ITransaction, IAgentRecommend {}
+export interface IUnclassifiedTransaction extends ITransaction {
+  agentSuggest: IAgentRecommend[]
+}
 
 export interface IAgentRecommend {
   trackerTypeId?: string
@@ -46,7 +48,7 @@ export interface IAgentRecommend {
   message: string
 }
 export type IGetTransactionResponse = IBaseResponseData<ITransaction[]>
-export type IGetUnclassifiedTransactionResponse = IBaseResponseData<IUnclassifiedTransaction[]>
+export type IGetUnclassifiedTransactionResponse =  {data: IBaseResponseData<IUnclassifiedTransaction[]> }
 
 export interface IDialogTransaction {
   isDialogDetailOpen: boolean

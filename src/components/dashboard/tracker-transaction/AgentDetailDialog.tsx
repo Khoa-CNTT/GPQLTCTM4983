@@ -33,6 +33,8 @@ import {
     SelectValue
 } from "@/components/ui/select"
 import { useState } from "react"
+import { ETypeOfTrackerTransactionType } from "@/core/tracker-transaction-type/models/tracker-transaction-type.enum"
+import { IUnclassifiedTransaction } from "@/core/transaction/models"
 
 interface Transaction {
     id: number;
@@ -55,16 +57,16 @@ const formatCurrency = (amount: number): string => {
 interface AgentDetailDialogProps {
     isOpen: boolean;
     setOpen: (open: boolean) => void;
-    transaction: Transaction | null;
+    transaction: IUnclassifiedTransaction | null;
 }
 
 export function AgentDetailDialog({ isOpen, setOpen, transaction }: AgentDetailDialogProps) {
-    const [selectedCategory, setSelectedCategory] = useState(transaction?.category || "");
+    const [selectedCategory, setSelectedCategory] = useState(transaction?.agentSuggest[0].trackerTypeName || "");
 
     if (!transaction) return null;
 
     // Danh sách category mẫu - có thể thay đổi theo yêu cầu thực tế
-    const categories = transaction.type === "incoming"
+    const categories = transaction.direction === ETypeOfTrackerTransactionType.INCOMING
         ? ["Lương", "Thưởng", "Tiền gửi", "Hoàn tiền", "Khác"]
         : ["Ăn uống", "Di chuyển", "Mua sắm", "Giải trí", "Khác"];
 
@@ -104,36 +106,36 @@ export function AgentDetailDialog({ isOpen, setOpen, transaction }: AgentDetailD
                         >
                             <div className={cn(
                                 "w-10 h-10 rounded-full flex items-center justify-center mb-3",
-                                transaction.type === "incoming"
+                                transaction.direction === ETypeOfTrackerTransactionType.INCOMING
                                     ? "bg-green-100"
                                     : "bg-red-100"
                             )}>
-                                {transaction.type === "incoming"
+                                {transaction.direction === ETypeOfTrackerTransactionType.INCOMING
                                     ? <ArrowDownIcon className="h-4 w-4 text-green-600" />
                                     : <ArrowUpIcon className="h-4 w-4 text-rose-600" />
                                 }
                             </div>
 
-                            <h3 className="text-lg font-medium mb-1">{transaction.description}</h3>
+                            <h3 className="text-lg font-medium mb-1">{transaction.agentSuggest[0].reasonName}</h3>
 
                             <div className={cn(
                                 "text-xl font-bold mt-1 mb-3",
-                                transaction.type === "incoming"
+                                transaction.direction === ETypeOfTrackerTransactionType.INCOMING
                                     ? "text-green-600"
                                     : "text-red-600"
                             )}>
-                                {transaction.type === "incoming" ? "+" : "-"}{formatCurrency(transaction.amount)}
+                                {transaction.direction === ETypeOfTrackerTransactionType.INCOMING ? "+" : "-"}{formatCurrency(transaction.amount)}
                             </div>
 
                             <Badge
                                 className={cn(
                                     "px-3 py-1 text-xs text-white",
-                                    transaction.type === "incoming"
+                                    transaction.direction === ETypeOfTrackerTransactionType.INCOMING
                                         ? "bg-green-500 hover:bg-green-600"
                                         : "bg-red-500 hover:bg-red-600"
                                 )}
                             >
-                                {transaction.type === "incoming" ? "Giao dịch nhận" : "Giao dịch chi"}
+                                {transaction.direction === ETypeOfTrackerTransactionType.INCOMING ? "Giao dịch nhận" : "Giao dịch chi"}
                             </Badge>
                         </motion.div>
 
@@ -156,7 +158,7 @@ export function AgentDetailDialog({ isOpen, setOpen, transaction }: AgentDetailD
                                         <span>Ngày giao dịch</span>
                                     </div>
                                     <div className="font-medium">
-                                        {format(transaction.date, 'dd/MM/yyyy', { locale: vi })}
+                                        {format(transaction.transactionDateTime, 'dd/MM/yyyy', { locale: vi })}
                                     </div>
                                 </div>
 
@@ -166,7 +168,7 @@ export function AgentDetailDialog({ isOpen, setOpen, transaction }: AgentDetailD
                                         <span>Thời gian</span>
                                     </div>
                                     <div className="font-medium">
-                                        {format(transaction.date, 'HH:mm:ss', { locale: vi })}
+                                        {format(transaction.transactionDateTime, 'HH:mm:ss', { locale: vi })}
                                     </div>
                                 </div>
 
@@ -176,30 +178,30 @@ export function AgentDetailDialog({ isOpen, setOpen, transaction }: AgentDetailD
                                         <span>Số tài khoản</span>
                                     </div>
                                     <div className="font-mono font-medium">
-                                        {transaction.accountNumber}
+                                        {transaction.ofAccount?.accountNo}
                                     </div>
                                 </div>
 
-                                {transaction.bankName && (
+                                {transaction.accountBank.type && (
                                     <div className="flex items-center justify-between p-2 rounded-lg hover:bg-accent/10 transition-colors">
                                         <div className="flex items-center gap-2 text-muted-foreground">
                                             <Banknote className="h-4 w-4" />
                                             <span>Ngân hàng</span>
                                         </div>
                                         <div className="font-medium">
-                                            {transaction.bankName}
+                                            {transaction.accountBank.type ? "MB Bank" : ""}
                                         </div>
                                     </div>
                                 )}
 
-                                {transaction.benAccountNo && (
+                                {transaction.toAccountNo && (
                                     <div className="flex items-center justify-between p-2 rounded-lg hover:bg-accent/10 transition-colors">
                                         <div className="flex items-center gap-2 text-muted-foreground">
                                             <UserIcon className="h-4 w-4" />
                                             <span>TK đối tác</span>
                                         </div>
                                         <div className="font-mono font-medium">
-                                            {transaction.benAccountNo}
+                                            {transaction.toAccountNo}
                                         </div>
                                     </div>
                                 )}
@@ -243,7 +245,7 @@ export function AgentDetailDialog({ isOpen, setOpen, transaction }: AgentDetailD
                                     <span>Lý do phân loại</span>
                                 </div>
                                 <div className="text-sm leading-relaxed">
-                                    {transaction.reason}
+                                    {transaction.agentSuggest[0].reasonName}
                                 </div>
                             </div>
                         </motion.div>

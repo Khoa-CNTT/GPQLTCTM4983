@@ -27,6 +27,8 @@ import {
   updateAccountBankSchema
 } from '@/core/account-source/constants/update-account-bank.constant'
 import { EBankTypes, initEmptyAccountSource } from '@/app/dashboard/account-source/constants'
+import { useVerifyBank } from '@/core/account-bank/hooks/useVerifyBank'
+import toast from 'react-hot-toast'
 
 export default function CreateAndUpdateAccountSourceForm({
   callBack,
@@ -36,7 +38,7 @@ export default function CreateAndUpdateAccountSourceForm({
   typeState,
   setTypeState
 }: {
-  callBack: (payload: IAccountSourceBody) => void
+  callBack: (payload: IAccountSourceBody, setIsVerified: (isVerified: boolean) => void) => void
   defaultValue?: IAccountSource
   isCreating: boolean
   isUpdating: boolean
@@ -52,6 +54,15 @@ export default function CreateAndUpdateAccountSourceForm({
   const [formValues, setFormValues] = useState<{ accountSourceName: string }>({
     accountSourceName: defaultValue?.name || ''
   })
+  const [isVerified, setIsVerified] = useState<boolean>(false)
+  const [isVerifying, setIsVerifying] = useState<boolean>(false)
+  const [verifyPayload, setVerifyPayload] = useState<{ username: string; password: string; numberAccount: string }>({
+    username: '',
+    password: '',
+    numberAccount: ''
+  })
+
+  const { isPending: isVerifyBank, mutate: verifyBank, error: verifyError, data: dataVerifyBank } = useVerifyBank()
 
   const formCreateAccountSourceRef = useRef<HTMLFormElement>(null)
   const formCreateAccountBankRef = useRef<HTMLFormElement>(null)
@@ -82,7 +93,7 @@ export default function CreateAndUpdateAccountSourceForm({
     }
 
     if (typeState === EAccountSourceType.WALLET) {
-      callBack(newPayload)
+      callBack(newPayload, setIsVerified)
     }
   }
 
@@ -111,7 +122,53 @@ export default function CreateAndUpdateAccountSourceForm({
     }
 
     console.log('Final bank payload:', bankPayload)
-    callBack(bankPayload)
+    callBack(bankPayload, setIsVerified)
+  }
+
+  const handleVerifyBank = () => {
+    if (formBankControlRef.current) {
+      try {
+        const bankValues = formBankControlRef.current.getValues()
+        const accounts = bankValues.accounts || []
+        const firstAccount = accounts.length > 0 ? accounts[0] : ''
+
+        if (!bankValues.login_id || !bankValues.password || !firstAccount) {
+          toast.error('Vui lòng nhập đầy đủ thông tin tài khoản ngân hàng!')
+          return
+        }
+        verifyBank({
+          username: bankValues.login_id || '',
+          password: bankValues.password || '',
+          numberAccount: accounts
+        }, {
+          onSuccess: (res) => {
+            if (res?.data?.success == false) {
+              toast.error(res?.data?.message)
+            }
+            if (res?.data?.success == true) {
+              toast.success('Xác thực tài khoản ngân hàng thành công!')
+              setIsVerified(true)
+
+              if (res.data.accounts && Array.isArray(res.data.accounts)) {
+                const totalBalance = res.data.accounts.reduce((sum: number, account: any) =>
+                  sum + (Number(account.currentBalance) || 0), 0)
+
+                if (formSourceControlRef.current && totalBalance) {
+                  try {
+                    formSourceControlRef.current.setValue('initAmount', totalBalance.toString())
+                  } catch (error) {
+                    console.error('Error updating initAmount:', error)
+                  }
+                }
+              }
+            }
+          }
+        })
+      } catch (error) {
+        console.error('Error getting bank information:', error)
+        toast.error('Không thể lấy thông tin ngân hàng!')
+      }
+    }
   }
 
   const onSubmitAll = async () => {
@@ -138,7 +195,8 @@ export default function CreateAndUpdateAccountSourceForm({
         }
 
         console.log('Final payload:', payload)
-        callBack(payload)
+
+        callBack(payload, setIsVerified)
       } catch (error) {
         console.error('Error processing form data:', error)
       }
@@ -168,6 +226,40 @@ export default function CreateAndUpdateAccountSourceForm({
       })
     }
   }, [defaultValue])
+
+  useEffect(() => {
+    if (dataVerifyBank && dataVerifyBank.data) {
+      const { data } = dataVerifyBank
+
+      // Xử lý khi verify thành công chỉ khi success là true
+      if (data.success) {
+        setIsVerified(true)
+        setIsVerifying(false)
+
+        // Tính tổng số dư hiện tại từ tất cả tài khoản
+        if (data.accounts && Array.isArray(data.accounts)) {
+          const totalBalance = data.accounts.reduce((sum: number, account: any) =>
+            sum + (Number(account.currentBalance) || 0), 0)
+
+          // Cập nhật initAmount với tổng số dư
+          if (formSourceControlRef.current && totalBalance) {
+            try {
+              formSourceControlRef.current.setValue('initAmount', totalBalance.toString())
+            } catch (error) {
+              console.error('Error updating initAmount:', error)
+            }
+          }
+        }
+      }
+    }
+  }, [dataVerifyBank])
+
+  // Thêm useEffect xử lý lỗi
+  useEffect(() => {
+    if (verifyError) {
+      setIsVerifying(false)
+    }
+  }, [verifyError])
 
   return (
     <div>
@@ -222,9 +314,15 @@ export default function CreateAndUpdateAccountSourceForm({
           </Fragment>
         )}
       </Fragment>
-      <Button onClick={onSubmitAll} className='mt-4 w-full' disabled={isCreating || isUpdating}>
-        {t('form.button.save_changes_account_source')}
-      </Button>
+      {typeState === EAccountSourceType.BANKING && !isVerified ? (
+        <Button onClick={handleVerifyBank} className='mt-4 w-full' variant={'greenPastel1'} disabled={isVerifyBank} isLoading={isVerifyBank}>
+          {isVerifyBank ? 'Đang xác thực...' : 'Xác thực'}
+        </Button>
+      ) : (
+        <Button onClick={onSubmitAll} className='mt-4 w-full' disabled={isCreating || isUpdating}>
+          {t('form.button.save_changes_account_source')}
+        </Button>
+      )}
     </div>
   )
 }

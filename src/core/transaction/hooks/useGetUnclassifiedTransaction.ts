@@ -11,7 +11,7 @@ export const useGetUnclassifiedTransactions = (props: IUseGetAdvancedProps) => {
     isPending: isGetUnclassifiedTxs,
     data: dataUnclassifiedTxs,
     error,
-    refetch: refetchGetUnclassifiedTxs
+    refetch: refetchGetUnclassifiedTxs,
   } = useModelQuery<IGetUnclassifiedTransactionResponse>(
     GET_UNCLASSIFIED_TRANSACTION_KEY,
     transactionRoutes.getUnclassifiedTransactions,

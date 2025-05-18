@@ -71,6 +71,8 @@ export interface ITransactionDialogProps {
 }
 
 export default function TransactionDialog(params: ITransactionDialogProps) {
+  console.log('checkkkk', params.dataTable.unclassifiedTransactionData);
+  
   const [isEditing, setIsEditing] = useState<boolean>(false)
   const { t } = useTranslation(['transaction', 'common'])
   const formClassifyRef = useRef<HTMLFormElement>(null)

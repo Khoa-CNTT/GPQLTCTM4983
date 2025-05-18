@@ -1,3 +1,4 @@
 export const accountBanksRoutes = {
-  getAdvanced: 'account-bank'
+  getAdvanced: 'account-bank',
+  verifyBank: 'payment/balance'
 }

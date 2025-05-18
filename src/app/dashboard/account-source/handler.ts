@@ -35,12 +35,14 @@ export const handleCreateAccountSource = ({
   payload,
   setIsDialogOpen,
   createAccountSource,
-  callBackOnSuccess
+  callBackOnSuccess,
+  setIsVerified
 }: {
   payload: IAccountSourceBody
   setIsDialogOpen: React.Dispatch<React.SetStateAction<IDialogAccountSource>>
   createAccountSource: any
   callBackOnSuccess: (actions: TAccountSourceActions[]) => void
+  setIsVerified: (isVerified: boolean) => void
 }) => {
   createAccountSource(payload, {
     onSuccess: (res: IAccountSourceResponse) => {
@@ -53,6 +55,7 @@ export const handleCreateAccountSource = ({
           'getStatisticOverviewPage'
         ])
         toast.success('Create account source successfully!')
+        setIsVerified(false)
       }
     }
   })
@@ -162,7 +165,8 @@ export const handleSubmitAccountSource = ({
   callBackOnSuccess,
   hookUpdate,
   hookCreate,
-  fundId
+  fundId,
+  setIsVerified
 }: {
   payload: IAccountSourceBody
   isDialogOpen: IDialogAccountSource
@@ -171,6 +175,7 @@ export const handleSubmitAccountSource = ({
   hookUpdate: any
   hookCreate: any
   fundId: string
+  setIsVerified: (isVerified: boolean) => void
 }) => {
   if (isDialogOpen.isDialogUpdateOpen) {
     handleUpdateAccountSource({
@@ -188,7 +193,8 @@ export const handleSubmitAccountSource = ({
       },
       setIsDialogOpen,
       createAccountSource: hookCreate,
-      callBackOnSuccess
+      callBackOnSuccess,
+      setIsVerified
     })
   }
 }
