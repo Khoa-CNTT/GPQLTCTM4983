@@ -3,20 +3,32 @@
 import { useEffect, useState } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { 
-  Activity, 
-  CreditCard, 
-  DollarSign, 
   Download, 
-  ShieldCheck, 
   Users, 
-  UserCog, 
-  Wallet,
-  BarChart2
+  UserCog
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useRouter } from 'next/navigation'
 import toast from 'react-hot-toast'
 import { useTranslation } from 'react-i18next'
+import { userRoutes } from '@/api/user'
+import httpService from '@/libraries/http'
+import { useQuery } from '@tanstack/react-query'
+
+interface User {
+  id: string
+  fullName: string | null
+  email: string
+  status: string
+  avatarId: string | null
+  phone_number: string | null
+  roleId: string | null
+}
+
+interface UserResponse {
+  data: User[]
+  total: number
+}
 
 export default function AdminDashboard() {
   const [mounted, setMounted] = useState(false)
@@ -24,6 +36,20 @@ export default function AdminDashboard() {
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(true)
   const { t } = useTranslation(['common'])
+
+  // Truy vấn dữ liệu người dùng từ API
+  const { data: usersData, isLoading: isLoadingUsers } = useQuery({
+    queryKey: ['dashboard-users'],
+    queryFn: async () => {
+      const response = await httpService.get<UserResponse>(userRoutes.getAllUsers)
+      return response.payload.data
+    },
+    enabled: mounted && userData?.roleId !== null
+  })
+
+  // Đếm số lượng người dùng và admin
+  const normalUsersCount = usersData?.filter(user => user.roleId === null).length || 0
+  const adminCount = usersData?.filter(user => user.roleId !== null).length || 0
 
   // Kiểm tra quyền admin khi component mount
   useEffect(() => {
@@ -95,37 +121,14 @@ export default function AdminDashboard() {
         </div>
       </div>
       
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-4 md:grid-cols-2">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Tổng người dùng</CardTitle>
             <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">+2,350</div>
-            <p className="text-xs text-muted-foreground">+180 người dùng mới trong tuần này</p>
-          </CardContent>
-        </Card>
-        
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Tổng giao dịch</CardTitle>
-            <Activity className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">+12,234</div>
-            <p className="text-xs text-muted-foreground">+1,234 giao dịch trong tuần này</p>
-          </CardContent>
-        </Card>
-        
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Giá trị giao dịch</CardTitle>
-            <DollarSign className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">$450,543</div>
-            <p className="text-xs text-muted-foreground">+22% so với tháng trước</p>
+            <div className="text-2xl font-bold">{isLoadingUsers ? '...' : normalUsersCount}</div>
           </CardContent>
         </Card>
         
@@ -135,8 +138,7 @@ export default function AdminDashboard() {
             <UserCog className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">12</div>
-            <p className="text-xs text-muted-foreground">+2 quản trị viên mới trong tháng này</p>
+            <div className="text-2xl font-bold">{isLoadingUsers ? '...' : adminCount}</div>
           </CardContent>
         </Card>
       </div>
