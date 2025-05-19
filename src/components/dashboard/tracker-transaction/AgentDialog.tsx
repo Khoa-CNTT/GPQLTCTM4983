@@ -323,7 +323,7 @@ export function AgentDialog({
                               <div className='min-w-0'>
                                 <div className='flex items-center gap-2'>
                                   <h4 className='truncate text-sm font-medium transition-colors group-hover:text-primary'>
-                                    {transaction.agentSuggest[0].reasonName}
+                                    {transaction.agentSuggest.length > 0 ? transaction.agentSuggest[0].reasonName : ''}
                                   </h4>
                                   <Badge
                                     variant='secondary'
@@ -334,9 +334,15 @@ export function AgentDialog({
                                         : 'bg-red-500 text-white'
                                     )}
                                   >
-                                    {getCategoryIcon(transaction.agentSuggest[0].trackerTypeName || '')}
+                                    {getCategoryIcon(
+                                      transaction.agentSuggest.length > 0
+                                        ? transaction.agentSuggest[0].trackerTypeName || ''
+                                        : ''
+                                    )}
                                     <span className='max-w-20 truncate'>
-                                      {transaction.agentSuggest[0].trackerTypeName || ''}
+                                      {transaction.agentSuggest.length > 0
+                                        ? transaction.agentSuggest[0].trackerTypeName
+                                        : ''}
                                     </span>
                                   </Badge>
                                 </div>
