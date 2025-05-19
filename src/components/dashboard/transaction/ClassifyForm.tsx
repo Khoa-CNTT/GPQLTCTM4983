@@ -9,7 +9,7 @@ import {
 import { IEditTrackerTypeDialogProps } from '@/core/tracker-transaction-type/models/tracker-transaction-type.interface'
 
 export default function ClassifyForm({
-  transactionId,
+  selectedTransaction,
   incomeTrackerType,
   expenseTrackerType,
   formClassifyRef,

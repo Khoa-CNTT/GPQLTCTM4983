@@ -48,7 +48,7 @@ export interface IAgentRecommend {
   message: string
 }
 export type IGetTransactionResponse = IBaseResponseData<ITransaction[]>
-export type IGetUnclassifiedTransactionResponse =  {data: IBaseResponseData<IUnclassifiedTransaction[]> }
+export type IGetUnclassifiedTransactionResponse = { data: IBaseResponseData<IUnclassifiedTransaction[]> }
 
 export interface IDialogTransaction {
   isDialogDetailOpen: boolean
@@ -110,7 +110,7 @@ export interface IUpdateTransactionBody {
 }
 
 export interface IClassiFyFormProps {
-  transactionId: string
+  selectedTransaction: IUnclassifiedTransaction | null
   incomeTrackerType?: ITrackerTransactionType[]
   expenseTrackerType?: ITrackerTransactionType[]
   editTrackerTypeDialogProps?: Omit<

@@ -15,6 +15,7 @@ import {
   IDataTransactionTable,
   IDialogTransaction,
   ITransaction,
+  IUnclassifiedTransaction,
   IUpdateTransactionBody
 } from '@/core/transaction/models'
 import { IBaseResponseData, IDataTableConfig } from '@/types/common.i'
@@ -151,13 +152,11 @@ export interface IDetailUpdateTrackerTransactionDialog {
 }
 
 export interface ITrackerTransactionDialogProps {
-  unclassifiedTxDialog: IUnclassifiedTxDialog
   classifyTransactionDialog: IClassiFyFormProps
   createTrackerTransactionDialog: ICreateTrackerTransactionDialog
   sharedDialogElements: ISharedDialogElements
   createTrackerTransactionTypeDialog: ICreateTrackerTransactionTypeDialog
   detailUpdateTrackerTransactionDialog: IDetailUpdateTrackerTransactionDialog
-  setTransactionIdClassifying: React.Dispatch<React.SetStateAction<string>>
 }
 
 export interface IDetailUpdateTransactionDialogProps {

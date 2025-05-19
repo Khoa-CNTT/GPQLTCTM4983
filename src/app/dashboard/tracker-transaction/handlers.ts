@@ -7,7 +7,12 @@ import {
   IUpdateTrackerTransactionBody,
   TTrackerTransactionActions
 } from '@/core/tracker-transaction/models/tracker-transaction.interface'
-import { IClassifyTransactionBody, ICreateTrackerTransactionBody, ITransaction } from '@/core/transaction/models'
+import {
+  IClassifyTransactionBody,
+  ICreateTrackerTransactionBody,
+  ITransaction,
+  IUnclassifiedTransaction
+} from '@/core/transaction/models'
 import toast from 'react-hot-toast'
 import React from 'react'
 import { IBaseResponsePagination, IDataTableConfig } from '@/types/common.i'
@@ -75,7 +80,8 @@ export const handleClassifyTransaction = async ({
   setDataTableConfig,
   setIsEditing,
   callBackOnSuccess,
-  setDataDetail
+  setDataDetail,
+  setSelectedTransaction
 }: {
   payload: IClassifyTransactionBody
   setIsDialogOpen: React.Dispatch<React.SetStateAction<any>>
@@ -95,8 +101,10 @@ export const handleClassifyTransaction = async ({
   setTodayDataTableConfig?: React.Dispatch<React.SetStateAction<IDataTableConfig>>
   setDataTableConfig: React.Dispatch<React.SetStateAction<IDataTableConfig>>
   setIsEditing?: React.Dispatch<React.SetStateAction<boolean>>
-  setDataDetail: React.Dispatch<React.SetStateAction<ITransaction>>
+  setDataDetail?: React.Dispatch<React.SetStateAction<ITransaction>>
+  setSelectedTransaction?: React.Dispatch<React.SetStateAction<IUnclassifiedTransaction | null>>
 }) => {
+  let status = false
   hookClassify(payload, {
     onSuccess: (res: ITrackerTransactionResponse) => {
       if (res.statusCode === 200 || res.statusCode === 201) {
@@ -118,11 +126,14 @@ export const handleClassifyTransaction = async ({
           isDialogClassifyTransactionOpen: false,
           isDialogDetailTransactionOpen: false
         }))
-        setDataDetail((prev) => ({ ...prev, TrackerTransaction: res.data }))
+        if (setDataDetail) setDataDetail((prev) => ({ ...prev, TrackerTransaction: res.data }))
+        if (setSelectedTransaction) setSelectedTransaction(null)
         toast.success('Classify transaction successfully!')
+        status = true
       }
     }
   })
+  return status
 }
 
 function isIsoStringInToday(isoString: string): boolean {
