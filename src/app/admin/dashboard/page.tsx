@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { 
   Download, 
   Users, 
@@ -14,6 +14,7 @@ import { useTranslation } from 'react-i18next'
 import { userRoutes } from '@/api/user'
 import httpService from '@/libraries/http'
 import { useQuery } from '@tanstack/react-query'
+import { translate } from '@/libraries/utils'
 
 interface User {
   id: string
@@ -35,7 +36,24 @@ export default function AdminDashboard() {
   const [userData, setUserData] = useState<any>(null)
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(true)
-  const { t } = useTranslation(['common'])
+  
+  // Sử dụng i18n
+  const { i18n } = useTranslation()
+  const t = translate(['common'])
+  const [languageKey, setLanguageKey] = useState(i18n?.language || 'en')
+  
+  // Xử lý thay đổi ngôn ngữ
+  useEffect(() => {
+    const handleLanguageChange = () => {
+      setLanguageKey(i18n?.language || 'en')
+    }
+    
+    window.addEventListener('languageChanged', handleLanguageChange)
+    
+    return () => {
+      window.removeEventListener('languageChanged', handleLanguageChange)
+    }
+  }, [i18n])
 
   // Truy vấn dữ liệu người dùng từ API
   const { data: usersData, isLoading: isLoadingUsers } = useQuery({
