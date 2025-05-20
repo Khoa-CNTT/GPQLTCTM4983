@@ -14,10 +14,6 @@ export const useResetPassword = () => {
       onSuccess: (data) => {
         toast.success(data.data.message || 'Password reset successfully.')
         router.push('/sign-in')
-      },
-      onError: (error) => {
-        const errorMessage = (error as any)?.payload?.message || 'An error occurred. Please try again later.!'
-        toast.error(errorMessage)
       }
     }
   })

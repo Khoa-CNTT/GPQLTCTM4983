@@ -8,14 +8,6 @@ import { participantRoutes } from '@/api/participant'
 
 export const useInviteParticipantToExpenditureFund = (opts?: IUseQueryHookOptions) => {
   return useMutationCustom<{ fundId: string; userInfoValues: string[] }, any>({
-    pathUrl: participantRoutes.inviteParticipantToExpenditureFund,
-    mutateOption: {
-      onError: (error: AxiosError | any) => {
-        if (error.response?.status === 401) {
-          return toast.error(`${error?.response?.data?.messages} !`)
-        }
-        opts?.callBackOnError?.()
-      }
-    }
+    pathUrl: participantRoutes.inviteParticipantToExpenditureFund
   })
 }

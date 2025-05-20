@@ -97,9 +97,7 @@ axiosInstance.interceptors.response.use(
     const { response } = error
 
     // Kiểm tra nếu lỗi là do token hết hạn
-    if (response?.status === 401 ||
-      (response?.data && (response?.data as any).errorCode === 112)) {
-
+    if (response?.status === 401 || (response?.data && (response?.data as any).errorCode === 112)) {
       // Kiểm tra xem request hiện tại có phải là request verify-token không
       const originalRequest = error.config as AxiosRequestConfig
       if (originalRequest && !originalRequest.url?.includes('auth/verify-token') && !hasAttemptedTokenRefresh) {
@@ -109,22 +107,20 @@ axiosInstance.interceptors.response.use(
           // const refreshResponse = await axiosInstance.get('auth/verify-token/')
 
           // if (refreshResponse.data && refreshResponse.data.data && refreshResponse.data.data.accessToken) {
-            // const { accessToken } = refreshResponse.data.data
+          // const { accessToken } = refreshResponse.data.data
 
-            // setAccessTokenToLocalStorage(accessToken)
+          // setAccessTokenToLocalStorage(accessToken)
 
-            if (!originalRequest.headers) {
-              originalRequest.headers = {}
-            }
-            // originalRequest.headers = {
-            //   ...originalRequest.headers,
-            //   Authorization: `Bearer ${accessToken}`
-            // }
+          if (!originalRequest.headers) {
+            originalRequest.headers = {}
+          }
+          // originalRequest.headers = {
+          //   ...originalRequest.headers,
+          //   Authorization: `Bearer ${accessToken}`
+          // }
 
           // return axiosInstance(originalRequest)
-        } catch (refreshError) {
-
-        }
+        } catch (refreshError) {}
       } else {
         // Nếu chính API verify-token trả về lỗi hoặc đã thử refresh token trước đó
         // hoặc là request verify-token, chuyển hướng đến trang đăng nhập

@@ -136,34 +136,39 @@ export default function CreateAndUpdateAccountSourceForm({
           toast.error('Vui lòng nhập đầy đủ thông tin tài khoản ngân hàng!')
           return
         }
-        verifyBank({
-          username: bankValues.login_id || '',
-          password: bankValues.password || '',
-          numberAccount: accounts
-        }, {
-          onSuccess: (res) => {
-            if (res?.data?.success == false) {
-              toast.error(res?.data?.message)
-            }
-            if (res?.data?.success == true) {
-              toast.success('Xác thực tài khoản ngân hàng thành công!')
-              setIsVerified(true)
+        verifyBank(
+          {
+            username: bankValues.login_id || '',
+            password: bankValues.password || '',
+            numberAccount: accounts
+          },
+          {
+            onSuccess: (res) => {
+              if (res?.data?.success == false) {
+                toast.error(res?.data?.message)
+              }
+              if (res?.data?.success == true) {
+                toast.success('Xác thực tài khoản ngân hàng thành công!')
+                setIsVerified(true)
 
-              if (res.data.accounts && Array.isArray(res.data.accounts)) {
-                const totalBalance = res.data.accounts.reduce((sum: number, account: any) =>
-                  sum + (Number(account.currentBalance) || 0), 0)
+                if (res.data.accounts && Array.isArray(res.data.accounts)) {
+                  const totalBalance = res.data.accounts.reduce(
+                    (sum: number, account: any) => sum + (Number(account.currentBalance) || 0),
+                    0
+                  )
 
-                if (formSourceControlRef.current && totalBalance) {
-                  try {
-                    formSourceControlRef.current.setValue('initAmount', totalBalance.toString())
-                  } catch (error) {
-                    console.error('Error updating initAmount:', error)
+                  if (formSourceControlRef.current && totalBalance) {
+                    try {
+                      formSourceControlRef.current.setValue('initAmount', totalBalance.toString())
+                    } catch (error) {
+                      console.error('Error updating initAmount:', error)
+                    }
                   }
                 }
               }
             }
           }
-        })
+        )
       } catch (error) {
         console.error('Error getting bank information:', error)
         toast.error('Không thể lấy thông tin ngân hàng!')
@@ -238,8 +243,10 @@ export default function CreateAndUpdateAccountSourceForm({
 
         // Tính tổng số dư hiện tại từ tất cả tài khoản
         if (data.accounts && Array.isArray(data.accounts)) {
-          const totalBalance = data.accounts.reduce((sum: number, account: any) =>
-            sum + (Number(account.currentBalance) || 0), 0)
+          const totalBalance = data.accounts.reduce(
+            (sum: number, account: any) => sum + (Number(account.currentBalance) || 0),
+            0
+          )
 
           // Cập nhật initAmount với tổng số dư
           if (formSourceControlRef.current && totalBalance) {
@@ -315,7 +322,13 @@ export default function CreateAndUpdateAccountSourceForm({
         )}
       </Fragment>
       {typeState === EAccountSourceType.BANKING && !isVerified ? (
-        <Button onClick={handleVerifyBank} className='mt-4 w-full' variant={'greenPastel1'} disabled={isVerifyBank} isLoading={isVerifyBank}>
+        <Button
+          onClick={handleVerifyBank}
+          className='mt-4 w-full'
+          variant={'greenPastel1'}
+          disabled={isVerifyBank}
+          isLoading={isVerifyBank}
+        >
           {isVerifyBank ? 'Đang xác thực...' : 'Xác thực'}
         </Button>
       ) : (

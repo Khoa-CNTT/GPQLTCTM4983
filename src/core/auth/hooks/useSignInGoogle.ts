@@ -40,9 +40,6 @@ export const useSignInGoogle = () => {
         if (redirectUrl === '/dashboard/tracker-transaction?loggedIn=true') setExecuteGetMe(true)
         toast.success('Login successfully 🚀 ')
         router.push(redirectUrl)
-      },
-      onError: (error) => {
-        if (error.response?.status) return toast.error(`${(error.response?.data as { message: string }).message} !`)
       }
     }
   })

@@ -9,14 +9,6 @@ import { expenditureFundRoutes } from '../configs'
 
 export const useCreateExpenditureFund = (opts?: IUseQueryHookOptions) => {
   return useMutationCustom<ICreateExpenditureFundBody, IExpenditureFund>({
-    pathUrl: expenditureFundRoutes.createExpenditureFund,
-    mutateOption: {
-      onError: (error: AxiosError | any) => {
-        if (error.response?.status === 401) {
-          return toast.error(`${error?.response?.data?.messages} !`)
-        }
-        opts?.callBackOnError?.()
-      }
-    }
+    pathUrl: expenditureFundRoutes.createExpenditureFund
   })
 }

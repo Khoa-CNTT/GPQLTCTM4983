@@ -255,10 +255,6 @@ export function ChatBox() {
           setIsDisabled(true)
           refetchGetAdvancedTrackerTransaction()
           callBackRefetchTrackerTransactionPage(typeCallBack)
-        },
-        onError: (error) => {
-          toast.error(`Failed to create transaction`)
-          console.log('🚀 ~ postTrackerTransactions ~ error:', error)
         }
       })
     }
@@ -267,9 +263,7 @@ export function ChatBox() {
   const handlePersonalityChange = (value: string) => {
     setChatbotPersonality(value)
     // Xóa lịch sử chat khi đổi nhân cách
-    setMessages([
-      { id: Date.now(), text: 'Xin chào! Tôi có thể giúp gì cho bạn?', sender: 'bot' }
-    ])
+    setMessages([{ id: Date.now(), text: 'Xin chào! Tôi có thể giúp gì cho bạn?', sender: 'bot' }])
     setApiData([])
   }
 
@@ -589,19 +583,19 @@ export function ChatBox() {
                     onKeyPress={(e) => e.key === 'Enter' && onClickSend()}
                   />
                 </motion.div>
-                
+
                 <Select value={chatbotPersonality} onValueChange={handlePersonalityChange}>
-                  <SelectTrigger className="w-[120px]">
-                    <SelectValue placeholder="Nhân cách" />
+                  <SelectTrigger className='w-[120px]'>
+                    <SelectValue placeholder='Nhân cách' />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="uniko">Uniko ✨</SelectItem>
-                    <SelectItem value="lover">Lover 💕</SelectItem>
-                    <SelectItem value="mama">Mama 💖</SelectItem>
-                    <SelectItem value="badFriend">Bad Friend 🤬</SelectItem>
+                    <SelectItem value='uniko'>Uniko ✨</SelectItem>
+                    <SelectItem value='lover'>Lover 💕</SelectItem>
+                    <SelectItem value='mama'>Mama 💖</SelectItem>
+                    <SelectItem value='badFriend'>Bad Friend 🤬</SelectItem>
                   </SelectContent>
                 </Select>
-                
+
                 <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                   <Button
                     onClick={isTyping ? handleStopTyping : () => onClickSend()}

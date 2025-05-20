@@ -7,14 +7,6 @@ import { trackerTransactionRoutes } from '../configs'
 export const useDeleteAnTrackerTransaction = (opts?: IUseQueryHookOptions) => {
   return useMutationCustom({
     pathUrl: trackerTransactionRoutes.deleteAnTrackerTransaction,
-    method: 'delete',
-    mutateOption: {
-      onError: (error: Error | any) => {
-        if (error.response?.status === 401) {
-          return toast.error(`${error?.response?.data?.messages} !`)
-        }
-        opts?.callBackOnError?.()
-      }
-    }
+    method: 'delete'
   })
 }

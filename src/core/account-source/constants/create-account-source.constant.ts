@@ -17,40 +17,43 @@ const getTranslation = (enText: string, viText: string) => {
 }
 
 export const createAccountSourceSchema = z.object({
-  accountSourceName: z
-    .string({ message: getTranslation('Source Name is required', 'Tên nguồn tài khoản là bắt buộc') })
-    .trim()
-    .min(5, {
-      message: getTranslation(
-        'Source Name must be at least 5 characters long',
-        'Tên nguồn tài khoản phải có ít nhất 5 ký tự'
-      )
-    })
-    .max(30, {
-      message: getTranslation(
-        'Source Name must be at most 30 characters long',
-        'Tên nguồn tài khoản không được quá 30 ký tự'
-      )
-    })
-    .refine((val) => /^[A-Za-zÀ-ỹ\s]+$/.test(val), {
-      message: getTranslation(
-        'Source name can only contain letters and spaces',
-        'Tên nguồn tài khoản chỉ có thể chứa chữ cái và khoảng trắng'
-      )
-    }),
-  accountSourceType: z.nativeEnum(EAccountSourceType, {
-    message: getTranslation(
-      'Account source type must be either "Wallet" or "Banking"',
-      'Loại nguồn tài khoản phải là "Ví điện tử" hoặc "Ngân hàng"'
-    )
-  }),
-  initAmount: z
-    .string()
-    .min(0, { message: getTranslation('Initial Amount is required', 'Số dư ban đầu là bắt buộc') })
-    .transform((val) => {
-      // Loại bỏ số 0 ở đầu
-      return val.replace(/^0+/, '') || '0'
-    })
+  // accountSourceName: z
+  //   .string({ message: getTranslation('Source Name is required', 'Tên nguồn tài khoản là bắt buộc') })
+  //   .trim()
+  //   .min(1, {
+  //     message: getTranslation(
+  //       'Source Name must be at least 1 characters long',
+  //       'Tên nguồn tài khoản phải có ít nhất 1 ký tự'
+  //     )
+  //   })
+  //   .max(30, {
+  //     message: getTranslation(
+  //       'Source Name must be at most 30 characters long',
+  //       'Tên nguồn tài khoản không được quá 30 ký tự'
+  //     )
+  //   })
+  //   .refine((val) => /^[A-Za-zÀ-ỹ\s]+$/.test(val), {
+  //     message: getTranslation(
+  //       'Source name can only contain letters and spaces',
+  //       'Tên nguồn tài khoản chỉ có thể chứa chữ cái và khoảng trắng'
+  //     )
+  //   }),
+  // accountSourceType: z.nativeEnum(EAccountSourceType, {
+  //   message: getTranslation(
+  //     'Account source type must be either "Wallet" or "Banking"',
+  //     'Loại nguồn tài khoản phải là "Ví điện tử" hoặc "Ngân hàng"'
+  //   )
+  // }),
+  // initAmount: z
+  //   .string()
+  //   .min(0, { message: getTranslation('Initial Amount is required', 'Số dư ban đầu là bắt buộc') })
+  //   .transform((val) => {
+  //     // Loại bỏ số 0 ở đầu
+  //     return val.replace(/^0+/, '') || '0'
+  //   })
+  accountSourceName: z.string(),
+  accountSourceType: z.nativeEnum(EAccountSourceType),
+  initAmount: z.string()
 })
 
 export const createAccountSourceFormBody = (setTypeState: any) => {
