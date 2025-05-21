@@ -1,33 +1,17 @@
 'use client'
 
 import React, { useEffect, useRef, useState } from 'react'
-import {
-  CalendarIcon,
-  CreditCard,
-  Pencil,
-  BookUserIcon,
-  FileTextIcon,
-  WalletCardsIcon,
-  User,
-  Clock,
-  ChartBarStackedIcon
-} from 'lucide-react'
+import { CreditCard, Pencil, BookUserIcon, WalletCardsIcon, User, Clock, ChartBarStackedIcon } from 'lucide-react'
 
 import { Badge } from '@/components/ui/badge'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
-import { IUpdateTransactionBody } from '@/core/transaction/models'
 import { ETypeOfTrackerTransactionType } from '@/core/tracker-transaction-type/models/tracker-transaction-type.enum'
-import { Button } from '@/components/ui/button'
 import { formatCurrency, formatDateTimeVN, translate } from '@/libraries/utils'
 import {
   IDetailUpdateTransactionDialogProps,
   IUpdateTrackerTransactionBody
 } from '@/core/tracker-transaction/models/tracker-transaction.interface'
 import FormZod from '@/components/core/FormZod'
-import {
-  defineUpdateTransactionFormBody,
-  updateTransactionSchema
-} from '@/core/transaction/constants/update-transaction.constant'
 import toast from 'react-hot-toast'
 import {
   defineUpdateTrackerTransactionFormBody,
@@ -40,6 +24,27 @@ import {
   ITrackerTranSactionEditType,
   ITrackerTransactionType
 } from '@/core/tracker-transaction-type/models/tracker-transaction-type.interface'
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
+import { Button } from '@/components/ui/button'
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
+import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
+import { MoneyInput } from '@/components/core/MoneyInput'
+import { Combobox } from '@/components/core/Combobox'
+import EditTrackerTypeDialog from '../EditTrackerType'
+import { useForm } from 'react-hook-form'
+import { z } from 'zod'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { updateTransactionSchema } from '@/core/transaction/constants/update-transaction.constant'
+import { IUpdateTransactionBody } from '@/core/transaction/models'
 
 export default function DetailUpdateTransaction({
   updateTransactionProps,
@@ -47,10 +52,35 @@ export default function DetailUpdateTransaction({
   commonProps,
   classifyDialogProps
 }: IDetailUpdateTransactionDialogProps) {
+  const defaultValueTransactions = {
+    direction: updateTransactionProps.transaction.direction as ETypeOfTrackerTransactionType,
+    accountSourceId: updateTransactionProps.transaction.accountSource.id,
+    amount: updateTransactionProps.transaction.amount
+  }
+  console.log('defaultValueTransactions', defaultValueTransactions)
+
+  const defaultValueTrackerTransactions = {
+    reasonName: updateTrackerTransactionProps?.trackerTransaction.reasonName || '',
+    trackerTypeId: updateTrackerTransactionProps?.trackerTransaction.trackerTypeId || '',
+    description: updateTrackerTransactionProps?.trackerTransaction.description || ''
+  }
+  const transactionForm = useForm<z.infer<typeof updateTransactionSchema>>({
+    resolver: zodResolver(updateTransactionSchema),
+    defaultValues: defaultValueTransactions,
+    mode: 'onSubmit',
+    reValidateMode: 'onSubmit'
+  })
+
+  const trackerTransactionForm = useForm<z.infer<typeof updateTrackerTransactionSchema>>({
+    resolver: zodResolver(updateTrackerTransactionSchema),
+    defaultValues: defaultValueTrackerTransactions,
+    mode: 'onSubmit',
+    reValidateMode: 'onSubmit'
+  })
   const submitUpdateTransactionRef = useRef<HTMLFormElement>(null)
   const submitUpdateTrackerTransactionRef = useRef<HTMLFormElement>(null)
-  const formUpdateTrackerTransactionRef = useRef<any>()
-  const formUpdateTransactionRef = useRef<any>()
+  const formUpdateTrackerTransactionRef = useRef(trackerTransactionForm)
+  const formUpdateTransactionRef = useRef(transactionForm)
   const [trackerTypeData, setTrackerTypeData] = useState<ITrackerTransactionType[]>([])
   const [transactionState, setTransactionState] = useState<ITrackerTranSactionEditType>({
     isUpdateTrackerTransaction:
@@ -62,7 +92,7 @@ export default function DetailUpdateTransaction({
     trackerTypeId: updateTrackerTransactionProps?.trackerTransaction?.trackerTypeId || ''
   })
 
-  const t = translate(['transaction', 'common'])
+  const t = translate(['transaction', 'common', 'trackerTransaction'])
 
   useEffect(() => {
     setTrackerTypeData(
@@ -74,26 +104,77 @@ export default function DetailUpdateTransaction({
     )
   }, [transactionState.isUpdateTrackerTransaction])
 
+  useEffect(() => {
+    // Cập nhật form values khi direction thay đổi
+    if (updateTrackerTransactionProps) {
+      trackerTransactionForm.setValue(
+        'trackerTypeId',
+        updateTrackerTransactionProps.trackerTransaction.trackerTypeId || ''
+      )
+    }
+  }, [updateTrackerTransactionProps])
+
+  const [currentDirection, setCurrentDirection] = useState<ETypeOfTrackerTransactionType>(
+    updateTransactionProps.transaction.direction as ETypeOfTrackerTransactionType
+  )
+  const [directionCategoryMap, setDirectionCategoryMap] = useState<Record<ETypeOfTrackerTransactionType, string>>({
+    [ETypeOfTrackerTransactionType.INCOMING]:
+      updateTransactionProps.transaction.direction === ETypeOfTrackerTransactionType.INCOMING
+        ? updateTrackerTransactionProps?.trackerTransaction.trackerTypeId || ''
+        : '',
+    [ETypeOfTrackerTransactionType.EXPENSE]:
+      updateTransactionProps.transaction.direction === ETypeOfTrackerTransactionType.EXPENSE
+        ? updateTrackerTransactionProps?.trackerTransaction.trackerTypeId || ''
+        : '',
+    [ETypeOfTrackerTransactionType.TRANSFER]: ''
+  })
+  const [typeOfEditTrackerType, setTypeOfEditTrackerType] = useState<ETypeOfTrackerTransactionType>(
+    updateTransactionProps.transaction.direction as ETypeOfTrackerTransactionType
+  )
+
+  useEffect(() => {
+    setTrackerTypeData(
+      modifiedTrackerTypeForComboBox(
+        currentDirection === ETypeOfTrackerTransactionType.INCOMING
+          ? updateTrackerTransactionProps?.editTrackerTransactionTypeProps?.incomeTrackerType
+          : updateTrackerTransactionProps?.editTrackerTransactionTypeProps?.expenseTrackerType
+      )
+    )
+  }, [currentDirection, updateTrackerTransactionProps])
+
   if (!updateTransactionProps || !updateTransactionProps.transaction) {
     return
   }
 
   const handleSubmit = async () => {
+    console.log('updated')
+
     if (updateTransactionProps.isEditing) {
       if (
         classifyDialogProps?.formClassifyRef &&
         !updateTransactionProps.transaction.TrackerTransaction &&
         !updateTrackerTransactionProps
       ) {
+        console.log(1111)
         classifyDialogProps.formClassifyRef.current?.requestSubmit()
       } else {
-        const isTransactionValid = await formUpdateTransactionRef.current?.trigger()
+        console.log(2222)
+        // Validate transaction form
+        const isTransactionValid = await transactionForm.trigger()
+        console.log('isTransactionValid', isTransactionValid)
+
         // trường hợp chỉ update Transaction
         if (!updateTrackerTransactionProps?.isEditing) {
+          console.log(3333)
           if (isTransactionValid) submitUpdateTransactionRef.current?.requestSubmit()
         } else if (updateTrackerTransactionProps?.isEditing) {
-          const isTrackerValid = await formUpdateTrackerTransactionRef.current?.trigger()
+          console.log(4444)
+          // Validate tracker transaction form
+          const isTrackerValid = await trackerTransactionForm.trigger()
+          console.log('isTrackerValid', isTrackerValid)
+
           if (isTransactionValid && isTrackerValid) {
+            console.log(5555)
             submitUpdateTransactionRef.current?.requestSubmit()
             submitUpdateTrackerTransactionRef.current?.requestSubmit()
           }
@@ -305,99 +386,272 @@ export default function DetailUpdateTransaction({
   )
 
   const UpdateForm = () => (
-    <div className='space-y-7'>
+    <div>
       {!updateTransactionProps.transaction.TrackerTransaction && classifyDialogProps ? (
         <classifyDialogProps.ClassifyForm />
       ) : (
         <>
           {/* Form update transaction */}
           {!updateTransactionProps.transaction.ofAccount && (
-            <FormZod
-              formRef={formUpdateTransactionRef}
-              submitRef={submitUpdateTransactionRef}
-              formFieldBody={defineUpdateTransactionFormBody({
-                updateTrackerTransactionProps,
-                accountSourceData: commonProps.accountSourceData,
-                handleSetTrackerTypeDefault: (value: string) => {
-                  setTransactionState((prevState) => ({
-                    ...prevState,
-                    isUpdateTrackerTransaction: value as ETypeOfTrackerTransactionType,
-                    direction: value as ETypeOfTrackerTransactionType,
-                    trackerTypeId:
-                      value === updateTransactionProps.transaction.direction
-                        ? updateTrackerTransactionProps?.trackerTransaction.trackerTypeId || ''
-                        : ''
-                  }))
-                }
-              })}
-              formSchema={updateTransactionSchema}
-              onSubmit={(data) => {
-                let currentTrackerTypeid = ''
-                if (
-                  formUpdateTrackerTransactionRef.current &&
-                  typeof formUpdateTrackerTransactionRef.current.getValues === 'function'
-                ) {
-                  const values = formUpdateTrackerTransactionRef.current.getValues()
-                  currentTrackerTypeid = values?.trackerTypeId || ''
-                }
+            <Form {...transactionForm}>
+              <form
+                ref={submitUpdateTransactionRef}
+                id='update-transaction-form'
+                onSubmit={transactionForm.handleSubmit((data) => {
+                  let currentTrackerTypeid = ''
+                  if (
+                    formUpdateTrackerTransactionRef.current &&
+                    typeof formUpdateTrackerTransactionRef.current.getValues === 'function'
+                  ) {
+                    const values = formUpdateTrackerTransactionRef.current.getValues()
+                    currentTrackerTypeid = values?.trackerTypeId || ''
+                  }
+                  if (updateTrackerTransactionProps) {
+                  }
+                  const payload: IUpdateTransactionBody = {
+                    accountSourceId: data.accountSourceId,
+                    direction: data.direction as ETypeOfTrackerTransactionType,
+                    amount: Number(data.amount),
+                    id: updateTransactionProps.transaction.id,
+                    trackerTransactionTypeId: currentTrackerTypeid
+                  }
+                  updateTransactionProps.handleUpdateTransaction(payload, updateTransactionProps.setIsEditing)
+                })}
+                className='grid grid-cols-2 gap-x-4 gap-y-0'
+              >
+                <FormField
+                  control={transactionForm.control}
+                  name='amount'
+                  render={({ field }) => (
+                    <FormItem className='col-span-2 mb-4'>
+                      <div className='flex justify-between'>
+                        <FormLabel className='text-muted-foreground'>
+                          {t('IUpdateTransactionFormBody.amount.label')}
+                        </FormLabel>
+                        <FormMessage />
+                      </div>
+                      <FormControl>
+                        <MoneyInput
+                          placeholder={t('IUpdateTransactionFormBody.amount.placeholder')}
+                          value={field.value}
+                          onChange={(e) => field.onChange(e.target.value)}
+                        />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={transactionForm.control}
+                  name='accountSourceId'
+                  render={({ field }) => (
+                    <FormItem className='col-span-2 mb-4'>
+                      <div className='flex justify-between'>
+                        <FormLabel className='text-muted-foreground'>
+                          {t('IUpdateTransactionFormBody.accountSource.label')}
+                        </FormLabel>
+                        <FormMessage />
+                      </div>
+                      <Select
+                        onValueChange={(value) => {
+                          field.onChange(value)
+                        }}
+                        value={field.value}
+                      >
+                        <FormControl>
+                          <SelectTrigger className='w-full'>
+                            <SelectValue placeholder={t('IUpdateTransactionFormBody.accountSource.label')} />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectGroup>
+                            <SelectLabel>{t('IUpdateTransactionFormBody.accountSource.placeholder')}</SelectLabel>
+                            {commonProps.accountSourceData.map((accountSource, index) => (
+                              <SelectItem key={index} value={accountSource.id}>
+                                {accountSource.name + ' - ' + formatCurrency(accountSource.currentAmount, 'đ')}
+                              </SelectItem>
+                            ))}
+                          </SelectGroup>
+                        </SelectContent>
+                      </Select>
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={transactionForm.control}
+                  name='direction'
+                  render={({ field }) => (
+                    <FormItem className='col-span-2 mb-4'>
+                      <div className='flex justify-between'>
+                        <FormLabel className='text-muted-foreground'>
+                          {t('IUpdateTransactionFormBody.direction.label')}
+                        </FormLabel>
+                        <FormMessage />
+                      </div>
+                      <Select
+                        onValueChange={(value: ETypeOfTrackerTransactionType) => {
+                          console.log('checkkk', value !== updateTransactionProps.transaction.direction)
 
-                const payload: IUpdateTransactionBody = {
-                  accountSourceId: data.accountSourceId,
-                  direction: data.direction as ETypeOfTrackerTransactionType,
-                  amount: Number(data.amount),
-                  id: updateTransactionProps.transaction.id,
-                  trackerTransactionTypeId:
-                    transactionState && currentTrackerTypeid !== transactionState.trackerTypeId
-                      ? currentTrackerTypeid
-                      : undefined
-                }
-                updateTransactionProps.handleUpdateTransaction(payload, updateTransactionProps.setIsEditing)
-              }}
-              defaultValues={{
-                amount: updateTransactionProps.transaction.amount,
-                accountSourceId: updateTransactionProps.transaction.accountSource.id,
-                direction:
-                  updateTransactionProps.transaction.direction === ETypeOfTrackerTransactionType.INCOMING
-                    ? 'INCOMING'
-                    : 'EXPENSE'
-              }}
-            />
+                          // Cập nhật currentDirection
+                          setCurrentDirection(value)
+
+                          // Kiểm tra và cập nhật trackerTypeId
+                          if (value !== updateTransactionProps.transaction.direction) {
+                            trackerTransactionForm.setValue('trackerTypeId', '')
+                          } else {
+                            trackerTransactionForm.setValue(
+                              'trackerTypeId',
+                              updateTrackerTransactionProps?.trackerTransaction.trackerTypeId || ''
+                            )
+                          }
+                          field.onChange(value)
+                        }}
+                        value={field.value}
+                      >
+                        <FormControl>
+                          <SelectTrigger className='w-full'>
+                            <SelectValue placeholder={t('IUpdateTransactionFormBody.direction.placeholder')} />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectGroup>
+                            <SelectLabel>{t('spendingPlan:form.planFields.frequency')}</SelectLabel>
+                            <SelectItem value={ETypeOfTrackerTransactionType.INCOMING}>
+                              {ETypeOfTrackerTransactionType.INCOMING}
+                            </SelectItem>
+                            <SelectItem value={ETypeOfTrackerTransactionType.EXPENSE}>
+                              {ETypeOfTrackerTransactionType.EXPENSE}
+                            </SelectItem>
+                          </SelectGroup>
+                        </SelectContent>
+                      </Select>
+                    </FormItem>
+                  )}
+                />
+              </form>
+            </Form>
           )}
-
           {/* Form update tracker transaction */}
           {updateTrackerTransactionProps && (
-            <FormZod
-              formRef={formUpdateTrackerTransactionRef}
-              submitRef={submitUpdateTrackerTransactionRef}
-              formFieldBody={defineUpdateTrackerTransactionFormBody({
-                selectedTransaction: null, // xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx cần fix
-                trackerTypeData,
-                editTrackerTypeDialogProps:
-                  updateTrackerTransactionProps.editTrackerTransactionTypeProps.editTrackerTypeDialogProps,
-                expenseTrackerType: updateTrackerTransactionProps.editTrackerTransactionTypeProps.expenseTrackerType,
-                incomeTrackerType: updateTrackerTransactionProps.editTrackerTransactionTypeProps.incomeTrackerType,
-                typeOfEditTrackerType: transactionState.isUpdateTrackerTransaction as ETypeOfTrackerTransactionType,
-                setTypeOfEditTrackerType: updateTrackerTransactionProps.setTypeOfEditTrackerType,
-                setOpenEditDialog: updateTrackerTransactionProps.setOpenEditDialog,
-                openEditDialog: updateTrackerTransactionProps.openEditDialog
-              })}
-              formSchema={updateTrackerTransactionSchema}
-              onSubmit={(data: any) => {
-                const payload: IUpdateTrackerTransactionBody = {
-                  ...data,
-                  id: updateTrackerTransactionProps.trackerTransaction.id
-                }
-                updateTrackerTransactionProps.handleUpdateTrackerTransaction(
-                  payload,
-                  updateTransactionProps.setIsEditing
-                )
-              }}
-              defaultValues={{
-                reasonName: updateTrackerTransactionProps?.trackerTransaction.reasonName || '',
-                trackerTypeId: transactionState.trackerTypeId || '',
-                description: updateTrackerTransactionProps?.trackerTransaction.description
-              }}
-            />
+            <Form {...trackerTransactionForm}>
+              <form
+                ref={submitUpdateTrackerTransactionRef}
+                id='update-tracker-transaction-form'
+                onSubmit={trackerTransactionForm.handleSubmit((data) => {
+                  const payload: IUpdateTrackerTransactionBody = {
+                    ...data,
+                    description: data.description || undefined,
+                    id: updateTrackerTransactionProps.trackerTransaction.id
+                  }
+                  updateTrackerTransactionProps.handleUpdateTrackerTransaction(
+                    payload,
+                    updateTransactionProps.setIsEditing
+                  )
+                })}
+                className='grid grid-cols-2 gap-x-4 gap-y-0'
+              >
+                <FormField
+                  control={trackerTransactionForm.control}
+                  name='reasonName'
+                  render={({ field }) => (
+                    <FormItem className='col-span-2 mb-4'>
+                      <div className='flex justify-between'>
+                        <FormLabel className='text-muted-foreground'>
+                          {t('form.defineCreateTrackerTransactionFormBody.reasonName.label')}
+                        </FormLabel>
+                        <FormMessage />
+                      </div>
+                      <FormControl>
+                        <Input
+                          placeholder={t('form.defineCreateTrackerTransactionFormBody.reasonName.placeholder')}
+                          {...field}
+                        />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={trackerTransactionForm.control}
+                  name='trackerTypeId'
+                  render={({ field }) => (
+                    <FormItem className='col-span-2 mb-4'>
+                      <div className='flex justify-between'>
+                        <FormLabel className='text-muted-foreground'>
+                          {t('form.defineCreateTrackerTransactionFormBody.trackerTypeId.label')}
+                        </FormLabel>
+                        <FormMessage />
+                      </div>
+                      <FormControl>
+                        <Combobox
+                          setOpenEditDialog={updateTrackerTransactionProps.setOpenEditDialog}
+                          dataArr={modifiedTrackerTypeForComboBox(
+                            currentDirection === ETypeOfTrackerTransactionType.INCOMING
+                              ? updateTrackerTransactionProps?.editTrackerTransactionTypeProps.incomeTrackerType
+                              : updateTrackerTransactionProps?.editTrackerTransactionTypeProps.expenseTrackerType
+                          )}
+                          value={directionCategoryMap?.[currentDirection] || ''}
+                          dialogEdit={EditTrackerTypeDialog({
+                            openEditDialog: updateTrackerTransactionProps.openEditDialog,
+                            setOpenEditDialog: updateTrackerTransactionProps.setOpenEditDialog,
+                            dataArr: modifiedTrackerTypeForComboBox(
+                              typeOfEditTrackerType === ETypeOfTrackerTransactionType.INCOMING
+                                ? updateTrackerTransactionProps.editTrackerTransactionTypeProps.incomeTrackerType
+                                : updateTrackerTransactionProps.editTrackerTransactionTypeProps.expenseTrackerType
+                            ),
+                            typeDefault: currentDirection || ETypeOfTrackerTransactionType.INCOMING,
+                            type: typeOfEditTrackerType,
+                            setType: setTypeOfEditTrackerType,
+                            handleCreateTrackerType:
+                              updateTrackerTransactionProps.editTrackerTransactionTypeProps.editTrackerTypeDialogProps
+                                .handleCreateTrackerType,
+                            handleUpdateTrackerType:
+                              updateTrackerTransactionProps.editTrackerTransactionTypeProps.editTrackerTypeDialogProps
+                                .handleUpdateTrackerType,
+                            handleDeleteTrackerType:
+                              updateTrackerTransactionProps.editTrackerTransactionTypeProps.editTrackerTypeDialogProps
+                                .handleDeleteTrackerType,
+                            expenditureFund:
+                              updateTrackerTransactionProps.editTrackerTransactionTypeProps.editTrackerTypeDialogProps
+                                .expenditureFund
+                          })}
+                          onValueSelect={(value) => {
+                            ;(value: string) => {
+                              setDirectionCategoryMap((prev) => ({
+                                ...prev,
+                                [currentDirection]: value
+                              }))
+                            }
+                            field.onChange(value)
+                          }}
+                        />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={trackerTransactionForm.control}
+                  name='description'
+                  render={({ field }) => (
+                    <FormItem className='col-span-2 mb-4'>
+                      <div className='flex justify-between'>
+                        <FormLabel className='text-muted-foreground'>
+                          {t('form.defineCreateTrackerTransactionFormBody.description.label')}
+                        </FormLabel>
+                        <FormMessage />
+                      </div>
+                      <FormControl>
+                        <Textarea
+                          placeholder={t('form.defineCreateTrackerTransactionFormBody.description.placeholder')}
+                          rows={3}
+                          {...field}
+                          value={field.value || ''}
+                          onChange={field.onChange}
+                        />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+              </form>
+            </Form>
           )}
         </>
       )}

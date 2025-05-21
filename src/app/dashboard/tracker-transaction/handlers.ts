@@ -59,7 +59,8 @@ export const handleCreateTrackerTransaction = async ({
           'getStatisticExpenditureFund',
           'getExpenditureFund',
           'getAllAccountSource',
-          'getStatisticOverview'
+          'getStatisticOverview',
+          'getBudgetTarget'
         ])
         setDataTableConfig((prev) => ({ ...prev, currentPage: 1 }))
         setUncDataTableConfig((prev) => ({ ...prev, currentPage: 1 }))
@@ -379,7 +380,8 @@ export const handleUpdateTrackerTransaction = async ({
           'getTodayTransactions',
           'getTransactions',
           'getAllAccountSource',
-          'getExpenditureFund'
+          'getExpenditureFund',
+          'getBudgetTarget'
         ])
         setIsDialogOpen((prev) => ({ ...prev, isDialogDetailOpen: false }))
         setDataTableConfig((prev: any) => ({ ...prev, currentPage: 1 }))
@@ -426,7 +428,8 @@ export const handleDeleteTrackerTransaction = ({
             'getTransactions',
             'getUnclassifiedTransactions',
             'getTodayTransactions',
-            'getTrackerTransaction'
+            'getTrackerTransaction',
+            'getBudgetTarget'
           ])
           setDataTableConfig((prev) => ({ ...prev, currentPage: 1 }))
           setIsDialogOpen((prev) => ({ ...prev, isDialogDeleteOpen: false }))
@@ -469,7 +472,8 @@ export const handleDeleteMultipleTrackerTransaction = ({
             'getStatistic',
             'getAllAccountSource',
             'getExpenditureFund',
-            'getTrackerTransaction'
+            'getTrackerTransaction',
+            'getBudgetTarget'
           ])
           setDataTableConfig((prev) => ({ ...prev, currentPage: 1 }))
           setUncDataTableConfig((prev) => ({ ...prev, currentPage: 1 }))

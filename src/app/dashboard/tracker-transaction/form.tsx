@@ -111,6 +111,7 @@ import {
 import { useOverviewPage } from '@/core/overview/hooks'
 import { Checkbox } from '@/components/ui/checkbox'
 import { AgentDialog } from '@/components/dashboard/tracker-transaction/AgentDialog'
+import { useFundSavingTarget } from '@/core/fund-saving-target/hooks'
 
 export default function TrackerTransactionForm() {
   // states
@@ -183,6 +184,8 @@ export default function TrackerTransactionForm() {
   const { getAllExpenditureFund } = useExpenditureFund()
 
   // fetch data
+  const { getAllFundSavingTarget } = useFundSavingTarget()
+  const { refetchAllData: refetchBudgetTarget } = getAllFundSavingTarget(fundId)
   const { dataUnclassifiedTxs } = getUnclassifiedTransactions({
     query: uncTableQueryOptions,
     fundId
@@ -232,7 +235,8 @@ export default function TrackerTransactionForm() {
     getTrackerTransaction: resetCacheTrackerTx,
     getStatisticExpenditureFund: resetCacheStatisticExpenditureFund,
     getExpenditureFund: resetCacheExpenditureFund,
-    getStatisticOverview: refetchGetStatisticOverviewPageData
+    getStatisticOverview: refetchGetStatisticOverviewPageData,
+    getBudgetTarget: refetchBudgetTarget
   }
   const callBackRefetchTrackerTransactionPage = (actionMaps: TTrackerTransactionActions[]) => {
     actionMaps.forEach((action) => {

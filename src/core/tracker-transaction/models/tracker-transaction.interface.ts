@@ -55,7 +55,7 @@ export interface ITrackerTransaction {
 export interface IUpdateTrackerTransactionBody {
   id: string
   reasonName: string
-  description: string
+  description?: string
   trackerTypeId: string
 }
 
@@ -228,3 +228,4 @@ export type TTrackerTransactionActions =
   | 'getStatisticExpenditureFund'
   | 'getExpenditureFund'
   | 'getStatisticOverview'
+  | 'getBudgetTarget'
