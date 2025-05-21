@@ -37,6 +37,7 @@ import { AdminDetailsDialog } from '@/app/dashboard/admin-management/components/
 import { CreateAdminDialog } from '@/app/dashboard/admin-management/components/create-admin-dialog'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { AxiosError } from 'axios'
 
 // Giữ lại type Admin từ component gốc
 export interface Admin {
@@ -108,9 +109,12 @@ export function AdminTable() {
       refetch()
       toast.success(t('admin.status_update_success', 'Quản trị viên đã được cập nhật trạng thái thành công!'))
     },
-    onError: (error) => {
+    onError: (error: AxiosError | any) => {
+      if (error.response?.status === 401) {
+        return toast.error(`${error?.response?.data?.messages || error?.response?.data?.message} !`)
+      }
       console.error('Lỗi khi cập nhật trạng thái quản trị viên:', error)
-      toast.error(t('admin.status_update_error', 'Không thể cập nhật trạng thái quản trị viên. Vui lòng thử lại sau.'))
+      toast.error(error?.response?.data?.message || t('admin.status_update_error', 'Không thể cập nhật trạng thái quản trị viên. Vui lòng thử lại sau.'))
     }
   })
 
