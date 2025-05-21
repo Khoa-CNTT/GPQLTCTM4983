@@ -112,7 +112,7 @@ export default function AdminDashboard() {
       <div className="flex h-screen items-center justify-center">
         <div className="text-center">
           <div className="h-8 w-8 animate-spin rounded-full border-4 border-b-transparent border-primary mx-auto mb-4"></div>
-          <p>Đang tải trang...</p>
+          <p>{t('common.loading', 'Đang tải trang...')}</p>
         </div>
       </div>
     )
@@ -131,18 +131,12 @@ export default function AdminDashboard() {
     <>
       <div className="flex items-center justify-between mb-8">
         <h1 className="text-3xl font-bold tracking-tight">{t('breadcrumb.dashboard')}</h1>
-        <div className="flex items-center gap-2">
-          <Button variant="outline" size="sm">
-            <Download className="mr-2 h-4 w-4" />
-            {t('button.reload_data')}
-          </Button>
-        </div>
       </div>
       
       <div className="grid gap-4 md:grid-cols-2">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Tổng người dùng</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('dashboard.total_users', 'Tổng người dùng')}</CardTitle>
             <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -152,7 +146,7 @@ export default function AdminDashboard() {
         
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Quản trị viên</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('dashboard.total_admins', 'Quản trị viên')}</CardTitle>
             <UserCog className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
