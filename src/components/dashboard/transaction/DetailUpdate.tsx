@@ -155,26 +155,19 @@ export default function DetailUpdateTransaction({
         !updateTransactionProps.transaction.TrackerTransaction &&
         !updateTrackerTransactionProps
       ) {
-        console.log(1111)
         classifyDialogProps.formClassifyRef.current?.requestSubmit()
       } else {
-        console.log(2222)
         // Validate transaction form
         const isTransactionValid = await transactionForm.trigger()
         console.log('isTransactionValid', isTransactionValid)
 
         // trường hợp chỉ update Transaction
         if (!updateTrackerTransactionProps?.isEditing) {
-          console.log(3333)
           if (isTransactionValid) submitUpdateTransactionRef.current?.requestSubmit()
         } else if (updateTrackerTransactionProps?.isEditing) {
-          console.log(4444)
           // Validate tracker transaction form
           const isTrackerValid = await trackerTransactionForm.trigger()
-          console.log('isTrackerValid', isTrackerValid)
-
           if (isTransactionValid && isTrackerValid) {
-            console.log(5555)
             submitUpdateTransactionRef.current?.requestSubmit()
             submitUpdateTrackerTransactionRef.current?.requestSubmit()
           }
@@ -398,13 +391,13 @@ export default function DetailUpdateTransaction({
                 ref={submitUpdateTransactionRef}
                 id='update-transaction-form'
                 onSubmit={transactionForm.handleSubmit((data) => {
-                  let currentTrackerTypeid = ''
+                  let currentTrackerTypeid = undefined
                   if (
                     formUpdateTrackerTransactionRef.current &&
                     typeof formUpdateTrackerTransactionRef.current.getValues === 'function'
                   ) {
                     const values = formUpdateTrackerTransactionRef.current.getValues()
-                    currentTrackerTypeid = values?.trackerTypeId || ''
+                    currentTrackerTypeid = values?.trackerTypeId || undefined
                   }
                   if (updateTrackerTransactionProps) {
                   }
