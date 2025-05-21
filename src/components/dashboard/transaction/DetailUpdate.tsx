@@ -54,9 +54,11 @@ export default function DetailUpdateTransaction({
   const [trackerTypeData, setTrackerTypeData] = useState<ITrackerTransactionType[]>([])
   const [transactionState, setTransactionState] = useState<ITrackerTranSactionEditType>({
     isUpdateTrackerTransaction:
-      ((updateTransactionProps?.transaction?.direction as ETypeOfTrackerTransactionType) ||
-      ETypeOfTrackerTransactionType.INCOMING),
-    direction: (updateTransactionProps?.transaction?.direction as ETypeOfTrackerTransactionType) || ETypeOfTrackerTransactionType.INCOMING,
+      (updateTransactionProps?.transaction?.direction as ETypeOfTrackerTransactionType) ||
+      ETypeOfTrackerTransactionType.INCOMING,
+    direction:
+      (updateTransactionProps?.transaction?.direction as ETypeOfTrackerTransactionType) ||
+      ETypeOfTrackerTransactionType.INCOMING,
     trackerTypeId: updateTrackerTransactionProps?.trackerTransaction?.trackerTypeId || ''
   })
 
@@ -86,13 +88,16 @@ export default function DetailUpdateTransaction({
         classifyDialogProps.formClassifyRef.current?.requestSubmit()
       } else {
         const isTransactionValid = await formUpdateTransactionRef.current?.trigger()
-        const isTrackerValid = updateTrackerTransactionProps?.isEditing
-          ? await formUpdateTrackerTransactionRef.current?.trigger()
-          : true
-        if (isTransactionValid) submitUpdateTransactionRef.current?.requestSubmit()
-
-        if (isTrackerValid && updateTrackerTransactionProps?.isEditing)
-          submitUpdateTrackerTransactionRef.current?.requestSubmit()
+        // trường hợp chỉ update Transaction
+        if (!updateTrackerTransactionProps?.isEditing) {
+          if (isTransactionValid) submitUpdateTransactionRef.current?.requestSubmit()
+        } else if (updateTrackerTransactionProps?.isEditing) {
+          const isTrackerValid = await formUpdateTrackerTransactionRef.current?.trigger()
+          if (isTransactionValid && isTrackerValid) {
+            submitUpdateTransactionRef.current?.requestSubmit()
+            submitUpdateTrackerTransactionRef.current?.requestSubmit()
+          }
+        }
       }
     }
   }
@@ -310,7 +315,7 @@ export default function DetailUpdateTransaction({
             <FormZod
               formRef={formUpdateTransactionRef}
               submitRef={submitUpdateTransactionRef}
-                formFieldBody={defineUpdateTransactionFormBody({
+              formFieldBody={defineUpdateTransactionFormBody({
                 updateTrackerTransactionProps,
                 accountSourceData: commonProps.accountSourceData,
                 handleSetTrackerTypeDefault: (value: string) => {
@@ -328,8 +333,10 @@ export default function DetailUpdateTransaction({
               formSchema={updateTransactionSchema}
               onSubmit={(data) => {
                 let currentTrackerTypeid = ''
-                if (formUpdateTrackerTransactionRef.current &&
-                    typeof formUpdateTrackerTransactionRef.current.getValues === 'function') {
+                if (
+                  formUpdateTrackerTransactionRef.current &&
+                  typeof formUpdateTrackerTransactionRef.current.getValues === 'function'
+                ) {
                   const values = formUpdateTrackerTransactionRef.current.getValues()
                   currentTrackerTypeid = values?.trackerTypeId || ''
                 }
@@ -349,9 +356,10 @@ export default function DetailUpdateTransaction({
               defaultValues={{
                 amount: updateTransactionProps.transaction.amount,
                 accountSourceId: updateTransactionProps.transaction.accountSource.id,
-                direction: updateTransactionProps.transaction.direction === ETypeOfTrackerTransactionType.INCOMING 
-                  ? 'INCOMING' 
-                  : 'EXPENSE'
+                direction:
+                  updateTransactionProps.transaction.direction === ETypeOfTrackerTransactionType.INCOMING
+                    ? 'INCOMING'
+                    : 'EXPENSE'
               }}
             />
           )}
@@ -362,6 +370,7 @@ export default function DetailUpdateTransaction({
               formRef={formUpdateTrackerTransactionRef}
               submitRef={submitUpdateTrackerTransactionRef}
               formFieldBody={defineUpdateTrackerTransactionFormBody({
+                selectedTransaction: null, // xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx cần fix
                 trackerTypeData,
                 editTrackerTypeDialogProps:
                   updateTrackerTransactionProps.editTrackerTransactionTypeProps.editTrackerTypeDialogProps,

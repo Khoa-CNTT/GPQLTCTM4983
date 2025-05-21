@@ -245,7 +245,10 @@ export function AgentDialog({
                         style={{ animationDelay: '300ms' }}
                       ></div>
                     </div>
-                    <p className='pl-5 text-xs font-semibold italic text-green-600'>{data?.messageAnalysis}</p>
+                    <p className='pl-5 text-xs font-semibold italic text-green-600'>
+                      {data?.messageAnalysis ||
+                        'Ủa? Hôm nay yên ắng quá luôn, không có lấy một cái giao dịch nào cho tui phân tích hết trơn 😒📉'}
+                    </p>
                   </motion.div>
                 </div>
 

@@ -78,7 +78,7 @@ export const updateTrackerTransactionSchema = z
       .refine((val) => val === null || /^[A-Za-zÀ-ỹ\s]+$/.test(val), {
         message: 'Reason name can only contain letters and spaces.'
       }),
-    trackerTypeId: z.string({ message: 'Tracker Type is required' }).uuid(),
+    trackerTypeId: z.string().uuid('Please select a specific category'),
     description: z
       .string()
       .trim()
