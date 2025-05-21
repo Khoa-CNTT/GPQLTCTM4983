@@ -476,57 +476,59 @@ export default function DetailUpdateTransaction({
                     </FormItem>
                   )}
                 />
-                <FormField
-                  control={transactionForm.control}
-                  name='direction'
-                  render={({ field }) => (
-                    <FormItem className='col-span-2 mb-4'>
-                      <div className='flex justify-between'>
-                        <FormLabel className='text-muted-foreground'>
-                          {t('IUpdateTransactionFormBody.direction.label')}
-                        </FormLabel>
-                        <FormMessage />
-                      </div>
-                      <Select
-                        onValueChange={(value: ETypeOfTrackerTransactionType) => {
-                          console.log('checkkk', value !== updateTransactionProps.transaction.direction)
+                {updateTrackerTransactionProps && (
+                  <FormField
+                    control={transactionForm.control}
+                    name='direction'
+                    render={({ field }) => (
+                      <FormItem className='col-span-2 mb-4'>
+                        <div className='flex justify-between'>
+                          <FormLabel className='text-muted-foreground'>
+                            {t('IUpdateTransactionFormBody.direction.label')}
+                          </FormLabel>
+                          <FormMessage />
+                        </div>
+                        <Select
+                          onValueChange={(value: ETypeOfTrackerTransactionType) => {
+                            console.log('checkkk', value !== updateTransactionProps.transaction.direction)
 
-                          // Cập nhật currentDirection
-                          setCurrentDirection(value)
+                            // Cập nhật currentDirection
+                            setCurrentDirection(value)
 
-                          // Kiểm tra và cập nhật trackerTypeId
-                          if (value !== updateTransactionProps.transaction.direction) {
-                            trackerTransactionForm.setValue('trackerTypeId', '')
-                          } else {
-                            trackerTransactionForm.setValue(
-                              'trackerTypeId',
-                              updateTrackerTransactionProps?.trackerTransaction.trackerTypeId || ''
-                            )
-                          }
-                          field.onChange(value)
-                        }}
-                        value={field.value}
-                      >
-                        <FormControl>
-                          <SelectTrigger className='w-full'>
-                            <SelectValue placeholder={t('IUpdateTransactionFormBody.direction.placeholder')} />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          <SelectGroup>
-                            <SelectLabel>{t('spendingPlan:form.planFields.frequency')}</SelectLabel>
-                            <SelectItem value={ETypeOfTrackerTransactionType.INCOMING}>
-                              {ETypeOfTrackerTransactionType.INCOMING}
-                            </SelectItem>
-                            <SelectItem value={ETypeOfTrackerTransactionType.EXPENSE}>
-                              {ETypeOfTrackerTransactionType.EXPENSE}
-                            </SelectItem>
-                          </SelectGroup>
-                        </SelectContent>
-                      </Select>
-                    </FormItem>
-                  )}
-                />
+                            // Kiểm tra và cập nhật trackerTypeId
+                            if (value !== updateTransactionProps.transaction.direction) {
+                              trackerTransactionForm.setValue('trackerTypeId', '')
+                            } else {
+                              trackerTransactionForm.setValue(
+                                'trackerTypeId',
+                                updateTrackerTransactionProps?.trackerTransaction.trackerTypeId || ''
+                              )
+                            }
+                            field.onChange(value)
+                          }}
+                          value={field.value}
+                        >
+                          <FormControl>
+                            <SelectTrigger className='w-full'>
+                              <SelectValue placeholder={t('IUpdateTransactionFormBody.direction.placeholder')} />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectGroup>
+                              <SelectLabel>{t('spendingPlan:form.planFields.frequency')}</SelectLabel>
+                              <SelectItem value={ETypeOfTrackerTransactionType.INCOMING}>
+                                {ETypeOfTrackerTransactionType.INCOMING}
+                              </SelectItem>
+                              <SelectItem value={ETypeOfTrackerTransactionType.EXPENSE}>
+                                {ETypeOfTrackerTransactionType.EXPENSE}
+                              </SelectItem>
+                            </SelectGroup>
+                          </SelectContent>
+                        </Select>
+                      </FormItem>
+                    )}
+                  />
+                )}
               </form>
             </Form>
           )}
