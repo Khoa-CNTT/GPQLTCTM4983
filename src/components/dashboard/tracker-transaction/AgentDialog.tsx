@@ -87,7 +87,7 @@ const formatCurrency = (amount: number): string => {
 interface AgentDialogProps {
   selectedTransaction: IUnclassifiedTransaction | null
   setSelectedTransaction: React.Dispatch<React.SetStateAction<IUnclassifiedTransaction | null>>
-  setIsDialogOpen: React.Dispatch<React.SetStateAction<IDialogTrackerTransaction>>
+  setIsDialogOpen: React.Dispatch<React.SetStateAction<any>> // transaction && tracker transaction
   isClassifying: boolean
   isOpen: boolean
   setOpen: (open: boolean) => void

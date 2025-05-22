@@ -26,6 +26,7 @@ import {
   IGetTransactionResponse,
   ITransaction,
   ITransactionSummary,
+  IUnclassifiedTransaction,
   IUpdateTransactionBody,
   TTransactionActions
 } from '@/core/transaction/models'
@@ -88,6 +89,7 @@ import { AgentDialog } from '@/components/dashboard/tracker-transaction/AgentDia
 export default function TransactionForm() {
   // states
   const [isLoadingUnclassified, setIsLoadingUnclassified] = useState<boolean>(false)
+  const [selectedTransaction, setSelectedTransaction] = useState<IUnclassifiedTransaction | null>(null)
   const [isOpenAgentDialog, setIsOpenAgentDialog] = useState(false)
   const [idDeletes, setIdDeletes] = useState<string[]>([])
   const [typeOfTrackerType, setTypeOfTrackerType] = useState<ETypeOfTrackerTransactionType>(
@@ -762,6 +764,9 @@ export default function TransactionForm() {
         isDialogOpen={isDialogOpen.isDialogDeleteAllOpen}
       />
       <AgentDialog
+        selectedTransaction={selectedTransaction}
+        setSelectedTransaction={setSelectedTransaction}
+        setIsDialogOpen={setIsDialogOpen}
         isOpen={isOpenAgentDialog}
         setOpen={setIsOpenAgentDialog}
         data={{

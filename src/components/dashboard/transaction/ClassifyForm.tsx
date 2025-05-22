@@ -33,6 +33,7 @@ export default function ClassifyForm({
     <FormZod
       formSchema={classifyTransactionSchema}
       formFieldBody={defineClassifyTransactionFormBody({
+        selectedTransaction,
         editTrackerTypeDialogProps,
         expenseTrackerType,
         incomeTrackerType,
@@ -41,7 +42,8 @@ export default function ClassifyForm({
         setOpenEditDialog: setIsOpenDialogEditTrackerType,
         openEditDialog: isOpenDialogEditTrackerType
       })}
-      onSubmit={(data) => handleClassify({ ...data, transactionId } as IClassifyTransactionBody)}
+      // onSubmit={(data) => handleClassify({ ...data, transactionId } as IClassifyTransactionBody)}
+      onSubmit={(data) => {}}
       submitRef={formClassifyRef}
     />
   )
