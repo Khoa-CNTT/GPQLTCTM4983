@@ -1,27 +1,31 @@
 {
   "AccountSourceDialog": {
     "createDialog": {
-      "title": "Tạo nguồn tài khoản",
-      "description": "Vui lòng điền thông tin bên dưới để tạo nguồn tài khoản mới."
+      "title": "Tạo mới nguồn tài khoản",
+      "description": "Vui lòng điền thông tin dưới đây để tạo nguồn tài khoản mới."
     },
     "updateDialog": {
       "title": "Cập nhật nguồn tài khoản",
-      "description": "Vui lòng điền thông tin bên dưới để cập nhật nguồn tài khoản."
+      "description": "Vui lòng điền thông tin dưới đây để cập nhật nguồn tài khoản."
     },
     "detailsDialog": {
-      "title": "Thông tin chi tiết về tài khoản nguồn",
-      "description": "Chi tiết giao dịch tài khoản nguồn"
+      "title": "Chi tiết nguồn tài khoản",
+      "description": "Giao dịch của nguồn tài khoản"
     },
     "deleteDialog": {
       "title": "Xóa nguồn tài khoản",
       "description": "Bạn có chắc chắn muốn xóa nguồn tài khoản này không?"
+    },
+    "transferDialog": {
+      "title": "Chuyển tiền",
+      "description": "Chuyển tiền giữa các nguồn tài khoản"
     }
   },
   "form": {
     "defineCreateAccountSourceFormBody": {
       "reasonName": {
-        "label": "Mục đích",
-        "placeholder": "Nhập mục đích chi/tiêu"
+        "label": "Tên lý do",
+        "placeholder": "Nhập tên lý do"
       },
       "amount": {
         "label": "Số tiền",
@@ -32,11 +36,11 @@
         "placeholder": "Chọn nguồn tài khoản"
       },
       "direction": {
-        "label": "Loại giao dịch",
-        "placeholder": "Chọn loại giao dịch",
+        "label": "Hướng",
+        "placeholder": "Chọn hướng",
         "options": {
-          "incoming": "THU VÀO",
-          "expense": "CHI RA"
+          "incoming": "TIỀN VÀO",
+          "expense": "CHI TIÊU"
         }
       },
       "trackerTypeId": {
@@ -48,16 +52,26 @@
         "placeholder": "Nhập mô tả"
       }
     },
+    "transferAccountSourceFormBody": {
+      "targetAccountSource": {
+        "label": "Nguồn tài khoản đích",
+        "placeholder": "Chọn nguồn tài khoản đích"
+      },
+      "amount": {
+        "label": "Số tiền",
+        "placeholder": "Nhập số tiền chuyển"
+      }
+    },
     "createAccountSourceFormBody": {
       "accountSourceName": {
-        "label": "Tên nguồn tài khoản",
-        "placeholder": "Nhập tên nguồn tài khoản của bạn"
+        "label": "Tên nguồn",
+        "placeholder": "Nhập tên nguồn của bạn"
       },
       "accountSourceType": {
-        "label": "Loại tài khoản",
-        "placeholder": "Chọn loại tài khoản",
+        "label": "Loại",
+        "placeholder": "Chọn loại",
         "options": {
-          "wallet": "VÍ ĐIỆN TỬ",
+          "wallet": "VÍ",
           "banking": "NGÂN HÀNG"
         }
       },
@@ -84,28 +98,29 @@
     },
     "button": {
       "save_changes_account_source": "Lưu thay đổi nguồn tài khoản",
-      "edit_account_source": "Chỉnh sửa tài khoản nguồn"
+      "edit_account_source": "Chỉnh sửa nguồn tài khoản",
+      "transfer_money": "Chuyển tiền"
     },
     "editAccountSource": {
-      "title": "Chi tiết giao dịch tài khoản nguồn",
-      "description": "Thông tin chi tiết tài khoản nguồn",
+      "title": "Chi tiết giao dịch nguồn tài khoản",
+      "description": "Chi tiết của nguồn tài khoản",
       "currentAmount": "Số dư hiện tại",
-      "accountBank": "Ngân hàng tài khoản",
-      "type": "Loại tài khoản",
-      "currency": "Loại tiền tệ",
+      "accountBank": "Tài khoản ngân hàng",
+      "type": "Loại",
+      "currency": "Tiền tệ",
       "initialAmount": "Số dư ban đầu",
-      "name": "Tên tài khoản"
+      "name": "Tên"
     }
   },
   "table": {
-    "name": "Tên tài khoản",
-    "type": "Loại tài khoản",
+    "name": "Tên",
+    "type": "Loại",
     "initAmount": "Số dư ban đầu",
-    "accountBank": "Ngân hàng",
+    "accountBank": "Tài khoản ngân hàng",
     "currentAmount": "Số dư hiện tại"
   },
   "type": {
-    "WALLET": "Ví điện tử",
+    "WALLET": "Ví",
     "BANKING": "Ngân hàng"
   },
   "AccountSourceCard": {
