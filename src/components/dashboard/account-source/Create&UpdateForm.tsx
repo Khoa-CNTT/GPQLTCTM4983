@@ -66,6 +66,8 @@ export default function CreateAndUpdateAccountSourceForm({
 
   const formCreateAccountSourceRef = useRef<HTMLFormElement>(null)
   const formCreateAccountBankRef = useRef<HTMLFormElement>(null)
+  const formUpdateAccountSourceRef = useRef<HTMLFormElement>(null)
+  const formUpdateAccountBankRef = useRef<HTMLFormElement>(null)
   const formSourceControlRef = useRef<any>(null)
   const formBankControlRef = useRef<any>(null)
 
@@ -177,33 +179,32 @@ export default function CreateAndUpdateAccountSourceForm({
   }
 
   const onSubmitAll = async () => {
-    if (formSourceControlRef.current) {
-      try {
-        const sourceValues = formSourceControlRef.current.getValues()
-
-        const payload: IAccountSourceBody = {
-          name: sourceValues.accountSourceName,
-          accountSourceType: typeState,
-          initAmount: Number(sourceValues.initAmount || 0)
+    // create
+    if (defaultValue === initEmptyAccountSource) {
+      console.log('create')
+      const isSourceValid = await formSourceControlRef.current.trigger()
+      if (typeState === EAccountSourceType.BANKING) {
+        const isBankValid = await formBankControlRef.current.trigger()
+        if (isSourceValid && isBankValid) {
+          formCreateAccountSourceRef.current?.requestSubmit()
+          formCreateAccountBankRef.current?.requestSubmit()
         }
-
-        if (defaultValue !== initEmptyAccountSource && defaultValue?.id) {
-          payload.id = defaultValue.id
+      } else if (isSourceValid) {
+        formCreateAccountSourceRef.current?.requestSubmit()
+      }
+    }
+    // update
+    else {
+      console.log('Update')
+      const isSourceValid = await formSourceControlRef.current.trigger()
+      if (typeState === EAccountSourceType.BANKING) {
+        const isBankValid = await formBankControlRef.current.trigger()
+        if (isSourceValid && isBankValid) {
+          formUpdateAccountSourceRef.current?.requestSubmit()
+          formUpdateAccountBankRef.current?.requestSubmit()
         }
-
-        if (typeState === EAccountSourceType.BANKING && formBankControlRef.current) {
-          const bankValues = formBankControlRef.current.getValues()
-          payload.type = bankValues.type
-          payload.login_id = bankValues.login_id
-          payload.password = bankValues.password
-          payload.accounts = bankValues.accounts
-        }
-
-        console.log('Final payload:', payload)
-
-        callBack(payload, setIsVerified)
-      } catch (error) {
-        console.error('Error processing form data:', error)
+      } else if (isSourceValid) {
+        formUpdateAccountSourceRef.current?.requestSubmit()
       }
     }
   }
@@ -300,10 +301,10 @@ export default function CreateAndUpdateAccountSourceForm({
             <FormZod
               defaultValues={defaultValueData.accountSource}
               classNameForm='space-y-4'
-              formSchema={updateAccountSourceSchema}
+              formSchema={createAccountSourceSchema}
               formFieldBody={updateAccountSourceFormBody(setTypeState)}
               onSubmit={handleSubmit}
-              submitRef={formCreateAccountSourceRef}
+              submitRef={formUpdateAccountSourceRef}
               formRef={formSourceControlRef}
             />
 
@@ -311,10 +312,10 @@ export default function CreateAndUpdateAccountSourceForm({
               <FormZod
                 defaultValues={defaultValueData.accountBank}
                 classNameForm='space-y-4 mt-4'
-                formSchema={updateAccountBankSchema}
+                formSchema={createAccountBankSchema}
                 formFieldBody={updateAccountBankFormBody}
                 onSubmit={handleSubmitBank}
-                submitRef={formCreateAccountBankRef}
+                submitRef={formUpdateAccountBankRef}
                 formRef={formBankControlRef}
               />
             )}
