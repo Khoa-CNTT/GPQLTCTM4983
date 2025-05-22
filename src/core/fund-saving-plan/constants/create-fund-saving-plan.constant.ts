@@ -14,13 +14,13 @@ export const createFundSavingPlanSchema = z.object({
     .min(3, {
       message: 'Name must be at least 3 characters'
     })
-    .max(100, {
-      message: 'Name must be at most 100 characters'
+    .max(50, {
+      message: 'Name must be at most 50 characters'
     }),
   description: z
     .string()
-    .max(500, {
-      message: 'Description must be at most 500 characters'
+    .max(255, {
+      message: 'Description must be at most 255 characters'
     })
     .optional(),
   targetAmount: z

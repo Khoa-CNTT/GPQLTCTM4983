@@ -79,6 +79,7 @@ import { GET_ADVANCED_EXPENDITURE_FUND_KEY } from '@/core/expenditure-fund/const
 import { useTrackerTransactionType } from '@/core/tracker-transaction-type/hooks'
 import { useExpenditureFund } from '@/core/expenditure-fund/hooks'
 import { useOverviewPage } from '@/core/overview/hooks'
+import { ETypeOfTrackerTransactionType } from '@/core/tracker-transaction-type/models/tracker-transaction-type.enum'
 
 export default function SpendingPlanForm() {
   const { t } = useTranslation(['common', 'spendingPlan'])
@@ -451,7 +452,9 @@ export default function SpendingPlanForm() {
                               <div className='flex-1'>
                                 <div className='flex items-center justify-between'>
                                   <h3 className='font-medium'>{target.name}</h3>
-                                  <Badge className='text-xs'>
+                                  <Badge
+                                    className={`text-xs ${target.trackerTypeDirection === ETypeOfTrackerTransactionType.INCOMING ? 'border-green-500 bg-green-500 text-white hover:bg-green-600 dark:border-green-700 dark:bg-green-700 dark:text-green-200 dark:hover:bg-green-800' : 'border-rose-500 bg-rose-500 text-white hover:bg-rose-600 dark:border-rose-700 dark:bg-rose-700 dark:text-rose-200 dark:hover:bg-rose-800'}`}
+                                  >
                                     {target.trackerTypeName || t('spendingPlan:targetDetails.uncategorized')}
                                   </Badge>
                                 </div>
@@ -585,21 +588,25 @@ export default function SpendingPlanForm() {
                             <div
                               key={plan.id}
                               onClick={() => openDialog('isDialogDetailPlanOpen', plan)}
-                              className='hover:from-gray-850 cursor-pointer rounded-lg border border-gray-800 bg-gradient-to-b from-gray-900 to-gray-950 p-4 shadow-sm transition-all hover:border-gray-700 hover:to-gray-900 hover:shadow-md'
+                              className='cursor-pointer rounded-lg border bg-white p-4 shadow-sm transition-all hover:border-gray-200 hover:bg-gray-100 hover:shadow-md dark:bg-gray-950/50 dark:hover:border-gray-700 dark:hover:bg-gray-800/50'
                             >
                               {/* First row: Name, Tracker name, and Upcoming badge */}
                               <div className='mb-4 flex items-center justify-between'>
-                                <div className='max-w-[60%] truncate text-base font-medium text-white'>{plan.name}</div>
+                                <div className='min-w-0 flex-1 overflow-hidden truncate whitespace-nowrap text-base font-medium text-gray-900 dark:text-white'>
+                                  {plan.name.length > 35 ? plan.name.substring(0, 35) + '...' : plan.name}
+                                </div>
 
                                 <div className='flex flex-shrink-0 items-center gap-2.5'>
-                                  <div className='flex items-center gap-1 rounded-md border border-gray-700/50 bg-gray-800/70 px-2 py-1'>
-                                    <span className='text-xs font-medium text-gray-300'>{plan.trackerTypeName}</span>
+                                  <div
+                                    className={`flex items-center gap-1 rounded-md px-2 py-1 ${plan.trackerTypeDirection === ETypeOfTrackerTransactionType.INCOMING ? 'border-green-500 bg-green-500 text-white dark:border-green-700 dark:bg-green-700 dark:text-green-200' : 'border-rose-500 bg-rose-500 text-white dark:border-rose-700 dark:bg-rose-700 dark:text-rose-200'}`}
+                                  >
+                                    <span className='text-xs font-medium'>{plan.trackerTypeName}</span>
                                   </div>
 
                                   {isNearDate && (
                                     <Badge
                                       variant='outline'
-                                      className='rounded-full border-orange-600/50 bg-orange-950/30 px-2.5 py-0.5 text-xs text-orange-400'
+                                      className='rounded-full border-orange-300 bg-orange-100 px-2.5 py-0.5 text-xs text-orange-600 dark:border-orange-600/50 dark:bg-orange-950/30 dark:text-orange-400'
                                     >
                                       {t('spendingPlan:planDetails.upcoming')}
                                     </Badge>
@@ -609,15 +616,17 @@ export default function SpendingPlanForm() {
 
                               {/* Second row: Expected date and Amount */}
                               <div className='flex items-center justify-between'>
-                                <div className='flex items-center gap-1.5 rounded-md bg-gray-800/30 px-2.5 py-1.5 text-sm text-gray-400'>
+                                <div className='flex items-center gap-1.5 rounded-md bg-gray-100 px-2.5 py-1.5 text-sm text-gray-700 dark:bg-gray-800/30 dark:text-gray-300'>
                                   <CalendarIcon className='h-3 w-3 text-gray-500' />
-                                  <span className='text-gray-400'>{t('spendingPlan:cardDetails.expectedDate')}:</span>
-                                  <span className='font-medium text-gray-300'>
+                                  <span className='text-gray-700 dark:text-gray-400'>
+                                    {t('spendingPlan:cardDetails.expectedDate')}:
+                                  </span>
+                                  <span className='font-medium text-gray-900 dark:text-gray-200'>
                                     {formatDateTimeVN(plan.expectedDate, false)}
                                   </span>
                                 </div>
 
-                                <div className='text-2xl font-semibold tracking-wide text-blue-400'>
+                                <div className='text-2xl font-semibold tracking-wide text-blue-600 dark:text-blue-400'>
                                   {formatCurrency(plan.targetAmount, 'đ')}
                                 </div>
                               </div>
