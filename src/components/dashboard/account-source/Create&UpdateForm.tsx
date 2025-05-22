@@ -66,6 +66,8 @@ export default function CreateAndUpdateAccountSourceForm({
 
   const formCreateAccountSourceRef = useRef<HTMLFormElement>(null)
   const formCreateAccountBankRef = useRef<HTMLFormElement>(null)
+  const formUpdateAccountSourceRef = useRef<HTMLFormElement>(null)
+  const formUpdateAccountBankRef = useRef<HTMLFormElement>(null)
   const formSourceControlRef = useRef<any>(null)
   const formBankControlRef = useRef<any>(null)
 
@@ -136,34 +138,39 @@ export default function CreateAndUpdateAccountSourceForm({
           toast.error('Vui lòng nhập đầy đủ thông tin tài khoản ngân hàng!')
           return
         }
-        verifyBank({
-          username: bankValues.login_id || '',
-          password: bankValues.password || '',
-          numberAccount: accounts
-        }, {
-          onSuccess: (res) => {
-            if (res?.data?.success == false) {
-              toast.error(res?.data?.message)
-            }
-            if (res?.data?.success == true) {
-              toast.success('Xác thực tài khoản ngân hàng thành công!')
-              setIsVerified(true)
+        verifyBank(
+          {
+            username: bankValues.login_id || '',
+            password: bankValues.password || '',
+            numberAccount: accounts
+          },
+          {
+            onSuccess: (res) => {
+              if (res?.data?.success == false) {
+                toast.error(res?.data?.message)
+              }
+              if (res?.data?.success == true) {
+                toast.success('Xác thực tài khoản ngân hàng thành công!')
+                setIsVerified(true)
 
-              if (res.data.accounts && Array.isArray(res.data.accounts)) {
-                const totalBalance = res.data.accounts.reduce((sum: number, account: any) =>
-                  sum + (Number(account.currentBalance) || 0), 0)
+                if (res.data.accounts && Array.isArray(res.data.accounts)) {
+                  const totalBalance = res.data.accounts.reduce(
+                    (sum: number, account: any) => sum + (Number(account.currentBalance) || 0),
+                    0
+                  )
 
-                if (formSourceControlRef.current && totalBalance) {
-                  try {
-                    formSourceControlRef.current.setValue('initAmount', totalBalance.toString())
-                  } catch (error) {
-                    console.error('Error updating initAmount:', error)
+                  if (formSourceControlRef.current && totalBalance) {
+                    try {
+                      formSourceControlRef.current.setValue('initAmount', totalBalance.toString())
+                    } catch (error) {
+                      console.error('Error updating initAmount:', error)
+                    }
                   }
                 }
               }
             }
           }
-        })
+        )
       } catch (error) {
         console.error('Error getting bank information:', error)
         toast.error('Không thể lấy thông tin ngân hàng!')
@@ -172,33 +179,32 @@ export default function CreateAndUpdateAccountSourceForm({
   }
 
   const onSubmitAll = async () => {
-    if (formSourceControlRef.current) {
-      try {
-        const sourceValues = formSourceControlRef.current.getValues()
-
-        const payload: IAccountSourceBody = {
-          name: sourceValues.accountSourceName,
-          accountSourceType: typeState,
-          initAmount: Number(sourceValues.initAmount || 0)
+    // create
+    if (defaultValue === initEmptyAccountSource) {
+      console.log('create')
+      const isSourceValid = await formSourceControlRef.current.trigger()
+      if (typeState === EAccountSourceType.BANKING) {
+        const isBankValid = await formBankControlRef.current.trigger()
+        if (isSourceValid && isBankValid) {
+          formCreateAccountSourceRef.current?.requestSubmit()
+          formCreateAccountBankRef.current?.requestSubmit()
         }
-
-        if (defaultValue !== initEmptyAccountSource && defaultValue?.id) {
-          payload.id = defaultValue.id
+      } else if (isSourceValid) {
+        formCreateAccountSourceRef.current?.requestSubmit()
+      }
+    }
+    // update
+    else {
+      console.log('Update')
+      const isSourceValid = await formSourceControlRef.current.trigger()
+      if (typeState === EAccountSourceType.BANKING) {
+        const isBankValid = await formBankControlRef.current.trigger()
+        if (isSourceValid && isBankValid) {
+          formUpdateAccountSourceRef.current?.requestSubmit()
+          formUpdateAccountBankRef.current?.requestSubmit()
         }
-
-        if (typeState === EAccountSourceType.BANKING && formBankControlRef.current) {
-          const bankValues = formBankControlRef.current.getValues()
-          payload.type = bankValues.type
-          payload.login_id = bankValues.login_id
-          payload.password = bankValues.password
-          payload.accounts = bankValues.accounts
-        }
-
-        console.log('Final payload:', payload)
-
-        callBack(payload, setIsVerified)
-      } catch (error) {
-        console.error('Error processing form data:', error)
+      } else if (isSourceValid) {
+        formUpdateAccountSourceRef.current?.requestSubmit()
       }
     }
   }
@@ -238,8 +244,10 @@ export default function CreateAndUpdateAccountSourceForm({
 
         // Tính tổng số dư hiện tại từ tất cả tài khoản
         if (data.accounts && Array.isArray(data.accounts)) {
-          const totalBalance = data.accounts.reduce((sum: number, account: any) =>
-            sum + (Number(account.currentBalance) || 0), 0)
+          const totalBalance = data.accounts.reduce(
+            (sum: number, account: any) => sum + (Number(account.currentBalance) || 0),
+            0
+          )
 
           // Cập nhật initAmount với tổng số dư
           if (formSourceControlRef.current && totalBalance) {
@@ -293,10 +301,10 @@ export default function CreateAndUpdateAccountSourceForm({
             <FormZod
               defaultValues={defaultValueData.accountSource}
               classNameForm='space-y-4'
-              formSchema={updateAccountSourceSchema}
+              formSchema={createAccountSourceSchema}
               formFieldBody={updateAccountSourceFormBody(setTypeState)}
               onSubmit={handleSubmit}
-              submitRef={formCreateAccountSourceRef}
+              submitRef={formUpdateAccountSourceRef}
               formRef={formSourceControlRef}
             />
 
@@ -304,10 +312,10 @@ export default function CreateAndUpdateAccountSourceForm({
               <FormZod
                 defaultValues={defaultValueData.accountBank}
                 classNameForm='space-y-4 mt-4'
-                formSchema={updateAccountBankSchema}
+                formSchema={createAccountBankSchema}
                 formFieldBody={updateAccountBankFormBody}
                 onSubmit={handleSubmitBank}
-                submitRef={formCreateAccountBankRef}
+                submitRef={formUpdateAccountBankRef}
                 formRef={formBankControlRef}
               />
             )}
@@ -315,7 +323,13 @@ export default function CreateAndUpdateAccountSourceForm({
         )}
       </Fragment>
       {typeState === EAccountSourceType.BANKING && !isVerified ? (
-        <Button onClick={handleVerifyBank} className='mt-4 w-full' variant={'greenPastel1'} disabled={isVerifyBank} isLoading={isVerifyBank}>
+        <Button
+          onClick={handleVerifyBank}
+          className='mt-4 w-full'
+          variant={'greenPastel1'}
+          disabled={isVerifyBank}
+          isLoading={isVerifyBank}
+        >
           {isVerifyBank ? 'Đang xác thực...' : 'Xác thực'}
         </Button>
       ) : (

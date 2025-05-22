@@ -31,8 +31,8 @@
       "description": "Overview of unclassified transactions."
     },
     "detailsConfigDialog": {
-      "title": "Classified Transaction Details",
-      "description": "Details of the classified transaction"
+      "title": "Tracker Transaction Details",
+      "description": "Details of the tracker transaction"
     }
   },
   "form": {

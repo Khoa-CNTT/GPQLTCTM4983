@@ -1,8 +1,14 @@
 import { modifiedTrackerTypeForComboBox } from '@/app/dashboard/tracker-transaction/handlers'
 import { IAccountSource } from '@/core/account-source/models'
 import { ETypeOfTrackerTransactionType } from '@/core/tracker-transaction-type/models/tracker-transaction-type.enum'
-import { IEditTrackerTypeDialogProps, ITrackerTransactionType } from '@/core/tracker-transaction-type/models/tracker-transaction-type.interface'
-import { ITrackerTransaction, IUpdateTrackerTransactionBody } from '@/core/tracker-transaction/models/tracker-transaction.interface'
+import {
+  IEditTrackerTypeDialogProps,
+  ITrackerTransactionType
+} from '@/core/tracker-transaction-type/models/tracker-transaction-type.interface'
+import {
+  ITrackerTransaction,
+  IUpdateTrackerTransactionBody
+} from '@/core/tracker-transaction/models/tracker-transaction.interface'
 import { translate } from '@/libraries/utils'
 import { EFieldType, IBodyFormField } from '@/types/formZod.interface'
 import React from 'react'
@@ -98,6 +104,8 @@ export const updateTransactionSchema = z
     accountSourceId: z
       .string({ message: 'Please select a account source' })
       .uuid({ message: 'Account source ID is not a valid UUID format' }),
-    direction: z.enum(['INCOMING', 'EXPENSE'], { message: 'Direction must be either "Incoming" or "Expense"' })
+    direction: z.enum(['INCOMING', 'EXPENSE', 'TRANSFER'], {
+      message: 'Direction must be either "Incoming" or "Expense"'
+    })
   })
   .strict()

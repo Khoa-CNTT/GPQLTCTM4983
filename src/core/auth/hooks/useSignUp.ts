@@ -11,13 +11,6 @@ export const useSignUp = (opts?: IUseQueryHookOptions) => {
   return useMutationCustom<ISignUpBody, ISignUpResponse>({
     pathUrl: authServices.signUp,
     mutateOption: {
-      onError: (error) => {
-        if (error.status === 409) {
-          return toast.error('Email already exists !')
-        }
-        toast.error(`Errors: ${(error.response?.data as any)?.messages}`)
-        opts?.callBackOnError?.()
-      },
       onSuccess: (data) => {
         toast.success('Account created successfully - Please Check your email to verify your account')
         router.push('/sign-in')

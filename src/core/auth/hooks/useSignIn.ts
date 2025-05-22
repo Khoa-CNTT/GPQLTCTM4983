@@ -45,13 +45,6 @@ export const useSignIn = (isRememberMe: boolean, opts?: IUseQueryHookOptions) =>
         if (data.data.user.status === 'UNVERIFY' && countLogin < 0) {
           toast.error('Account is inactive, please contact the administrator !')
         }
-      },
-      onError: (error) => {
-        const errorMessage =
-          (error as any)?.payload?.message + '!\n\n' + (error as any)?.payload?.details[0] ||
-          'Login failed, please try again!'
-        toast.error(errorMessage, { duration: 1500 })
-        opts?.callBackOnError?.()
       }
     }
   })

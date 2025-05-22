@@ -8,14 +8,6 @@ import { ICreateTrackerTransactionBody } from '@/core/transaction/models'
 
 export const useCreateTrackerTransaction = (opts?: IUseQueryHookOptions) => {
   return useMutationCustom<ICreateTrackerTransactionBody, ITrackerTransactionResponse>({
-    pathUrl: trackerTransactionRoutes.create,
-    mutateOption: {
-      onError: (error: AxiosError | any) => {
-        if (error.response?.status === 401) {
-          return toast.error(`${error?.response?.data?.messages} !`)
-        }
-        opts?.callBackOnError?.()
-      }
-    }
+    pathUrl: trackerTransactionRoutes.create
   })
 }
