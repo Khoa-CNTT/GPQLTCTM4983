@@ -4,19 +4,49 @@ import { ETypeOfTrackerTransactionType } from '@/core/tracker-transaction-type/m
 import { translate } from '@/libraries/utils'
 import { EFieldType } from '@/types/formZod.interface'
 import { z } from 'zod'
+
 export const createFundSavingPlanSchema = z.object({
-  name: z.string().min(3).max(100),
-  description: z.string().max(500).optional(),
-  targetAmount: z
+  name: z
+    .string({
+      required_error: 'Name is required',
+      invalid_type_error: 'Name must be a string'
+    })
+    .min(3, {
+      message: 'Name must be at least 3 characters'
+    })
+    .max(100, {
+      message: 'Name must be at most 100 characters'
+    }),
+  description: z
     .string()
-    .min(1)
+    .max(500, {
+      message: 'Description must be at most 500 characters'
+    })
+    .optional(),
+  targetAmount: z
+    .string({
+      required_error: 'Target amount is required',
+      invalid_type_error: 'Target amount must be a string'
+    })
+    .min(1, {
+      message: 'Target amount is required'
+    })
     .refine((val) => !isNaN(Number(val.replace(/[^\d.-]/g, ''))) && Number(val.replace(/[^\d.-]/g, '')) > 0, {
       message: 'Target amount must be positive'
     }),
-  trackerTypeId: z.string().min(1),
-  type: z.enum(['DAILY', 'WEEKLY', 'MONTHLY', 'ANNUAL']),
+  trackerTypeId: z.string({
+    required_error: 'Please select Category',
+    invalid_type_error: 'Category must be a string'
+  }),
+  type: z.enum(['DAILY', 'WEEKLY', 'MONTHLY', 'ANNUAL'], {
+    required_error: 'Type is required',
+    invalid_type_error: 'Type must be one of: Daily, Weekly, Monthly, Annual'
+  }),
   expectedDate: z
-    .date()
+    .date({
+      required_error: 'Expected date is required',
+      invalid_type_error: 'Expected date must be a valid date'
+    })
     .refine(
       (date) => {
         const today = new Date(new Date().setHours(0, 0, 0, 0))
@@ -33,9 +63,7 @@ export const createFundSavingPlanSchema = z.object({
 })
 
 export const defineCreatePlanFormBody = ({
-  incomeTrackerType,
   expenseTrackerType,
-  currentDirection,
   setOpenEditTrackerTxTypeDialog,
   openEditTrackerTxTypeDialog,
   typeOfEditTrackerType,
@@ -44,8 +72,6 @@ export const defineCreatePlanFormBody = ({
   handleUpdateTrackerType,
   handleDeleteTrackerType,
   expenditureFund,
-  directionCategoryMap,
-  onCategoryChange,
   onFrequencyChange
 }: any) => {
   const t = translate(['spendingPlan'])
@@ -77,22 +103,12 @@ export const defineCreatePlanFormBody = ({
       props: {
         autoComplete: 'trackerTypeId',
         setOpenEditDialog: setOpenEditTrackerTxTypeDialog,
-        dataArr: modifiedTrackerTypeForComboBox(
-          currentDirection === ETypeOfTrackerTransactionType.INCOMING ? incomeTrackerType : expenseTrackerType
-        ),
-        onValueChange: (value: string) => {
-          if (onCategoryChange) {
-            onCategoryChange(value)
-          }
-        },
-        value: directionCategoryMap?.[currentDirection] || '',
+        dataArr: modifiedTrackerTypeForComboBox(expenseTrackerType),
         dialogEdit: EditTrackerTypeDialog({
           openEditDialog: openEditTrackerTxTypeDialog,
           setOpenEditDialog: setOpenEditTrackerTxTypeDialog,
-          dataArr: modifiedTrackerTypeForComboBox(
-            typeOfEditTrackerType === ETypeOfTrackerTransactionType.INCOMING ? incomeTrackerType : expenseTrackerType
-          ),
-          typeDefault: currentDirection || ETypeOfTrackerTransactionType.INCOMING,
+          dataArr: modifiedTrackerTypeForComboBox(expenseTrackerType),
+          typeDefault: ETypeOfTrackerTransactionType.EXPENSE,
           type: typeOfEditTrackerType,
           setType: setTypeOfEditTrackerType,
           handleCreateTrackerType,
