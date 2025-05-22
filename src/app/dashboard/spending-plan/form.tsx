@@ -179,7 +179,6 @@ export default function SpendingPlanForm() {
 
     if (getAllDataTarget && getAllDataTarget?.data) {
       setTargets(getAllDataTarget?.data?.budgetTargets?.data || [])
-      setTotalBudgetTarget(getAllDataTarget?.data?.totalBudgetTarget || null)
       setTargetPagination(getAllDataTarget?.data?.budgetTargets?.pagination || null)
     }
   }, [getAllDataPlan, getAllDataTarget])
@@ -187,6 +186,11 @@ export default function SpendingPlanForm() {
   const totalPlannedAmount = useMemo(() => {
     return spendingPlans.reduce((acc, plan) => acc + plan.targetAmount, 0)
   }, [spendingPlans])
+
+  const maxTargetRemainingDays = useMemo(() => {
+    if (!targets || targets.length === 0) return 0
+    return Math.max(...targets.map((target) => target.remainingDays))
+  }, [targets])
 
   const upcomingPlans = useMemo(() => {
     const now = new Date()
@@ -279,7 +283,7 @@ export default function SpendingPlanForm() {
               <PiggyBank className='h-8 w-8 flex-shrink-0 animate-pulse text-white opacity-75 md:h-12 md:w-12' />
               <div className='ml-2 text-right'>
                 <p className='truncate text-lg font-bold text-white md:text-xl lg:text-2xl'>
-                  {totalBudgetTarget ? formatCurrency(totalBudgetTarget.targetAmount, 'đ') : 'N/A'}
+                  {formatCurrency(getAllDataTarget?.data.totalBudgetTarget || 0, 'đ')}
                 </p>
                 <p className='line-clamp-1 text-xs text-blue-100 md:text-sm'>
                   {t('spendingPlan:cardDetails.totalBudgetPlan')}
@@ -301,13 +305,16 @@ export default function SpendingPlanForm() {
               <Banknote className='h-8 w-8 flex-shrink-0 animate-pulse text-white opacity-75 md:h-12 md:w-12' />
               <div className='ml-2 text-right'>
                 <p className='truncate text-lg font-bold text-white md:text-xl lg:text-2xl'>
-                  {formatCurrency(
-                    totalBudgetTarget ? totalBudgetTarget.targetAmount - totalBudgetTarget.remain : 0,
-                    'đ'
-                  )}
+                  {formatCurrency(getAllDataTarget?.data.spentAmount || 0, 'đ')}
                 </p>
                 <p className='line-clamp-1 text-xs text-rose-100 md:text-sm'>
-                  {t('spendingPlan:cardDetails.used')} {totalBudgetTarget ? Math.round(totalBudgetTarget.progress) : 0}%
+                  {t('spendingPlan:cardDetails.used')}{' '}
+                  {Math.round(
+                    getAllDataTarget
+                      ? (getAllDataTarget.data.spentAmount * 100) / getAllDataTarget?.data.totalBudgetTarget
+                      : 0
+                  )}
+                  %
                 </p>
               </div>
             </div>
@@ -329,14 +336,12 @@ export default function SpendingPlanForm() {
               {t('spendingPlan:cardTitles.remaining')}
 
               <div className='flex items-end'>
-                {totalBudgetTarget && (
-                  <Badge className='border-none bg-white/20 px-1.5 py-0.5 text-xs text-white'>
-                    <Clock className='mr-1 h-3 w-3' />
-                    <span className='line-clamp-1'>
-                      {totalBudgetTarget.remainingDays} {t('spendingPlan:cardDetails.daysLeft')}
-                    </span>
-                  </Badge>
-                )}
+                <Badge className='border-none bg-white/20 px-1.5 py-0.5 text-xs text-white'>
+                  <Clock className='mr-1 h-3 w-3' />
+                  <span className='line-clamp-1'>
+                    {maxTargetRemainingDays} {t('spendingPlan:cardDetails.daysLeft')}
+                  </span>
+                </Badge>
               </div>
             </CardTitle>
           </CardHeader>
@@ -345,10 +350,16 @@ export default function SpendingPlanForm() {
               <Coins className='h-8 w-8 flex-shrink-0 animate-pulse text-white opacity-75 md:h-12 md:w-12' />
               <div className='ml-2 text-right'>
                 <p className='truncate text-lg font-bold text-white md:text-xl lg:text-2xl'>
-                  {formatCurrency(totalBudgetTarget?.remain || 0, 'đ')}
+                  {formatCurrency(getAllDataTarget?.data.remainAmount || 0, 'đ')}
                 </p>
                 <p className='line-clamp-1 text-xs text-emerald-100 md:text-sm'>
-                  {t('spendingPlan:cardDetails.remaining')} {Math.round(100 - (totalBudgetTarget?.progress ?? 0))}%
+                  {t('spendingPlan:cardDetails.remaining')}{' '}
+                  {Math.round(
+                    getAllDataTarget
+                      ? (getAllDataTarget.data.remainAmount * 100) / getAllDataTarget.data.totalBudgetTarget
+                      : 0
+                  )}
+                  %
                 </p>
               </div>
             </div>
@@ -498,7 +509,11 @@ export default function SpendingPlanForm() {
                                 </div>
 
                                 <div className='mt-3 flex justify-between text-xs text-muted-foreground'>
-                                  <span>{target.remainingDays}</span>
+                                  <span>
+                                    {target.remainingDays >= 0
+                                      ? target.remainingDays + ' days'
+                                      : 'Expired ' + target + ' days'}
+                                  </span>
                                   <Badge variant='outline' className='h-4 text-[10px]'>
                                     {target.status === 'ACTIVE'
                                       ? t('spendingPlan:targetDetails.active')

@@ -35,7 +35,7 @@ export interface IBudgetTarget {
   trackerTypeDirection: ETypeOfTrackerTransactionType
   remain: number
   progress: number
-  remainingDays: string
+  remainingDays: number
   averageDailyPercentage: number
 }
 
@@ -46,7 +46,9 @@ export interface IGetAllDataFundSavingTarget {
 
 export interface IGetAllDataFundSavingTargetResponse {
   data: {
-    totalBudgetTarget: ITotalBudgetTarget
+    spentAmount: number
+    totalBudgetTarget: number
+    remainAmount: number
     budgetTargets: IGetAllDataFundSavingTarget
   }
   statusCode: number

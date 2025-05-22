@@ -365,7 +365,7 @@ export default function AccountSourceForm() {
       setIsVerified: () => {}
     })
   }
-  
+
   const handleTransferCallBack = (payload: IAccountSourceTransfer) => {
     handleTransferAccountSource({
       payload,
@@ -501,9 +501,9 @@ export default function AccountSourceForm() {
                               setDataTableConfig((prev) => ({ ...prev, currentPage: 1 }))
                               setIsDialogOpen((prev) => ({
                                 ...prev,
-                                isDialogDeleteOpen: false,
+                                isDialogDeleteOpen: false
                               }))
-                               callBackRefetchAccountSourcePage([
+                              callBackRefetchAccountSourcePage([
                                 'getAllAccountSource',
                                 'getStatisticAccountBalance',
                                 'getAdvancedAccountSource',
@@ -605,9 +605,7 @@ export default function AccountSourceForm() {
                     </span>
                     <div className='flex items-center'>
                       <motion.span
-                        className={`text-lg font-bold ${
-                          isIncreased ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'
-                        }`}
+                        className={`text-lg font-bold`}
                         animate={{ scale: isHovered ? 1.1 : 1 }}
                         transition={{ type: 'spring', stiffness: 300 }}
                       >
@@ -615,7 +613,7 @@ export default function AccountSourceForm() {
                           ? formatCurrency(accountBanks.totalBalanceWallet, 'đ')
                           : formatCurrency(accountBanks.totalBalanceBanking, 'đ')}
                       </motion.span>
-                      <motion.div
+                      {/* <motion.div
                         className='ml-2'
                         initial={{ opacity: 0, x: -10 }}
                         animate={{ opacity: 1, x: 0 }}
@@ -626,10 +624,10 @@ export default function AccountSourceForm() {
                         ) : (
                           <TrendingDown className='text-red-600 dark:text-red-400' size={20} />
                         )}
-                      </motion.div>
+                      </motion.div> */}
                     </div>
                   </div>
-                  <motion.div
+                  {/* <motion.div
                     className='text-base text-gray-500 dark:text-gray-400'
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
@@ -639,7 +637,7 @@ export default function AccountSourceForm() {
                       ? t('accountSource:AccountSourceCardDetail.Increased')
                       : t('accountSource:AccountSourceCardDetail.Decreased')}{' '}
                     {t('accountSource:AccountSourceCardDetail.from')} {formatCurrency(previousBalance, 'đ')}
-                  </motion.div>
+                  </motion.div> */}
                 </motion.div>
               </div>
             </CardContent>
