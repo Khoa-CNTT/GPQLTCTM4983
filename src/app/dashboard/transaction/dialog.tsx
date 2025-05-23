@@ -5,6 +5,7 @@ import {
   IDataTransactionTable,
   IDialogTransaction,
   ITransaction,
+  IUnclassifiedTransaction,
   IUpdateTransactionBody
 } from '@/core/transaction/models'
 import { IDataTableConfig, IDialogConfig } from '@/types/common.i'
@@ -21,6 +22,7 @@ import { useTranslation } from 'react-i18next'
 import DetailUpdateTransactionDialog from '@/components/dashboard/transaction/DetailUpdate'
 import { IAccountSource } from '@/core/account-source/models'
 import { initEmptyDetailTransactionData } from './constants'
+import { Button } from '@/components/ui/button'
 
 export interface ITransactionDialogProps {
   dataTable: {
@@ -47,6 +49,9 @@ export interface ITransactionDialogProps {
     setIsDialogOpen: React.Dispatch<React.SetStateAction<IDialogTransaction>>
   }
   classifyDialog: {
+    handleSetSelectedTransaction: (id: string) => void
+    indexSuggestSelected: number
+    setIndexSuggestSelected: React.Dispatch<React.SetStateAction<number>>
     incomeTrackerTransactionType: ITrackerTransactionType[]
     expenseTrackerTransactionType: ITrackerTransactionType[]
     handleClassify: (
@@ -55,6 +60,7 @@ export interface ITransactionDialogProps {
     ) => void
     typeOfTrackerType: ETypeOfTrackerTransactionType
     setTypeOfTrackerType: React.Dispatch<React.SetStateAction<ETypeOfTrackerTransactionType>>
+    isPendingClassifyTransaction?: boolean
   }
   dialogEditTrackerType: {
     handleCreateTrackerType: (
@@ -68,16 +74,67 @@ export interface ITransactionDialogProps {
   deleteProps: {
     deleteAnTransactionProps: IDeleteProps
   }
+  selectedTransaction: IUnclassifiedTransaction | null
+  setSelectedTransaction: React.Dispatch<React.SetStateAction<IUnclassifiedTransaction | null>>
 }
 
 export default function TransactionDialog(params: ITransactionDialogProps) {
-  console.log('checkkkk', params.dataTable.unclassifiedTransactionData)
-
   const [isEditing, setIsEditing] = useState<boolean>(false)
-  const { t } = useTranslation(['transaction', 'common'])
+  const { t } = useTranslation(['transaction', 'common', 'trackerTransaction'])
   const formClassifyRef = useRef<HTMLFormElement>(null)
   // useStates
-  const { dataTable, dialogState, classifyDialog, dialogEditTrackerType, dialogDetailUpdate, deleteProps } = params
+  const {
+    selectedTransaction,
+    dataTable,
+    dialogState,
+    classifyDialog,
+    dialogEditTrackerType,
+    dialogDetailUpdate,
+    deleteProps
+  } = params
+
+  const classifyingTransactionConfigDialog: IDialogConfig = {
+    content: (
+      <ClassifyForm
+        indexSuggestSelected={classifyDialog.indexSuggestSelected}
+        setIndexSuggestSelected={classifyDialog.setIndexSuggestSelected}
+        selectedTransaction={selectedTransaction}
+        incomeTrackerType={classifyDialog.incomeTrackerTransactionType}
+        expenseTrackerType={classifyDialog.expenseTrackerTransactionType}
+        editTrackerTypeDialogProps={{
+          typeDefault: classifyDialog.typeOfTrackerType,
+          handleCreateTrackerType: dialogEditTrackerType.handleCreateTrackerType,
+          handleUpdateTrackerType: dialogEditTrackerType.handleUpdateTrackerType,
+          handleDeleteTrackerType: dialogEditTrackerType.handleDeleteTrackerType,
+          expenditureFund: dialogEditTrackerType.expenditureFund
+        }}
+        formClassifyRef={formClassifyRef}
+        handleClassify={(data: IClassifyTransactionBody) => {
+          classifyDialog.handleClassify(data, setIsEditing)
+        }}
+      />
+    ),
+    footer: (
+      <Button
+        onClick={() => formClassifyRef.current?.requestSubmit()}
+        isLoading={classifyDialog.isPendingClassifyTransaction}
+        type='button'
+      >
+        {t('common:button.save')}
+      </Button>
+    ),
+    description: t('trackerTransaction:trackerTransactionType.classifyDialog.description'),
+    title: t('trackerTransaction:trackerTransactionType.classifyDialog.title'),
+    isOpen: dialogState.isDialogOpen.isDialogClassifyTransactionOpen,
+    onClose: () => {
+      dialogState.setIsDialogOpen((prev) => ({
+        ...prev,
+        isDialogClassifyTransactionOpen: false,
+        isDialogDetailTransactionOpen: false
+      }))
+      classifyDialog.setTypeOfTrackerType(ETypeOfTrackerTransactionType.INCOMING)
+    }
+  }
 
   const detailsConfigDialog: IDialogConfig = {
     content: (
@@ -93,9 +150,12 @@ export default function TransactionDialog(params: ITransactionDialogProps) {
           accountSourceData: dialogDetailUpdate.accountSourceData
         }}
         classifyDialogProps={{
+          handleSetSelectedTransaction: classifyDialog.handleSetSelectedTransaction,
           ClassifyForm: () => (
             <ClassifyForm
-              selectedTransaction={null}
+              indexSuggestSelected={classifyDialog.indexSuggestSelected}
+              setIndexSuggestSelected={classifyDialog.setIndexSuggestSelected}
+              selectedTransaction={selectedTransaction}
               incomeTrackerType={classifyDialog.incomeTrackerTransactionType}
               expenseTrackerType={classifyDialog.expenseTrackerTransactionType}
               editTrackerTypeDialogProps={{
@@ -193,6 +253,7 @@ export default function TransactionDialog(params: ITransactionDialogProps) {
       <CustomDialog config={detailsConfigDialog} />
       <CustomDialog config={transactionsTodayConfigDialog} />
       <CustomDialog config={unclassifiedTransactionsConfigDialog} />
+      <CustomDialog config={classifyingTransactionConfigDialog} />
     </div>
   )
 }

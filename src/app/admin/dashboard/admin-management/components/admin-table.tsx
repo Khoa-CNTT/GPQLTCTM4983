@@ -26,7 +26,8 @@ import {
   Search, 
   UserCheck, 
   UserX,
-  Plus
+  Plus,
+  Trash
 } from 'lucide-react'
 import { userRoutes } from '@/api/user'
 import httpService from '@/libraries/http'
@@ -37,6 +38,8 @@ import { AdminDetailsDialog } from '@/app/dashboard/admin-management/components/
 import { CreateAdminDialog } from '@/app/dashboard/admin-management/components/create-admin-dialog'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { AxiosError } from 'axios'
+import { handleApiError } from '@/libraries/errorHandler'
 
 // Giữ lại type Admin từ component gốc
 export interface Admin {
@@ -108,9 +111,26 @@ export function AdminTable() {
       refetch()
       toast.success(t('admin.status_update_success', 'Quản trị viên đã được cập nhật trạng thái thành công!'))
     },
-    onError: (error) => {
-      console.error('Lỗi khi cập nhật trạng thái quản trị viên:', error)
-      toast.error(t('admin.status_update_error', 'Không thể cập nhật trạng thái quản trị viên. Vui lòng thử lại sau.'))
+    onError: (error: any) => {
+      handleApiError(error)
+    }
+  })
+
+  // Sử dụng useMutation để xóa admin
+  const deleteAdminMutation = useMutation({
+    mutationFn: async (adminId: string) => {
+      const url = userRoutes.deleteUser.replace(':id', adminId)
+      return await httpService.delete(url)
+    },
+    onSuccess: () => {
+      // Cập nhật lại dữ liệu sau khi thành công
+      queryClient.invalidateQueries({ queryKey: ['admins'] })
+      queryClient.invalidateQueries({ queryKey: ['users'] })
+      refetch()
+      toast.success(t('admin.delete_success', 'Quản trị viên đã được xóa thành công!'))
+    },
+    onError: (error: any) => {
+      handleApiError(error)
     }
   })
 
@@ -156,6 +176,12 @@ export function AdminTable() {
 
   const updateAdminStatus = (adminId: string, status: 'ACTIVE' | 'BLOCK') => {
     updateAdminStatusMutation.mutate({ adminId, status })
+  }
+
+  const handleDeleteAdmin = (adminId: string) => {
+    if (confirm(t('admin.confirm_delete', 'Bạn có chắc chắn muốn xóa quản trị viên này không? Hành động này không thể hoàn tác.'))) {
+      deleteAdminMutation.mutate(adminId)
+    }
   }
 
   const filteredAdmins = adminsData?.data?.filter(admin => 
@@ -264,6 +290,14 @@ export function AdminTable() {
                         <DropdownMenuItem onClick={() => updateAdminStatus(admin.id, 'BLOCK')}>
                           <UserX className="mr-2 h-4 w-4" />
                           <span>{t('admin.deactivate', 'Vô hiệu hóa')}</span>
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem 
+                          onClick={() => handleDeleteAdmin(admin.id)}
+                          className="text-red-500 focus:text-red-500 focus:bg-red-50"
+                        >
+                          <Trash className="mr-2 h-4 w-4" />
+                          <span>{t('admin.delete', 'Xóa quản trị viên')}</span>
                         </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>

@@ -198,6 +198,7 @@ export interface IDetailUpdateTransactionDialogProps {
   classifyDialogProps?: {
     ClassifyForm: any
     formClassifyRef: React.RefObject<HTMLFormElement>
+    handleSetSelectedTransaction?: (id: string) => void
   }
 }
 

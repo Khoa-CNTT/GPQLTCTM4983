@@ -85,6 +85,8 @@ const formatCurrency = (amount: number): string => {
 }
 
 interface AgentDialogProps {
+  indexSuggestSelected: number
+  setIndexSuggestSelected: React.Dispatch<React.SetStateAction<number>>
   selectedTransaction: IUnclassifiedTransaction | null
   setSelectedTransaction: React.Dispatch<React.SetStateAction<IUnclassifiedTransaction | null>>
   setIsDialogOpen: React.Dispatch<React.SetStateAction<any>> // transaction && tracker transaction
@@ -103,7 +105,7 @@ interface AgentDialogProps {
     ) => void
     handleUpdateTrackerType: (data: ITrackerTransactionTypeBody) => void
     handleDeleteTrackerType: (id: string) => void
-    handleClassifyTransaction: (data: IClassifyTransactionBody) => void
+    // handleClassifyTransaction: (data: IClassifyTransactionBody) => void
   }
   incomeTrackerType: ITrackerTransactionTypeBody[]
   expenseTrackerType: ITrackerTransactionTypeBody[]
@@ -126,7 +128,9 @@ export function AgentDialog({
   setDetailDialogOpen,
   isClassifying,
   selectedTransaction,
-  setSelectedTransaction
+  setSelectedTransaction,
+  setIndexSuggestSelected,
+  indexSuggestSelected
 }: AgentDialogProps) {
   // Sử dụng dữ liệu mẫu hoặc data từ props
   const transactions = data?.transactions || []
@@ -386,12 +390,17 @@ export function AgentDialog({
       </Dialog>
 
       <AgentDetailDialog
+        indexSuggestSelected={indexSuggestSelected}
+        setIndexSuggestSelected={setIndexSuggestSelected}
         setSelectedTransaction={setSelectedTransaction}
         setIsDialogOpen={setIsDialogOpen}
         isOpen={detailDialogOpen}
         setOpen={setDetailDialogOpen}
         transaction={selectedTransaction}
-        onClose={() => setDetailDialogOpen(false)}
+        onClose={() => {
+          setDetailDialogOpen(false)
+          setIndexSuggestSelected(-1)
+        }}
         isLoading={isLoading}
         trackerTypeProps={{
           incomeTrackerType,
@@ -401,8 +410,7 @@ export function AgentDialog({
           handleCreateTrackerType: callBack.handleCreateTrackerType,
           handleUpdateTrackerType: callBack.handleUpdateTrackerType,
           handleDeleteTrackerType: callBack.handleDeleteTrackerType,
-          expenditureFund,
-          handleClassifyTransaction: callBack.handleClassifyTransaction
+          expenditureFund
         }}
       />
     </>

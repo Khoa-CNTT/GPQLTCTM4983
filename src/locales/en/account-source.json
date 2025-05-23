@@ -15,6 +15,10 @@
     "deleteDialog": {
       "title": "Delete Account Source",
       "description": "Are you sure you want to delete this account source?"
+    },
+    "transferDialog": {
+      "title": "Transfer Money",
+      "description": "Transfer money between account sources"
     }
   },
   "form": {
@@ -46,6 +50,16 @@
       "description": {
         "label": "Description",
         "placeholder": "Enter description"
+      }
+    },
+    "transferAccountSourceFormBody": {
+      "targetAccountSource": {
+        "label": "Target Account Source",
+        "placeholder": "Select target account source"
+      },
+      "amount": {
+        "label": "Amount",
+        "placeholder": "Enter amount to transfer"
       }
     },
     "createAccountSourceFormBody": {
@@ -84,7 +98,8 @@
     },
     "button": {
       "save_changes_account_source": "Save Changes Account Source",
-      "edit_account_source": "Edit Account Source"
+      "edit_account_source": "Edit Account Source",
+      "transfer_money": "Transfer Money"
     },
     "editAccountSource": {
       "title": "Source Account Transaction Details",

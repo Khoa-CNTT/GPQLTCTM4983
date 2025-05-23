@@ -10,6 +10,7 @@ import {
   IUpdateFundSavingTargetRequest,
   IBudgetTarget
 } from '@/core/fund-saving-target/models'
+import { ETypeOfTrackerTransactionType } from '@/core/tracker-transaction-type/models/tracker-transaction-type.enum'
 import { formatCurrency, formatDateTimeVN } from '@/libraries/utils'
 import toast from 'react-hot-toast'
 
@@ -38,6 +39,7 @@ export const modifySpendingPlanTableData = (data: ISpendingPlan[]): ISpendingPla
 
 export const modifyTargetTableData = (targets: IBudgetTarget[]): IBudgetTarget[] => {
   return targets.map((target) => ({
+    trackerTypeDirection: target.trackerTypeDirection,
     id: target.id || 'N/A',
     name: target.name || 'N/A',
     targetAmount: Number(target.targetAmount) || 0,
@@ -53,11 +55,8 @@ export const modifyTargetTableData = (targets: IBudgetTarget[]): IBudgetTarget[]
     remain: target.targetAmount > 0 ? target.targetAmount - target.currentAmount : 0,
     progress: target.targetAmount > 0 ? (target.currentAmount / target.targetAmount) * 100 : 0,
     remainingDays: target.endDate
-      ? Math.max(
-          0,
-          Math.ceil((new Date(target.endDate).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24))
-        ).toString()
-      : '0',
+      ? Math.max(0, Math.ceil((new Date(target.endDate).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24)))
+      : 0,
     averageDailyPercentage:
       target.targetAmount > 0 && target.endDate && target.startDate
         ? (target.currentAmount /

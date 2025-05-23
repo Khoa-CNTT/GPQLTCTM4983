@@ -64,6 +64,9 @@ interface AgentDetailDialogProps {
   isLoading: boolean
   setIsDialogOpen: React.Dispatch<React.SetStateAction<IDialogTrackerTransaction>>
   setSelectedTransaction: React.Dispatch<React.SetStateAction<IUnclassifiedTransaction | null>>
+  setIndexSuggestSelected: React.Dispatch<React.SetStateAction<number>>
+  indexSuggestSelected: number
+  onOpenChange?: (open: boolean) => void
 }
 
 export function AgentDetailDialog({
@@ -72,24 +75,21 @@ export function AgentDetailDialog({
   transaction,
   trackerTypeProps,
   setIsDialogOpen,
-  setSelectedTransaction
+  setSelectedTransaction,
+  setIndexSuggestSelected,
+  indexSuggestSelected,
+  onOpenChange
 }: AgentDetailDialogProps) {
   const t = translate(['transaction', 'common'])
   const { incomeTrackerType, handleClassifyTransaction } = trackerTypeProps
   const agentSuggest = useMemo(() => transaction?.agentSuggest || [], [transaction?.agentSuggest])
-  const [selectedIndex, setSelectedIndex] = useState<number | null>(null)
 
   const handleSelect = (index: number) => {
-    if (index === selectedIndex) setSelectedIndex(-1)
-    else setSelectedIndex(index)
+    if (index === indexSuggestSelected) setIndexSuggestSelected(-1)
+    else setIndexSuggestSelected(index)
   }
-  const [typeOfEditTrackerType, setTypeOfEditTrackerType] = useState<ETypeOfTrackerTransactionType>(
-    incomeTrackerType.find((item: any) => transaction?.agentSuggest[0].trackerTypeId === item.id)
-      ? ETypeOfTrackerTransactionType.INCOMING
-      : ETypeOfTrackerTransactionType.EXPENSE || ETypeOfTrackerTransactionType.INCOMING
-  )
+
   const [selectedCategory, setSelectedCategory] = useState(transaction?.agentSuggest[0].trackerTypeName || '')
-  const [key, setKey] = useState(0)
 
   const handleConfirmCategory = () => {
     console.log('Đã xác nhận phân loại:', selectedCategory)
@@ -118,7 +118,16 @@ export function AgentDetailDialog({
   }
 
   return (
-    <Dialog open={isOpen} onOpenChange={setOpen}>
+    <Dialog
+      open={isOpen}
+      onOpenChange={(open) => {
+        setOpen(open)
+        if (!open) {
+          setIndexSuggestSelected(-1)
+          setSelectedTransaction(null)
+        }
+      }}
+    >
       <DialogContent className='max-h-[850px] overflow-hidden rounded-xl sm:max-w-[550px]'>
         <DialogHeader className='mb-1'>
           <Button variant='ghost' size='icon' className='absolute left-3 top-3' onClick={() => setOpen(false)}>
@@ -243,7 +252,6 @@ export function AgentDetailDialog({
               <div className='absolute right-2 top-2 mr-2 mt-2'>
                 <Button
                   onClick={() => {
-                    // truyền index suggest (nếu chọn)
                     setIsDialogOpen((prev) => ({
                       ...prev,
                       isDialogClassifyTransactionOpen: true
@@ -267,7 +275,7 @@ export function AgentDetailDialog({
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.2, delay: index * 0.05 }}
                       className={`cursor-pointer rounded-full px-3 py-1 text-sm transition-colors ${
-                        selectedIndex === index
+                        indexSuggestSelected === index
                           ? 'text-blue-900 dark:bg-gradient-to-r dark:from-purple-700 dark:via-indigo-800 dark:to-blue-900 dark:text-white'
                           : 'bg-accent/50 hover:bg-accent'
                       }`}
@@ -290,7 +298,7 @@ export function AgentDetailDialog({
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.2, delay: 0.1 + index * 0.05 }}
                       className={`cursor-pointer rounded-full px-3 py-1 text-sm transition-colors ${
-                        selectedIndex === index
+                        indexSuggestSelected === index
                           ? 'text-blue-900 dark:bg-gradient-to-r dark:from-purple-700 dark:via-indigo-800 dark:to-blue-900 dark:text-white'
                           : 'bg-accent/50 hover:bg-accent'
                       }`}
@@ -313,7 +321,7 @@ export function AgentDetailDialog({
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.2, delay: 0.2 + index * 0.05 }}
                       className={`cursor-pointer rounded-lg p-2 text-sm transition-colors ${
-                        selectedIndex === index
+                        indexSuggestSelected === index
                           ? 'border border-blue-300 bg-blue-50 text-blue-900 shadow dark:border-blue-500 dark:bg-accent/30 dark:text-foreground/80'
                           : 'bg-accent/30 text-foreground/80 hover:bg-accent/50 dark:bg-accent/10 dark:text-foreground/60 dark:hover:bg-accent/20'
                       }`}

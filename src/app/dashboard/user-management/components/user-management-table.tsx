@@ -168,7 +168,7 @@ export function UserManagementTable() {
               <TableHead>Người dùng</TableHead>
               <TableHead>Email</TableHead>
               <TableHead>Số điện thoại</TableHead>
-              <TableHead className="w-[140px]">Trạng thái</TableHead>
+              <TableHead className="w-[140px] text-center">Trạng thái</TableHead>
               <TableHead className="text-right">Thao tác</TableHead>
             </TableRow>
           </TableHeader>
@@ -187,13 +187,15 @@ export function UserManagementTable() {
                   </TableCell>
                   <TableCell>{user.email}</TableCell>
                   <TableCell>{user.phone_number || 'Chưa cập nhật'}</TableCell>
-                  <TableCell>
-                    <Badge
-                      variant="outline"
-                      className={`${getStatusColor(user.status)} w-[120px] text-center`}
-                    >
-                      {user.status === 'ACTIVE' ? 'Hoạt động' : 'Không hoạt động'}
-                    </Badge>
+                  <TableCell className="text-center">
+                    <div className="flex justify-center">
+                      <Badge
+                        variant="outline"
+                        className={`${getStatusColor(user.status)} w-[120px] text-center`}
+                      >
+                        {user.status === 'ACTIVE' ? 'Hoạt động' : 'Không hoạt động'}
+                      </Badge>
+                    </div>
                   </TableCell>
                   <TableCell className="text-right">
                     <DropdownMenu>
@@ -265,7 +267,7 @@ function LoadingTable() {
               <TableHead>Người dùng</TableHead>
               <TableHead>Email</TableHead>
               <TableHead>Số điện thoại</TableHead>
-              <TableHead className="w-[140px]">Trạng thái</TableHead>
+              <TableHead className="w-[140px] text-center">Trạng thái</TableHead>
               <TableHead className="text-right">Thao tác</TableHead>
             </TableRow>
           </TableHeader>
@@ -286,8 +288,10 @@ function LoadingTable() {
                   <TableCell>
                     <div className="h-4 w-32 bg-muted animate-pulse" />
                   </TableCell>
-                  <TableCell>
-                    <div className="h-6 w-24 bg-muted animate-pulse" />
+                  <TableCell className="text-center">
+                    <div className="flex justify-center">
+                      <div className="h-6 w-24 bg-muted animate-pulse" />
+                    </div>
                   </TableCell>
                   <TableCell className="text-right">
                     <div className="ml-auto h-8 w-8 bg-muted animate-pulse" />

@@ -18,10 +18,10 @@ import {
 } from '@/components/ui/select'
 import { editFundSavingPlanSchema } from '@/core/fund-saving-plan/constants/edit-fund-saving-plan.constant'
 import { ISpendingPlan, IUpdateFundSavingPlanRequest, RecurringFrequency } from '@/core/fund-saving-plan/models'
+import { mockDataTrackerType } from '@/app/dashboard/spending-plan/constant'
 import { getDaysForMonth, getNextDayOfMonth, getNextDayOfWeek } from '@/libraries/utils'
 import { DateTimePicker } from '@/components/core/DateTimePicker'
 import { MoneyInput } from '@/components/core/MoneyInput'
-import { mockDataTrackerType } from '@/app/dashboard/spending-plan/constant'
 import { getDaysInMonth } from '@/core/fund-saving-plan/constants/create-fund-saving-plan.constant'
 import { z } from 'zod'
 import { Combobox } from '@/components/core/Combobox'
@@ -252,8 +252,7 @@ const EditPlanForm: React.FC<EditPlanFormProps> = ({
             (planData.description = data.description),
             (planData.trackerTypeId = data.trackerTypeId),
             (planData.targetAmount = parseFloat(data.targetAmount)),
-
-          onUpdatePlan(planData)
+            onUpdatePlan(planData)
         }
       } catch (error) {
         console.error('Error updating plan:', error)
@@ -471,7 +470,7 @@ const EditPlanForm: React.FC<EditPlanFormProps> = ({
           )}
 
           {selectedFrequency === 'ANNUAL' && (
-            <div className="grid grid-cols-2 gap-4 col-span-2 w-full">
+            <div className='col-span-2 grid w-full grid-cols-2 gap-4'>
               <FormField
                 control={form.control}
                 name='month'
@@ -557,7 +556,7 @@ const EditPlanForm: React.FC<EditPlanFormProps> = ({
               name='dayOfMonth'
               render={({ field }) => (
                 <FormItem className='col-span-2 mb-4'>
-                  <div className='flex justify-between '>
+                  <div className='flex justify-between'>
                     <FormLabel className='text-muted-foreground'>{t('spendingPlan:form.planFields.day')}</FormLabel>
                     <FormMessage />
                   </div>

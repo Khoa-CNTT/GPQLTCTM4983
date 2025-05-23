@@ -2,6 +2,7 @@ import { IGetAllDataFundSavingTarget, IDialogFlags, IPagination } from '@/core/f
 import { IDataTableConfig } from '@/types/common.i'
 import { Dispatch, SetStateAction } from 'react'
 import { IExpectedDateParams } from '.'
+import { ETypeOfTrackerTransactionType } from '@/core/tracker-transaction-type/models/tracker-transaction-type.enum'
 export interface ISpendingPlan {
   id: string
   fundId: string
@@ -13,6 +14,7 @@ export interface ISpendingPlan {
   type: 'ANNUAL' | 'MONTHLY' | 'WEEKLY' | 'DAILY'
   fundName: string
   trackerTypeName: string
+  trackerTypeDirection: ETypeOfTrackerTransactionType
   remainingDays: { day: number; month: number; year: number }
   expiredDate: { day: number; month: number; year: number }
   expectedDateParams: IExpectedDateParams

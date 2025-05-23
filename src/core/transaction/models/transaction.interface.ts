@@ -110,6 +110,8 @@ export interface IUpdateTransactionBody {
 }
 
 export interface IClassiFyFormProps {
+  indexSuggestSelected: number
+  setIndexSuggestSelected: React.Dispatch<React.SetStateAction<number>>
   selectedTransaction: IUnclassifiedTransaction | null
   incomeTrackerType?: ITrackerTransactionType[]
   expenseTrackerType?: ITrackerTransactionType[]

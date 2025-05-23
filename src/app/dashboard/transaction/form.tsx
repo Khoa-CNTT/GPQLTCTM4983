@@ -88,8 +88,15 @@ import { AgentDialog } from '@/components/dashboard/tracker-transaction/AgentDia
 
 export default function TransactionForm() {
   // states
+  const [indexSuggestSelected, setIndexSuggestSelected] = useState<number>(-1)
+  useEffect(() => {
+    console.log('indexSuggestSelected', indexSuggestSelected)
+  }, [indexSuggestSelected])
   const [isLoadingUnclassified, setIsLoadingUnclassified] = useState<boolean>(false)
   const [selectedTransaction, setSelectedTransaction] = useState<IUnclassifiedTransaction | null>(null)
+  useEffect(() => {
+    console.log('selectedTransaction', selectedTransaction)
+  }, [selectedTransaction])
   const [isOpenAgentDialog, setIsOpenAgentDialog] = useState(false)
   const [idDeletes, setIdDeletes] = useState<string[]>([])
   const [typeOfTrackerType, setTypeOfTrackerType] = useState<ETypeOfTrackerTransactionType>(
@@ -117,6 +124,9 @@ export default function TransactionForm() {
   const [uncTableQueryOptions, setUncTableQueryOptions] = useState<IQueryOptions>(initQueryOptions)
   const [todayTableQueryOptions, setTodayTableQueryOptions] = useState<IQueryOptions>(initQueryOptions)
   const [isDialogOpen, setIsDialogOpen] = useState<IDialogTransaction>(initDialogFlag)
+  useEffect(() => {
+    console.log('isDialogOpen', isDialogOpen.isDialogClassifyTransactionOpen)
+  }, [isDialogOpen])
   const [accountBankRefetching, setAccountBankRefetching] = useState<IAccountBank>()
   const [accountBankRefetchingQueue, setAccountBankRefetchingQueue] = useState<IAccountBank[]>([])
   const [transactionSummary, setTransactionSummary] = useState<ITransactionSummary>(initEmptyTransactionSummaryData)
@@ -688,9 +698,20 @@ export default function TransactionForm() {
             isDialogOpen: isDialogOpen,
             setIsDialogOpen: setIsDialogOpen
           }}
+          selectedTransaction={selectedTransaction}
+          setSelectedTransaction={setSelectedTransaction}
           classifyDialog={{
+            handleSetSelectedTransaction: (id: string) => {
+              console.log(dataUnclassifiedTxs?.data.data)
+              console.log(dataUnclassifiedTxs?.data.data.find((e) => e.id === id))
+
+              setSelectedTransaction(dataUnclassifiedTxs?.data.data.find((e) => e.id === id) || null)
+            },
             incomeTrackerTransactionType: incomingTrackerType,
             expenseTrackerTransactionType: expenseTrackerType,
+            isPendingClassifyTransaction,
+            indexSuggestSelected,
+            setIndexSuggestSelected,
             handleClassify: (
               data: IClassifyTransactionBody,
               setIsEditing: React.Dispatch<React.SetStateAction<boolean>>
@@ -704,7 +725,10 @@ export default function TransactionForm() {
                 setIsDialogOpen: setIsDialogOpen,
                 setIsEditing,
                 callBackOnSuccess: callBackRefetchTransactionPage,
-                setDataDetail
+                setDataDetail,
+                setSelectedTransaction,
+                setDetailDialogOpen,
+                setIndexSuggestSelected
               })
             },
             typeOfTrackerType,
@@ -764,6 +788,8 @@ export default function TransactionForm() {
         isDialogOpen={isDialogOpen.isDialogDeleteAllOpen}
       />
       <AgentDialog
+        indexSuggestSelected={indexSuggestSelected}
+        setIndexSuggestSelected={setIndexSuggestSelected}
         selectedTransaction={selectedTransaction}
         setSelectedTransaction={setSelectedTransaction}
         setIsDialogOpen={setIsDialogOpen}
@@ -800,24 +826,7 @@ export default function TransactionForm() {
               id,
               hookDelete: deleteTrackerType,
               callBackOnSuccess: callBackRefetchTransactionPage
-            }),
-          handleClassifyTransaction: async (data: IClassifyTransactionBody) => {
-            const status = await handleClassifyTransaction({
-              payload: {
-                ...data,
-                fundId
-              },
-              callBackOnSuccess: callBackRefetchTransactionPage,
-              hookClassify: classifyTransaction,
-              setIsDialogOpen,
-              setUncDataTableConfig: setDataTableUnclassifiedConfig,
-              setDataTableConfig: setDataTableConfig,
-              setDataDetail: setDataDetailTransaction
             })
-            if (status === true) {
-              setDetailDialogOpen(false)
-            }
-          }
         }}
         isClassifying={isPendingClassifyTransaction}
         incomeTrackerType={incomingTrackerType}
