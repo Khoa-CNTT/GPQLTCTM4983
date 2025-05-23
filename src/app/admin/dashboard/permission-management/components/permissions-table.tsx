@@ -34,6 +34,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import toast from 'react-hot-toast'
 import { CreatePermissionDialog } from './create-permission-dialog'
 import { useTranslation } from 'react-i18next'
+import { handleApiError } from '@/libraries/errorHandler'
 
 export interface Permission {
   id: string
@@ -86,8 +87,7 @@ export function PermissionsTable() {
       toast.success(t('permission.delete_success', 'Quyền truy cập đã được xóa thành công!'))
     },
     onError: (error) => {
-      console.error('Lỗi khi xóa quyền truy cập:', error)
-      toast.error(t('permission.delete_error', 'Không thể xóa quyền truy cập. Vui lòng thử lại sau.'))
+      handleApiError(error)
     }
   })
 

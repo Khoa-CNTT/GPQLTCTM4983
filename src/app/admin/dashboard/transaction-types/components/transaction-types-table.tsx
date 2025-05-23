@@ -41,6 +41,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { CreateTransactionTypeDialog } from '@/app/admin/dashboard/transaction-types/components/create-transaction-type-dialog'
 import { EditTransactionTypeDialog } from '@/app/admin/dashboard/transaction-types/components/edit-transaction-type-dialog'
 import { useTranslation } from 'react-i18next'
+import { handleApiError } from '@/libraries/errorHandler'
 
 export type TransactionType = AdminTransactionType
 
@@ -99,7 +100,7 @@ export function TransactionTypesTable({ filterType }: TransactionTypesTableProps
           setDeleteDialogOpen(false)
         },
         onError: (error) => {
-          toast.error(t('admin.transactionTypes.deleteError'))
+          handleApiError(error)
         }
       })
     }

@@ -6,5 +6,6 @@ export const userRoutes = {
   getAllUsers: 'users/admin/all',
   updateUserStatus: 'users/:id/status',
   createAdmin: 'users/admin',
-  updateAdmin: 'users/admins/:id'
+  updateAdmin: 'users/admins/:id',
+  deleteUser: 'users/:id'
 }

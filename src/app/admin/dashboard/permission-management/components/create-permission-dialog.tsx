@@ -23,6 +23,7 @@ import toast from 'react-hot-toast'
 import httpService from '@/libraries/http'
 import { apiService } from '@/api'
 import { useTranslation } from 'react-i18next'
+import { handleApiError } from '@/libraries/errorHandler'
 
 interface CreatePermissionDialogProps {
   open: boolean
@@ -58,8 +59,7 @@ export function CreatePermissionDialog({ open, onClose, onSuccess }: CreatePermi
       onClose()
     },
     onError: (error) => {
-      console.error('Lỗi khi tạo quyền truy cập:', error)
-      toast.error(t('permission.error_add', 'Không thể tạo quyền truy cập. Vui lòng thử lại sau.'))
+      handleApiError(error)
     }
   })
 
