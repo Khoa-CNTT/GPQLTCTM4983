@@ -8,6 +8,7 @@ import 'nprogress/nprogress.css'
 import dynamic from 'next/dynamic'
 import { Inter } from 'next/font/google'
 import { usePathname } from 'next/navigation'
+import I18nProvider from '@/libraries/i18n-provider'
 
 const inter = Inter({
   subsets: ['latin'],
@@ -98,7 +99,9 @@ export default function AdminLayout({
       <TopProgressBar />
       <ThemeProvider attribute='class' defaultTheme='system' enableSystem disableTransitionOnChange>
         <QueryProvider>
-          {mounted ? renderContent() : null}
+          <I18nProvider>
+            {mounted ? renderContent() : null}
+          </I18nProvider>
         </QueryProvider>
       </ThemeProvider>
     </div>

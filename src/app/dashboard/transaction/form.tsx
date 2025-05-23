@@ -26,6 +26,7 @@ import {
   IGetTransactionResponse,
   ITransaction,
   ITransactionSummary,
+  IUnclassifiedTransaction,
   IUpdateTransactionBody,
   TTransactionActions
 } from '@/core/transaction/models'
@@ -87,7 +88,15 @@ import { AgentDialog } from '@/components/dashboard/tracker-transaction/AgentDia
 
 export default function TransactionForm() {
   // states
+  const [indexSuggestSelected, setIndexSuggestSelected] = useState<number>(-1)
+  useEffect(() => {
+    console.log('indexSuggestSelected', indexSuggestSelected)
+  }, [indexSuggestSelected])
   const [isLoadingUnclassified, setIsLoadingUnclassified] = useState<boolean>(false)
+  const [selectedTransaction, setSelectedTransaction] = useState<IUnclassifiedTransaction | null>(null)
+  useEffect(() => {
+    console.log('selectedTransaction', selectedTransaction)
+  }, [selectedTransaction])
   const [isOpenAgentDialog, setIsOpenAgentDialog] = useState(false)
   const [idDeletes, setIdDeletes] = useState<string[]>([])
   const [typeOfTrackerType, setTypeOfTrackerType] = useState<ETypeOfTrackerTransactionType>(
@@ -115,11 +124,20 @@ export default function TransactionForm() {
   const [uncTableQueryOptions, setUncTableQueryOptions] = useState<IQueryOptions>(initQueryOptions)
   const [todayTableQueryOptions, setTodayTableQueryOptions] = useState<IQueryOptions>(initQueryOptions)
   const [isDialogOpen, setIsDialogOpen] = useState<IDialogTransaction>(initDialogFlag)
+  useEffect(() => {
+    console.log('isDialogOpen', isDialogOpen.isDialogClassifyTransactionOpen)
+  }, [isDialogOpen])
   const [accountBankRefetching, setAccountBankRefetching] = useState<IAccountBank>()
   const [accountBankRefetchingQueue, setAccountBankRefetchingQueue] = useState<IAccountBank[]>([])
   const [transactionSummary, setTransactionSummary] = useState<ITransactionSummary>(initEmptyTransactionSummaryData)
   const [incomingTrackerType, setIncomingTrackerType] = useState<ITrackerTransactionType[]>([])
   const [expenseTrackerType, setExpenseTrackerType] = useState<ITrackerTransactionType[]>([])
+  const [dataTableUnclassifiedConfig, setDataTableUnclassifiedConfig] = useState<IDataTableConfig>({
+    ...initTableConfig,
+    classNameOfScroll: 'h-[calc(100vh-35rem)]'
+  })
+  const [dataDetailTransaction, setDataDetailTransaction] = useState<ITransaction>(initEmptyDetailTransactionData)
+  const [detailDialogOpen, setDetailDialogOpen] = useState(false)
 
   // hooks
   // declare hooks
@@ -135,7 +153,7 @@ export default function TransactionForm() {
     deleteMultipleTransaction
   } = useTransaction()
   const { getAllAccountSource } = useAccountSource()
-  const { classifyTransaction } = useTrackerTransaction()
+  const { classifyTransaction, isClassing: isPendingClassifyTransaction } = useTrackerTransaction()
   const { getAllTrackerTransactionType, createTrackerTxType, updateTrackerTxType, deleteTrackerType } =
     useTrackerTransactionType()
   const { user, fundId } = useStoreLocal()
@@ -592,10 +610,7 @@ export default function TransactionForm() {
           <CardHeader>
             <CardTitle className='flex items-center justify-between'>
               <span>{t('unclassifiedTransaction')}</span>
-              <Button
-                variant='outline'
-                onClick={() => setIsOpenAgentDialog(true)}
-              >
+              <Button variant='outline' onClick={() => setIsOpenAgentDialog(true)}>
                 {t('classify')}
               </Button>
             </CardTitle>
@@ -683,9 +698,20 @@ export default function TransactionForm() {
             isDialogOpen: isDialogOpen,
             setIsDialogOpen: setIsDialogOpen
           }}
+          selectedTransaction={selectedTransaction}
+          setSelectedTransaction={setSelectedTransaction}
           classifyDialog={{
+            handleSetSelectedTransaction: (id: string) => {
+              console.log(dataUnclassifiedTxs?.data.data)
+              console.log(dataUnclassifiedTxs?.data.data.find((e) => e.id === id))
+
+              setSelectedTransaction(dataUnclassifiedTxs?.data.data.find((e) => e.id === id) || null)
+            },
             incomeTrackerTransactionType: incomingTrackerType,
             expenseTrackerTransactionType: expenseTrackerType,
+            isPendingClassifyTransaction,
+            indexSuggestSelected,
+            setIndexSuggestSelected,
             handleClassify: (
               data: IClassifyTransactionBody,
               setIsEditing: React.Dispatch<React.SetStateAction<boolean>>
@@ -699,7 +725,10 @@ export default function TransactionForm() {
                 setIsDialogOpen: setIsDialogOpen,
                 setIsEditing,
                 callBackOnSuccess: callBackRefetchTransactionPage,
-                setDataDetail
+                setDataDetail,
+                setSelectedTransaction,
+                setDetailDialogOpen,
+                setIndexSuggestSelected
               })
             },
             typeOfTrackerType,
@@ -759,13 +788,52 @@ export default function TransactionForm() {
         isDialogOpen={isDialogOpen.isDialogDeleteAllOpen}
       />
       <AgentDialog
+        indexSuggestSelected={indexSuggestSelected}
+        setIndexSuggestSelected={setIndexSuggestSelected}
+        selectedTransaction={selectedTransaction}
+        setSelectedTransaction={setSelectedTransaction}
+        setIsDialogOpen={setIsDialogOpen}
         isOpen={isOpenAgentDialog}
         setOpen={setIsOpenAgentDialog}
         data={{
           transactions: dataUnclassifiedTxs?.data.data || [],
-          messageAnalysis: dataUnclassifiedTxs?.data.messages ? dataUnclassifiedTxs.data.messages.replace(/<[^>]*>/g, '') : '',
+          messageAnalysis: dataUnclassifiedTxs?.data.messages
+            ? dataUnclassifiedTxs.data.messages.replace(/<[^>]*>/g, '')
+            : ''
         }}
         isLoading={isLoadingUnclassified}
+        callBack={{
+          handleCreateTrackerType: (
+            data: ITrackerTransactionTypeBody,
+            setIsCreating: React.Dispatch<React.SetStateAction<boolean>>
+          ) => {
+            handleCreateTrackerTxType({
+              payload: data,
+              hookCreate: createTrackerTxType,
+              callBackOnSuccess: callBackRefetchTransactionPage,
+              setIsCreating
+            })
+          },
+          handleUpdateTrackerType: (data: ITrackerTransactionTypeBody) => {
+            handleUpdateTrackerTxType({
+              payload: data,
+              hookUpdate: updateTrackerTxType,
+              callBackOnSuccess: callBackRefetchTransactionPage
+            })
+          },
+          handleDeleteTrackerType: (id: string) =>
+            handleDeleteTrackerTxType({
+              id,
+              hookDelete: deleteTrackerType,
+              callBackOnSuccess: callBackRefetchTransactionPage
+            })
+        }}
+        isClassifying={isPendingClassifyTransaction}
+        incomeTrackerType={incomingTrackerType}
+        expenseTrackerType={expenseTrackerType}
+        expenditureFund={modifiedTrackerTypeForComboBox(getAllExpenditureFundData?.data || [])}
+        detailDialogOpen={detailDialogOpen}
+        setDetailDialogOpen={setDetailDialogOpen}
       />
     </div>
   )

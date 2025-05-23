@@ -12,7 +12,7 @@ import Cookies from 'js-cookie'
 export const useAdminSignIn = (isRememberMe: boolean, opts?: IUseQueryHookOptions) => {
   const router = useRouter()
   const [countLogin, setCountLogin] = useState<number>(0)
-  
+
   const mutation = useMutationCustom<ISignInBody, ISignInResponse>({
     pathUrl: authServices.signIn,
     mutateOption: {
@@ -36,7 +36,7 @@ export const useAdminSignIn = (isRememberMe: boolean, opts?: IUseQueryHookOption
               sameSite: 'lax',
               expires: 7
             })
-            
+
             // Thêm cookie adminRole để xác thực quyền admin trong middleware
             Cookies.set('adminRole', 'true', {
               path: '/',
@@ -44,17 +44,17 @@ export const useAdminSignIn = (isRememberMe: boolean, opts?: IUseQueryHookOption
               sameSite: 'lax',
               expires: 1
             })
-            
+
             // Lưu token vào localStorage
             setAccessTokenToLocalStorage(data.data.accessToken)
             setRefreshTokenToLocalStorage(data.data.refreshToken)
-            
+
             // Lưu thông tin người dùng vào localStorage
             localStorage.setItem('user', JSON.stringify(data.data.user))
-            
+
             // Thông báo thành công
             toast.success('Đăng nhập thành công!')
-            
+
             // Chuyển hướng đến dashboard admin
             // Sử dụng callback từ component gọi nếu có, nếu không thì chuyển hướng mặc định
             if (opts?.callBackOnSuccess) {
@@ -67,7 +67,7 @@ export const useAdminSignIn = (isRememberMe: boolean, opts?: IUseQueryHookOption
           } else {
             // Người dùng không có quyền admin
             toast.error('Bạn không có quyền truy cập trang quản trị!')
-            
+
             // Xóa token nếu đã được lưu
             Cookies.remove('authTokenVerify', { path: '/' })
             Cookies.remove('refreshToken', { path: '/' })
@@ -90,4 +90,4 @@ export const useAdminSignIn = (isRememberMe: boolean, opts?: IUseQueryHookOption
   })
 
   return mutation
-} 
+}

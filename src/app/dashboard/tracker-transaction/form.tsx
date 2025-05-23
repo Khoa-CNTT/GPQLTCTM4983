@@ -49,6 +49,7 @@ import {
   IDataTransactionTable,
   IGetTransactionResponse,
   ITransaction,
+  IUnclassifiedTransaction,
   IUpdateTransactionBody
 } from '@/core/transaction/models'
 import { useTrackerTransaction } from '@/core/tracker-transaction/hooks'
@@ -97,7 +98,7 @@ import { ETypeOfTrackerTransactionType } from '@/core/tracker-transaction-type/m
 import toast from 'react-hot-toast'
 import DeleteDialog from '@/components/dashboard/DeleteDialog'
 import { useSocket } from '@/libraries/useSocketIo'
-import { getAccessTokenFromLocalStorage, getTimeCountRefetchLimit, setTimeCountRefetchLimit } from '@/libraries/helpers'
+import { getTimeCountRefetchLimit, setTimeCountRefetchLimit } from '@/libraries/helpers'
 import { useUser } from '@/core/users/hooks'
 import { EUserStatus, IUserPayloadForSocket } from '@/types/user.i'
 import { useStoreLocal } from '@/hooks/useStoreLocal'
@@ -110,10 +111,17 @@ import {
 import { useOverviewPage } from '@/core/overview/hooks'
 import { Checkbox } from '@/components/ui/checkbox'
 import { AgentDialog } from '@/components/dashboard/tracker-transaction/AgentDialog'
+import { useFundSavingTarget } from '@/core/fund-saving-target/hooks'
 
 export default function TrackerTransactionForm() {
   // states
+  const [indexSuggestSelected, setIndexSuggestSelected] = useState<number>(-1)
+  useEffect(() => {
+    console.log('Change - indexSuggestSelected', indexSuggestSelected)
+  }, [indexSuggestSelected])
+  const [selectedTransaction, setSelectedTransaction] = useState<IUnclassifiedTransaction | null>(null)
   const [heightDonut, setHeightDonut] = useState<string>('')
+  const [detailDialogOpen, setDetailDialogOpen] = useState(false)
   const [queryOptions, setQueryOptions] = useState<IQueryOptions>(initQueryOptions)
   const [uncTableQueryOptions, setUncTableQueryOptions] = useState<IQueryOptions>(initQueryOptions)
   const [tableData, setTableData] = useState<ICustomTrackerTransaction[]>([])
@@ -140,7 +148,6 @@ export default function TrackerTransactionForm() {
     ETypeOfTrackerTransactionType.INCOMING
   )
 
-  const [transactionIdClassifying, setTransactionIdClassifying] = useState<string>('')
   const [isLoadingUnclassified, setIsLoadingUnclassified] = useState<boolean>(false)
   const [idDeletes, setIdDeletes] = useState<string[]>([])
   // hooks
@@ -181,6 +188,8 @@ export default function TrackerTransactionForm() {
   const { getAllExpenditureFund } = useExpenditureFund()
 
   // fetch data
+  const { getAllFundSavingTarget } = useFundSavingTarget()
+  const { refetchAllData: refetchBudgetTarget } = getAllFundSavingTarget(fundId)
   const { dataUnclassifiedTxs } = getUnclassifiedTransactions({
     query: uncTableQueryOptions,
     fundId
@@ -189,20 +198,20 @@ export default function TrackerTransactionForm() {
     getAllAccountSource(fundId)
   const { getAllExpenditureFundData } = getAllExpenditureFund()
   // custom hooks
-  const { resetData: resetCacheExpenditureFund } = useUpdateModel([GET_ADVANCED_EXPENDITURE_FUND_KEY], () => { })
+  const { resetData: resetCacheExpenditureFund } = useUpdateModel([GET_ADVANCED_EXPENDITURE_FUND_KEY], () => {})
   const { resetData: resetCacheStatisticExpenditureFund } = useUpdateModel(
     [GET_STATISTIC_EXPENDITURE_FUND_KEY],
-    () => { }
+    () => {}
   )
   const { resetData: resetCacheTrackerTx } = useUpdateModel<IAdvancedTrackerTransactionResponse>(
     [GET_ADVANCED_TRACKER_TRANSACTION_KEY, mergeQueryParams(queryOptions)],
     updateCacheDataCreateClassify
   )
-  const { resetData: resetCacheStatistic } = useUpdateModel([STATISTIC_TRACKER_TRANSACTION_KEY], () => { })
-  const { resetData: resetCacheUnclassifiedTxs } = useUpdateModel([GET_UNCLASSIFIED_TRANSACTION_KEY], () => { })
+  const { resetData: resetCacheStatistic } = useUpdateModel([STATISTIC_TRACKER_TRANSACTION_KEY], () => {})
+  const { resetData: resetCacheUnclassifiedTxs } = useUpdateModel([GET_UNCLASSIFIED_TRANSACTION_KEY], () => {})
   const { resetData: resetCacheTodayTxs } = useUpdateModel(
     [GET_TODAY_TRANSACTION_KEY, mergeQueryParams(initQueryOptions)],
-    () => { }
+    () => {}
   )
   const { setData: setCacheTrackerTxTypeCreate } = useUpdateModel<any>(
     [GET_ALL_TRACKER_TRANSACTION_TYPE_KEY],
@@ -211,7 +220,7 @@ export default function TrackerTransactionForm() {
     }
   )
 
-  const { resetData: resetAccountSource } = useUpdateModel([GET_ADVANCED_ACCOUNT_SOURCE_KEY], () => { })
+  const { resetData: resetAccountSource } = useUpdateModel([GET_ADVANCED_ACCOUNT_SOURCE_KEY], () => {})
   const { resetData: resetCacheTransaction } = useUpdateModel<IGetTransactionResponse>(
     [GET_ADVANCED_TRANSACTION_KEY],
     updateCacheDataTransactionForClassify
@@ -230,7 +239,8 @@ export default function TrackerTransactionForm() {
     getTrackerTransaction: resetCacheTrackerTx,
     getStatisticExpenditureFund: resetCacheStatisticExpenditureFund,
     getExpenditureFund: resetCacheExpenditureFund,
-    getStatisticOverview: refetchGetStatisticOverviewPageData
+    getStatisticOverview: refetchGetStatisticOverviewPageData,
+    getBudgetTarget: refetchBudgetTarget
   }
   const callBackRefetchTrackerTransactionPage = (actionMaps: TTrackerTransactionActions[]) => {
     actionMaps.forEach((action) => {
@@ -385,7 +395,6 @@ export default function TrackerTransactionForm() {
   const dataTableButtons = initButtonInDataTableHeader({ setIsDialogOpen })
 
   const refetchTransactionBySocket = () => {
-    const token = getAccessTokenFromLocalStorage()
     const lastCalled = getTimeCountRefetchLimit()
     const now = Date.now()
     const timeLimit = 10000
@@ -397,8 +406,7 @@ export default function TrackerTransactionForm() {
           email: user?.email ?? '',
           fullName: user?.fullName ?? '',
           status: (user?.status as EUserStatus) ?? EUserStatus.ACTIVE,
-          fundId,
-          token: token ?? ''
+          fundId
         }
         if (socket) {
           setTimeCountRefetchLimit()
@@ -454,7 +462,7 @@ export default function TrackerTransactionForm() {
     }
 
     const handleCreatedTransactions = (data: { messages: string; status: string }) => {
-      if(data.status === 'TRANSACTIONS_ARE_CREATED') {
+      if (data.status === 'TRANSACTIONS_ARE_CREATED') {
         resetCacheUnclassifiedTxs()
         resetCacheStatistic()
         setIsLoadingUnclassified(false)
@@ -469,7 +477,7 @@ export default function TrackerTransactionForm() {
     socket.off(EPaymentEvents.CREATED_TRANSACTIONS)
     socket.off(EPaymentEvents.REFETCH_FAILED)
 
-    socket.on(EPaymentEvents.REFETCH_COMPLETE,handleRefetchComplete)
+    socket.on(EPaymentEvents.REFETCH_COMPLETE, handleRefetchComplete)
     socket.on(EPaymentEvents.CREATED_TRANSACTIONS, handleCreatedTransactions)
     socket.on(EPaymentEvents.REFETCH_FAILED, handleRefetchFailed)
 
@@ -523,10 +531,11 @@ export default function TrackerTransactionForm() {
                       <ArrowDownIcon className='mr-1 h-4 w-4 animate-bounce' />
                     )}
                     <span>
-                      {`${statisticData?.data?.total?.rate && statisticData.data.total.rate !== 'none'
-                        ? (statisticData.data.total.rate.startsWith('-') ? '' : '+') + statisticData.data.total.rate
-                        : '0'
-                        }% ${t('leftThisMonth')}`}
+                      {`${
+                        statisticData?.data?.total?.rate && statisticData.data.total.rate !== 'none'
+                          ? (statisticData.data.total.rate.startsWith('-') ? '' : '+') + statisticData.data.total.rate
+                          : '0'
+                      }% ${t('leftThisMonth')}`}
                     </span>
                   </p>
                 </div>
@@ -701,11 +710,11 @@ export default function TrackerTransactionForm() {
                 viewportHeight={viewportHeight}
                 data={modifyFlatListData(dataUnclassifiedTxs?.data.data || [])}
                 onClick={(data: IFlatListData) => {
-                  const item =
-                    dataUnclassifiedTxs?.data.data.find((item) => item.id === data.id) || initEmptyDetailTransactionData
-                  setTransactionIdClassifying(data.id)
-                  setDataDetailTransaction(item)
-                  setTypeOfTrackerType(item.direction as ETypeOfTrackerTransactionType)
+                  const item = dataUnclassifiedTxs?.data.data.find((item) => item.id === data.id) || null
+                  setSelectedTransaction(item)
+                  setTypeOfTrackerType(
+                    (item?.direction as ETypeOfTrackerTransactionType) || ETypeOfTrackerTransactionType.INCOMING
+                  )
                   setIsDialogOpen((prev) => ({ ...prev, isDialogDetailTransactionOpen: true }))
                 }}
               />
@@ -738,8 +747,10 @@ export default function TrackerTransactionForm() {
           statusUpdateTrackerTransaction
         }}
         classifyTransactionDialog={{
+          indexSuggestSelected,
+          setIndexSuggestSelected,
           isPendingClassifyTransaction,
-          transactionId: transactionIdClassifying || '',
+          selectedTransaction,
           handleClassify: (data: IClassifyTransactionBody) => {
             handleClassifyTransaction({
               payload: {
@@ -750,8 +761,10 @@ export default function TrackerTransactionForm() {
               hookClassify: classifyTransaction,
               setIsDialogOpen,
               setUncDataTableConfig: setDataTableUnclassifiedConfig,
-              setDataTableConfig: setDataTableConfig,
-              setDataDetail: setDataDetailTransaction
+              setDataTableConfig,
+              setSelectedTransaction,
+              setDetailDialogOpen,
+              setIndexSuggestSelected
             })
           }
         }}
@@ -807,19 +820,12 @@ export default function TrackerTransactionForm() {
           setTypeOfTrackerType,
           expenditureFund: modifiedTrackerTypeForComboBox(getAllExpenditureFundData?.data || [])
         }}
-        unclassifiedTxDialog={{
-          columns: columnUnclassifiedTxTables,
-          unclassifiedTxTableData,
-          setTableConfig: setDataTableUnclassifiedConfig,
-          tableConfig: dataTableUnclassifiedConfig
-        }}
         createTrackerTransactionTypeDialog={{
           formData: formDataCreateTrackerTxType,
           setFormData: setFormDataCreateTrackerTxType,
           createTrackerTransactionType: createTrackerTxType,
           hookUpdateCache: setCacheTrackerTxTypeCreate
         }}
-        setTransactionIdClassifying={setTransactionIdClassifying}
       />
       <DeleteDialog
         customDescription='Bạn chắc chắn muốn xóa tất cả dữ liệu này?'
@@ -848,13 +854,52 @@ export default function TrackerTransactionForm() {
         setIsDialogOpen={setIsDialogOpen}
       />
       <AgentDialog
+        indexSuggestSelected={indexSuggestSelected}
+        setIndexSuggestSelected={setIndexSuggestSelected}
+        selectedTransaction={selectedTransaction}
+        setSelectedTransaction={setSelectedTransaction}
+        setIsDialogOpen={setIsDialogOpen}
         isOpen={isOpenAgentDialog}
         setOpen={setIsOpenAgentDialog}
         data={{
           transactions: dataUnclassifiedTxs?.data.data || [],
-          messageAnalysis: dataUnclassifiedTxs?.data.messages ? dataUnclassifiedTxs.data.messages.replace(/<[^>]*>/g, '') : '',
+          messageAnalysis: dataUnclassifiedTxs?.data.messages
+            ? dataUnclassifiedTxs.data.messages.replace(/<[^>]*>/g, '')
+            : ''
         }}
         isLoading={isLoadingUnclassified}
+        callBack={{
+          handleCreateTrackerType: (
+            data: ITrackerTransactionTypeBody,
+            setIsCreating: React.Dispatch<React.SetStateAction<boolean>>
+          ) => {
+            handleCreateTrackerTxType({
+              payload: data,
+              hookCreate: createTrackerTxType,
+              callBackOnSuccess: callBackRefetchTrackerTransactionPage,
+              setIsCreating
+            })
+          },
+          handleUpdateTrackerType: (data: ITrackerTransactionTypeBody) => {
+            handleUpdateTrackerTxType({
+              payload: data,
+              hookUpdate: updateTrackerTxType,
+              callBackOnSuccess: callBackRefetchTrackerTransactionPage
+            })
+          },
+          handleDeleteTrackerType: (id: string) =>
+            handleDeleteTrackerTxType({
+              id,
+              hookDelete: deleteTrackerType,
+              callBackOnSuccess: callBackRefetchTrackerTransactionPage
+            })
+        }}
+        isClassifying={isPendingClassifyTransaction}
+        incomeTrackerType={incomingTrackerType}
+        expenseTrackerType={expenseTrackerType}
+        expenditureFund={modifiedTrackerTypeForComboBox(getAllExpenditureFundData?.data || [])}
+        detailDialogOpen={detailDialogOpen}
+        setDetailDialogOpen={setDetailDialogOpen}
       />
     </div>
   )

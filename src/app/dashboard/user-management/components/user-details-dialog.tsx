@@ -17,12 +17,10 @@ import {
   MapPin, 
   Phone, 
   User2, 
-  Briefcase, 
-  BadgeCheck, 
-  Shield, 
   Building,
-  BookOpen
+  BadgeCheck
 } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 
 interface UserDetailsDialogProps {
   user: User | null
@@ -31,6 +29,8 @@ interface UserDetailsDialogProps {
 }
 
 export function UserDetailsDialog({ user, isOpen, onClose }: UserDetailsDialogProps) {
+  const { t } = useTranslation(['common'])
+  
   if (!user) return null
 
   const getInitials = (name: string | null) => {
@@ -54,13 +54,27 @@ export function UserDetailsDialog({ user, isOpen, onClose }: UserDetailsDialogPr
     }
   }
 
+  const formatDate = (dateString: string | null) => {
+    if (!dateString) return t('user.not_updated', 'Chưa cập nhật')
+    try {
+      const date = new Date(dateString)
+      return date.toLocaleDateString('vi-VN', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit'
+      })
+    } catch (error) {
+      return t('user.invalid_date_format', 'Định dạng không hợp lệ')
+    }
+  }
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-md">
         <DialogHeader>
-          <DialogTitle>Chi tiết người dùng</DialogTitle>
+          <DialogTitle>{t('user.user_details', 'Chi tiết người dùng')}</DialogTitle>
           <DialogDescription>
-            Thông tin chi tiết của người dùng trong hệ thống
+            {t('user.user_details_description', 'Thông tin chi tiết của người dùng trong hệ thống')}
           </DialogDescription>
         </DialogHeader>
 
@@ -70,12 +84,14 @@ export function UserDetailsDialog({ user, isOpen, onClose }: UserDetailsDialogPr
             <AvatarFallback>{getInitials(user.fullName)}</AvatarFallback>
           </Avatar>
           <div className="text-center">
-            <h2 className="text-xl font-bold">{user.fullName || 'Chưa cập nhật'}</h2>
+            <h2 className="text-xl font-bold">{user.fullName || t('user.not_updated', 'Chưa cập nhật')}</h2>
             <Badge
               variant="outline"
               className={`mt-2 ${getStatusColor(user.status)}`}
             >
-              {user.status === 'ACTIVE' ? 'Hoạt động' : 'Không hoạt động'}
+              {user.status === 'ACTIVE' 
+                ? t('user.status.active', 'Hoạt động')
+                : t('user.status.inactive', 'Không hoạt động')}
             </Badge>
           </div>
         </div>
@@ -87,7 +103,7 @@ export function UserDetailsDialog({ user, isOpen, onClose }: UserDetailsDialogPr
             <div className="flex items-start gap-3">
               <Mail className="mt-0.5 h-5 w-5 text-muted-foreground" />
               <div>
-                <p className="text-sm font-medium text-muted-foreground">Email</p>
+                <p className="text-sm font-medium text-muted-foreground">{t('user.email', 'Email')}</p>
                 <p>{user.email}</p>
               </div>
             </div>
@@ -95,71 +111,47 @@ export function UserDetailsDialog({ user, isOpen, onClose }: UserDetailsDialogPr
             <div className="flex items-start gap-3">
               <Phone className="mt-0.5 h-5 w-5 text-muted-foreground" />
               <div>
-                <p className="text-sm font-medium text-muted-foreground">Số điện thoại</p>
-                <p>{user.phone_number || 'Chưa cập nhật'}</p>
+                <p className="text-sm font-medium text-muted-foreground">{t('user.phone', 'Số điện thoại')}</p>
+                <p>{user.phone_number || t('user.not_updated', 'Chưa cập nhật')}</p>
               </div>
             </div>
 
             <div className="flex items-start gap-3">
               <MapPin className="mt-0.5 h-5 w-5 text-muted-foreground" />
               <div>
-                <p className="text-sm font-medium text-muted-foreground">Địa chỉ</p>
-                <p>{user.address || 'Chưa cập nhật'}</p>
+                <p className="text-sm font-medium text-muted-foreground">{t('user.address', 'Địa chỉ')}</p>
+                <p>{user.address || t('user.not_updated', 'Chưa cập nhật')}</p>
               </div>
             </div>
 
             <div className="flex items-start gap-3">
               <Calendar className="mt-0.5 h-5 w-5 text-muted-foreground" />
               <div>
-                <p className="text-sm font-medium text-muted-foreground">Ngày sinh</p>
-                <p>{user.dateOfBirth || 'Chưa cập nhật'}</p>
+                <p className="text-sm font-medium text-muted-foreground">{t('user.date_of_birth', 'Ngày sinh')}</p>
+                <p>{formatDate(user.dateOfBirth)}</p>
               </div>
             </div>
 
             <div className="flex items-start gap-3">
               <User2 className="mt-0.5 h-5 w-5 text-muted-foreground" />
               <div>
-                <p className="text-sm font-medium text-muted-foreground">Giới tính</p>
-                <p>{user.gender || 'Chưa cập nhật'}</p>
-              </div>
-            </div>
-
-            <div className="flex items-start gap-3">
-              <Briefcase className="mt-0.5 h-5 w-5 text-muted-foreground" />
-              <div>
-                <p className="text-sm font-medium text-muted-foreground">Nghề nghiệp</p>
-                <p>{user.profession || 'Chưa cập nhật'}</p>
+                <p className="text-sm font-medium text-muted-foreground">{t('user.gender', 'Giới tính')}</p>
+                <p>{user.gender || t('user.not_updated', 'Chưa cập nhật')}</p>
               </div>
             </div>
 
             <div className="flex items-start gap-3">
               <Building className="mt-0.5 h-5 w-5 text-muted-foreground" />
               <div>
-                <p className="text-sm font-medium text-muted-foreground">Nơi làm việc</p>
-                <p>{user.workplace || 'Chưa cập nhật'}</p>
-              </div>
-            </div>
-
-            <div className="flex items-start gap-3">
-              <BookOpen className="mt-0.5 h-5 w-5 text-muted-foreground" />
-              <div>
-                <p className="text-sm font-medium text-muted-foreground">Kinh nghiệm</p>
-                <p>{user.experience || 'Chưa cập nhật'}</p>
-              </div>
-            </div>
-
-            <div className="flex items-start gap-3">
-              <Shield className="mt-0.5 h-5 w-5 text-muted-foreground" />
-              <div>
-                <p className="text-sm font-medium text-muted-foreground">Vai trò</p>
-                <p>ID: {user.roleId || 'Chưa cập nhật'}</p>
+                <p className="text-sm font-medium text-muted-foreground">{t('user.workplace', 'Nơi làm việc')}</p>
+                <p>{user.workplace || t('user.not_updated', 'Chưa cập nhật')}</p>
               </div>
             </div>
 
             <div className="flex items-start gap-3">
               <BadgeCheck className="mt-0.5 h-5 w-5 text-muted-foreground" />
               <div>
-                <p className="text-sm font-medium text-muted-foreground">ID Người dùng</p>
+                <p className="text-sm font-medium text-muted-foreground">{t('user.user_id', 'ID Người dùng')}</p>
                 <p className="break-all">{user.id}</p>
               </div>
             </div>

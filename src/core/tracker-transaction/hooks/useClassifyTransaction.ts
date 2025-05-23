@@ -8,14 +8,6 @@ import { IClassifyTransactionBody } from '@/core/transaction/models'
 
 export const useClassifyTransaction = (opts?: IUseQueryHookOptions) => {
   return useMutationCustom<IClassifyTransactionBody, ITrackerTransactionResponse>({
-    pathUrl: trackerTransactionRoutes.classify,
-    mutateOption: {
-      onError: (error: AxiosError | any) => {
-        if (error.response?.status === 401) {
-          return toast.error(`${error?.response?.data?.messages} !`)
-        }
-        opts?.callBackOnError?.()
-      }
-    }
+    pathUrl: trackerTransactionRoutes.classify
   })
 }

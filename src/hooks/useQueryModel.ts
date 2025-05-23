@@ -1,3 +1,4 @@
+import { handleApiError } from '@/libraries/errorHandler'
 import { getBaseUrl } from '@/libraries/helpers'
 import { fetchData } from '@/libraries/http'
 import { mergeQueryParams, replaceParams } from '@/libraries/utils'
@@ -62,7 +63,11 @@ export const useModelQuery = <TResponse>(modelName: string, pathUrl: string, opt
     refetchOnReconnect: mergedOptions.refetchOnReconnect,
     staleTime: 1000 * 60,
     enabled: mergedOptions.enable,
-    retry: mergedOptions.retry
+    retry: mergedOptions.retry,
+    throwOnError: (error: any, query: any) => {
+      handleApiError(error)
+      return false
+    }
   })
 }
 

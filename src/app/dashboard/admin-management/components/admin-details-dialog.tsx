@@ -17,12 +17,10 @@ import {
   MapPin, 
   Phone, 
   User2, 
-  Briefcase, 
-  BadgeCheck, 
-  Shield, 
   Building,
-  BookOpen
+  BadgeCheck
 } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 
 interface AdminDetailsDialogProps {
   admin: Admin | null
@@ -31,6 +29,8 @@ interface AdminDetailsDialogProps {
 }
 
 export function AdminDetailsDialog({ admin, isOpen, onClose }: AdminDetailsDialogProps) {
+  const { t } = useTranslation(['common'])
+  
   if (!admin) return null
 
   const getInitials = (name: string | null) => {
@@ -53,14 +53,28 @@ export function AdminDetailsDialog({ admin, isOpen, onClose }: AdminDetailsDialo
         return 'bg-gray-500/10 text-gray-500 hover:bg-gray-500/20'
     }
   }
+  
+  const formatDate = (dateString: string | null) => {
+    if (!dateString) return t('admin.not_updated', 'Chưa cập nhật')
+    try {
+      const date = new Date(dateString)
+      return date.toLocaleDateString('vi-VN', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit'
+      })
+    } catch (error) {
+      return t('admin.invalid_date_format', 'Định dạng không hợp lệ')
+    }
+  }
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-md">
         <DialogHeader>
-          <DialogTitle>Chi tiết quản trị viên</DialogTitle>
+          <DialogTitle>{t('admin.admin_details', 'Chi tiết quản trị viên')}</DialogTitle>
           <DialogDescription>
-            Thông tin chi tiết của quản trị viên trong hệ thống
+            {t('admin.admin_details_description', 'Thông tin chi tiết của quản trị viên trong hệ thống')}
           </DialogDescription>
         </DialogHeader>
 
@@ -70,12 +84,14 @@ export function AdminDetailsDialog({ admin, isOpen, onClose }: AdminDetailsDialo
             <AvatarFallback>{getInitials(admin.fullName)}</AvatarFallback>
           </Avatar>
           <div className="text-center">
-            <h2 className="text-xl font-bold">{admin.fullName || 'Chưa cập nhật'}</h2>
+            <h2 className="text-xl font-bold">{admin.fullName || t('admin.not_updated', 'Chưa cập nhật')}</h2>
             <Badge
               variant="outline"
               className={`mt-2 ${getStatusColor(admin.status)}`}
             >
-              {admin.status === 'ACTIVE' ? 'Hoạt động' : 'Không hoạt động'}
+              {admin.status === 'ACTIVE' 
+                ? t('admin.status.active', 'Hoạt động') 
+                : t('admin.status.inactive', 'Không hoạt động')}
             </Badge>
           </div>
         </div>
@@ -87,7 +103,7 @@ export function AdminDetailsDialog({ admin, isOpen, onClose }: AdminDetailsDialo
             <div className="flex items-start gap-3">
               <Mail className="mt-0.5 h-5 w-5 text-muted-foreground" />
               <div>
-                <p className="text-sm font-medium text-muted-foreground">Email</p>
+                <p className="text-sm font-medium text-muted-foreground">{t('admin.email', 'Email')}</p>
                 <p>{admin.email}</p>
               </div>
             </div>
@@ -95,63 +111,47 @@ export function AdminDetailsDialog({ admin, isOpen, onClose }: AdminDetailsDialo
             <div className="flex items-start gap-3">
               <Phone className="mt-0.5 h-5 w-5 text-muted-foreground" />
               <div>
-                <p className="text-sm font-medium text-muted-foreground">Số điện thoại</p>
-                <p>{admin.phone_number || 'Chưa cập nhật'}</p>
+                <p className="text-sm font-medium text-muted-foreground">{t('admin.phone', 'Số điện thoại')}</p>
+                <p>{admin.phone_number || t('admin.not_updated', 'Chưa cập nhật')}</p>
               </div>
             </div>
 
             <div className="flex items-start gap-3">
               <MapPin className="mt-0.5 h-5 w-5 text-muted-foreground" />
               <div>
-                <p className="text-sm font-medium text-muted-foreground">Địa chỉ</p>
-                <p>{admin.address || 'Chưa cập nhật'}</p>
+                <p className="text-sm font-medium text-muted-foreground">{t('admin.address', 'Địa chỉ')}</p>
+                <p>{admin.address || t('admin.not_updated', 'Chưa cập nhật')}</p>
               </div>
             </div>
 
             <div className="flex items-start gap-3">
               <Calendar className="mt-0.5 h-5 w-5 text-muted-foreground" />
               <div>
-                <p className="text-sm font-medium text-muted-foreground">Ngày sinh</p>
-                <p>{admin.dateOfBirth || 'Chưa cập nhật'}</p>
+                <p className="text-sm font-medium text-muted-foreground">{t('admin.date_of_birth', 'Ngày sinh')}</p>
+                <p>{formatDate(admin.dateOfBirth)}</p>
               </div>
             </div>
 
             <div className="flex items-start gap-3">
               <User2 className="mt-0.5 h-5 w-5 text-muted-foreground" />
               <div>
-                <p className="text-sm font-medium text-muted-foreground">Giới tính</p>
-                <p>{admin.gender || 'Chưa cập nhật'}</p>
-              </div>
-            </div>
-
-            <div className="flex items-start gap-3">
-              <Briefcase className="mt-0.5 h-5 w-5 text-muted-foreground" />
-              <div>
-                <p className="text-sm font-medium text-muted-foreground">Nghề nghiệp</p>
-                <p>{admin.profession || 'Chưa cập nhật'}</p>
+                <p className="text-sm font-medium text-muted-foreground">{t('admin.gender', 'Giới tính')}</p>
+                <p>{admin.gender || t('admin.not_updated', 'Chưa cập nhật')}</p>
               </div>
             </div>
 
             <div className="flex items-start gap-3">
               <Building className="mt-0.5 h-5 w-5 text-muted-foreground" />
               <div>
-                <p className="text-sm font-medium text-muted-foreground">Nơi làm việc</p>
-                <p>{admin.workplace || 'Chưa cập nhật'}</p>
-              </div>
-            </div>
-
-            <div className="flex items-start gap-3">
-              <BookOpen className="mt-0.5 h-5 w-5 text-muted-foreground" />
-              <div>
-                <p className="text-sm font-medium text-muted-foreground">Kinh nghiệm</p>
-                <p>{admin.experience || 'Chưa cập nhật'}</p>
+                <p className="text-sm font-medium text-muted-foreground">{t('admin.workplace', 'Nơi làm việc')}</p>
+                <p>{admin.workplace || t('admin.not_updated', 'Chưa cập nhật')}</p>
               </div>
             </div>
 
             <div className="flex items-start gap-3">
               <BadgeCheck className="mt-0.5 h-5 w-5 text-muted-foreground" />
               <div>
-                <p className="text-sm font-medium text-muted-foreground">ID Quản trị viên</p>
+                <p className="text-sm font-medium text-muted-foreground">{t('admin.admin_id', 'ID Quản trị viên')}</p>
                 <p className="break-all">{admin.id}</p>
               </div>
             </div>

@@ -30,7 +30,10 @@ export const defineUpdateTransactionFormBody = ({
   setOpenEditDialog,
   openEditDialog,
   accountSourceData
-}: IUpdateTrackerTransactionFormProps): IBodyFormField[] => {
+}: Omit<
+  IUpdateTrackerTransactionFormProps,
+  'indexSuggestSelected' | 'setIndexSuggestSelected' | 'selectedTransaction'
+>): IBodyFormField[] => {
   const t = translate(['transaction', 'common'])
   return [
     {

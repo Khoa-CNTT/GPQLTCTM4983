@@ -11,9 +11,6 @@ export const useUpdatePassword = (opts?: IUseQueryHookOptions) => {
     pathUrl: userRoutes.updatePassword,
     method: 'patch',
     mutateOption: {
-      onError: (error: Error | any) => {
-        toast.error('Current password is incorrect')
-      },
       onSuccess: (res) => {
         if (res.statusCode === 200 || res.statusCode === 201) {
           toast.success('Update password successfully')

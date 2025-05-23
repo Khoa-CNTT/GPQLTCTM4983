@@ -9,16 +9,8 @@ export const useCreateAgentSubscribe = (opts?: IUseQueryHookOptions) => {
   return useMutationCustom<IAgentSubscriptionBody, IAgentSubscriptionResponse>({
     pathUrl: agentRoutes.subscribe,
     mutateOption: {
-      onError: (error: AxiosError | any) => {
-        if (error.response?.status === 401) {
-          return toast.error(`${error?.response?.data?.messages} !`)
-        }
-        toast.error(error?.response?.data?.message || 'Failed to subscribe to AI Agent')
-        opts?.callBackOnError?.()
-      },
       onSuccess: (data) => {
         toast.success('Successfully subscribed to AI Agent service')
-        opts?.callBackOnError?.()
       }
     }
   })

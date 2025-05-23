@@ -33,9 +33,6 @@ export default function SignInForm() {
       signInGoogle({
         access_token: credentialResponse.access_token
       })
-    },
-    onError: () => {
-      toast.error('An error occurred. Please try again later.')
     }
   })
 

@@ -62,6 +62,7 @@ export interface IDialogAccountSource {
   isDialogDeleteOpen: boolean
   isDialogDeleteAllOpen: boolean
   isDialogDetailOpen: boolean
+  isDialogTransferOpen: boolean
 }
 
 export interface IAccountBalanceStatistic {
@@ -74,3 +75,19 @@ export type TAccountSourceActions =
   | 'getStatisticAccountBalance'
   | 'getAdvancedAccountSource'
   | 'getStatisticOverviewPage'
+  | 'getAllAccountSourceFromAllFunds'
+
+export interface IAccountSourceTransfer {
+  sourceId: string
+  targetId: string
+  amount: number
+}
+
+export interface IAccountSourceTransferResponse {
+  statusCode: number
+  data: {
+    sourceAccountSource: IAccountSource
+    targetAccountSource: IAccountSource
+  }
+  messages: string
+}

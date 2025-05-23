@@ -11,14 +11,6 @@ const accessToken = getAccessTokenFromLocalStorage()
 export const useUpdatedNotifications = (opts?: IUseQueryHookOptions) => {
   return useMutationCustom<IUpdateNotificationForm, any>({
     pathUrl: notificationsRoutes.update,
-    method: 'patch',
-    mutateOption: {
-      onError: (error) => {
-        if (error.response?.status) {
-          return toast.error(`${(error.response?.data as { message: string }).message} !`)
-        }
-        opts?.callBackOnError?.()
-      }
-    }
+    method: 'patch'
   })
 }

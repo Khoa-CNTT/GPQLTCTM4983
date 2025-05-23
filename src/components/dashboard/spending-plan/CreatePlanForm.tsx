@@ -53,16 +53,13 @@ const CreatePlanForm: React.FC<ICreatePlanFormProps> = ({
   const { t } = useTranslation(['common', 'spendingPlan'])
   const [selectedFrequency, setSelectedFrequency] = useState<RecurringFrequency>('MONTHLY')
   const [expectedDateParams, setExpectedDateParams] = useState<IExpectedDateParams>({
-    dayOfWeek: selectedFrequency === 'WEEKLY' ? 1 : undefined,
-    expectedDate: selectedFrequency === 'DAILY' || selectedFrequency === 'MONTHLY' ? now.toDateString() : undefined,
-    day: selectedFrequency === 'ANNUAL' ? now.getDate() : undefined,
-    month: selectedFrequency === 'ANNUAL' ? now.getMonth() + 1 : undefined,
-    dayOfMonth: selectedFrequency === 'MONTHLY' ? now.getDate() : undefined
+    dayOfWeek: 1,
+    expectedDate: now.toDateString(),
+    day: now.getDate(),
+    month: now.getMonth() + 1,
+    dayOfMonth: now.getDate()
   })
 
-  const [currentDirection, setCurrentDirection] = useState<ETypeOfTrackerTransactionType>(
-    ETypeOfTrackerTransactionType.INCOMING
-  )
   const [typeOfEditTrackerType, setTypeOfEditTrackerType] = useState<ETypeOfTrackerTransactionType>(
     ETypeOfTrackerTransactionType.INCOMING
   )
@@ -74,34 +71,6 @@ const CreatePlanForm: React.FC<ICreatePlanFormProps> = ({
   })
 
   const [errorMessage, setErrorMessage] = useState<string>('')
-
-  const handleDirectionChange = (value: ETypeOfTrackerTransactionType) => {
-    const oldDirection = currentDirection
-
-    setCurrentDirection(value)
-
-    // const currentForm = form
-    if (formCreateRef && typeof formCreateRef.current?.getValues === 'function') {
-      const formValues = formCreateRef.current?.getValues()
-
-      if (formValues.trackerTypeId) {
-        setDirectionCategoryMap((prev) => ({
-          ...prev,
-          [oldDirection]: formValues.trackerTypeId
-        }))
-      }
-
-      setTimeout(() => {
-        if (formCreateRef && typeof formCreateRef.current?.setValue === 'function') {
-          formCreateRef.current?.setValue('trackerTypeId', directionCategoryMap[value] || '')
-        }
-      }, 0)
-    }
-  }
-
-  useEffect(() => {
-    setTypeOfEditTrackerType(currentDirection)
-  }, [currentDirection])
 
   const daysInMonth = useMemo(() => {
     return getDaysForMonth(expectedDateParams.month ?? now.getMonth(), now.getFullYear()).map((d) => ({
@@ -121,8 +90,6 @@ const CreatePlanForm: React.FC<ICreatePlanFormProps> = ({
         formFieldBody={defineCreatePlanFormBody({
           incomeTrackerType,
           expenseTrackerType,
-          currentDirection,
-          setCurrentDirection: handleDirectionChange,
           setOpenEditTrackerTxTypeDialog,
           openEditTrackerTxTypeDialog,
           typeOfEditTrackerType,
@@ -132,12 +99,6 @@ const CreatePlanForm: React.FC<ICreatePlanFormProps> = ({
           handleDeleteTrackerType,
           expenditureFund,
           directionCategoryMap,
-          onCategoryChange: (value: string) => {
-            setDirectionCategoryMap((prev) => ({
-              ...prev,
-              [currentDirection]: value
-            }))
-          },
           onFrequencyChange: (value: RecurringFrequency) => {
             setSelectedFrequency(value)
           }

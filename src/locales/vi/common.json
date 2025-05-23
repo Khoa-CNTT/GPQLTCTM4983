@@ -100,6 +100,9 @@
     "info": "Sau khi xóa, dữ liệu không thể khôi phục!"
   },
   "loading": "Đang tải",
+  "common": {
+    "loading": "Đang tải trang..."
+  },
   "noTransactionsAvailable": "Hiện không có giao dịch nào",
   "noDataText": "Không có dữ liệu",
   "fundToggle": {
@@ -260,5 +263,9 @@
     "logging_out": "Đang đăng xuất...",
     "logout_success": "Đăng xuất thành công",
     "logout_error": "Có lỗi xảy ra khi đăng xuất"
+  },
+  "dashboard": {
+    "total_users": "Tổng người dùng",
+    "total_admins": "Quản trị viên"
   }
 }
