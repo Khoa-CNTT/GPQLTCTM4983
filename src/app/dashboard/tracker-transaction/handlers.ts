@@ -82,7 +82,9 @@ export const handleClassifyTransaction = async ({
   setIsEditing,
   callBackOnSuccess,
   setDataDetail,
-  setSelectedTransaction
+  setSelectedTransaction,
+  setDetailDialogOpen,
+  setIndexSuggestSelected
 }: {
   payload: IClassifyTransactionBody
   setIsDialogOpen: React.Dispatch<React.SetStateAction<any>>
@@ -104,8 +106,9 @@ export const handleClassifyTransaction = async ({
   setIsEditing?: React.Dispatch<React.SetStateAction<boolean>>
   setDataDetail?: React.Dispatch<React.SetStateAction<ITransaction>>
   setSelectedTransaction?: React.Dispatch<React.SetStateAction<IUnclassifiedTransaction | null>>
+  setDetailDialogOpen: React.Dispatch<React.SetStateAction<boolean>>
+  setIndexSuggestSelected: React.Dispatch<React.SetStateAction<number>>
 }) => {
-  let status = false
   hookClassify(payload, {
     onSuccess: (res: ITrackerTransactionResponse) => {
       if (res.statusCode === 200 || res.statusCode === 201) {
@@ -129,12 +132,12 @@ export const handleClassifyTransaction = async ({
         }))
         if (setDataDetail) setDataDetail((prev) => ({ ...prev, TrackerTransaction: res.data }))
         if (setSelectedTransaction) setSelectedTransaction(null)
+        setDetailDialogOpen(false)
+        setIndexSuggestSelected(-1)
         toast.success('Classify transaction successfully!')
-        status = true
       }
     }
   })
-  return status
 }
 
 function isIsoStringInToday(isoString: string): boolean {

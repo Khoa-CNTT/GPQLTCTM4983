@@ -1,4 +1,5 @@
 import { ISpendingPlan } from '@/core/fund-saving-plan/models'
+import { ETypeOfTrackerTransactionType } from '@/core/tracker-transaction-type/models/tracker-transaction-type.enum'
 
 export const mockDataTrackerType = [
   { value: 'db25e663-a02e-48ef-a831-b6eaaa710c15', label: '⏰ Làm thêm' },
@@ -40,5 +41,6 @@ export const initDetailSpendingPlan: ISpendingPlan = {
   trackerTypeName: '💼 Lương',
   remainingDays: { day: 0, month: 0, year: 0 },
   expiredDate: { day: 0, month: 0, year: 0 },
-  expectedDateParams: {}
+  expectedDateParams: {},
+  trackerTypeDirection: ETypeOfTrackerTransactionType.INCOMING
 }

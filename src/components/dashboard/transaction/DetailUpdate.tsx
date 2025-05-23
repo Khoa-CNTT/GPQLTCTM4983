@@ -360,6 +360,9 @@ export default function DetailUpdateTransaction({
       <div className='flex justify-end'>
         <Button
           onClick={() => {
+            console.log('aaaaaaaa', updateTransactionProps.transaction.id)
+            if (classifyDialogProps?.handleSetSelectedTransaction)
+              classifyDialogProps?.handleSetSelectedTransaction(updateTransactionProps.transaction.id)
             if (
               updateTransactionProps.transaction.ofAccount &&
               updateTransactionProps.transaction.TrackerTransaction &&

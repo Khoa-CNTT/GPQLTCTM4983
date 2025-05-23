@@ -59,7 +59,6 @@ export const UpdateTransaction = (props: IUpdateTransactionProps) => {
           accountSourceId: transaction.accountSourceId || 'unknown'
         }}
         formFieldBody={defineUpdateTransactionFormBody({
-          selectedTransaction: null, // xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx cần fix
           incomeTrackerType,
           expenseTrackerType,
           currentDirection: typeOfEditTrackerType,

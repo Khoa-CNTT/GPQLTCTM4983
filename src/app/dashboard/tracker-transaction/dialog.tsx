@@ -25,20 +25,24 @@ export default function TrackerTransactionDialog({
 
   const [isEditing, setIsEditing] = useState<boolean>(false)
   const classifyingTransactionConfigDialog: IDialogConfig = {
-    content: ClassifyForm({
-      selectedTransaction: classifyTransactionDialog.selectedTransaction,
-      incomeTrackerType: sharedDialogElements.incomeTrackerType,
-      expenseTrackerType: sharedDialogElements.expenseTrackerType,
-      editTrackerTypeDialogProps: {
-        typeDefault: sharedDialogElements.typeOfTrackerType,
-        handleCreateTrackerType: sharedDialogElements.handleCreateTrackerType,
-        handleUpdateTrackerType: sharedDialogElements.handleUpdateTrackerType,
-        handleDeleteTrackerType: sharedDialogElements.handleDeleteTrackerType,
-        expenditureFund: sharedDialogElements.expenditureFund
-      },
-      formClassifyRef,
-      handleClassify: classifyTransactionDialog.handleClassify
-    }),
+    content: (
+      <ClassifyForm
+        indexSuggestSelected={classifyTransactionDialog.indexSuggestSelected}
+        setIndexSuggestSelected={classifyTransactionDialog.setIndexSuggestSelected}
+        selectedTransaction={classifyTransactionDialog.selectedTransaction}
+        incomeTrackerType={sharedDialogElements.incomeTrackerType}
+        expenseTrackerType={sharedDialogElements.expenseTrackerType}
+        editTrackerTypeDialogProps={{
+          typeDefault: sharedDialogElements.typeOfTrackerType,
+          handleCreateTrackerType: sharedDialogElements.handleCreateTrackerType,
+          handleUpdateTrackerType: sharedDialogElements.handleUpdateTrackerType,
+          handleDeleteTrackerType: sharedDialogElements.handleDeleteTrackerType,
+          expenditureFund: sharedDialogElements.expenditureFund
+        }}
+        formClassifyRef={formClassifyRef}
+        handleClassify={classifyTransactionDialog.handleClassify}
+      />
+    ),
     footer: (
       <Button
         onClick={() => formClassifyRef.current?.requestSubmit()}
