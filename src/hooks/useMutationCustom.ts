@@ -4,6 +4,7 @@ import { replaceParams } from '@/libraries/utils'
 import { IDynamicType } from '@/types/common.i'
 import { useMutation, UseMutationOptions } from '@tanstack/react-query'
 import { AxiosError } from 'axios'
+import { handleApiError } from '@/libraries/errorHandler'
 
 interface QueryOptions {
   query?: IDynamicType
@@ -58,6 +59,9 @@ export const useMutationCustom = <TBody, TResponse>({
         method: method,
         params: options.query ?? {}
       })
+    },
+    onError: (error) => {
+      handleApiError(error)
     },
     ...mutateOption
   })

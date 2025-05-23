@@ -7,25 +7,17 @@ import toast from 'react-hot-toast'
 export const useUpdateUser = (opts?: IUseQueryHookOptions) => {
   return useMutationCustom<ICommonInformationForm, any>({
     pathUrl: userRoutes.updateUser,
-    method: 'patch',
-    mutateOption: {
-      onError: (error) => {
-        if (error.response?.status) {
-          return toast.error(`${(error.response?.data as { message: string }).message} !`)
-        }
-        opts?.callBackOnError?.()
-      }
-    }
+    method: 'patch'
   })
 }
 
 interface ISyncBalanceResponse {
-  message: string;
+  message: string
   data: {
-    message: string;
-    amount: number;
-  };
-  statusCode: number;
+    message: string
+    amount: number
+  }
+  statusCode: number
 }
 
 export const useSyncBalance = (opts?: IUseQueryHookOptions) => {
@@ -36,12 +28,6 @@ export const useSyncBalance = (opts?: IUseQueryHookOptions) => {
       onSuccess: (data) => {
         toast.success(data.message)
         opts?.callBackOnSuccess?.()
-      },
-      onError: (error) => {
-        if (error.response?.status) {
-          return toast.error(`${(error.response?.data as { message: string }).message} !`)
-        }
-        opts?.callBackOnError?.()
       }
     }
   })

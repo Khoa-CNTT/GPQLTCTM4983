@@ -7,7 +7,7 @@ import { ETypeOfTrackerTransactionType } from '@/core/tracker-transaction-type/m
 
 // Zod schema for the Edit Plan form
 export const editFundSavingPlanSchema = z.object({
-  name: z.string().min(3).max(100),
+  name: z.string().min(3).max(50),
   description: z
     .string()
     .trim()

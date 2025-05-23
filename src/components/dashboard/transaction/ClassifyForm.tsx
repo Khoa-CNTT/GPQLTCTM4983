@@ -9,7 +9,7 @@ import {
 import { IEditTrackerTypeDialogProps } from '@/core/tracker-transaction-type/models/tracker-transaction-type.interface'
 
 export default function ClassifyForm({
-  transactionId,
+  selectedTransaction,
   incomeTrackerType,
   expenseTrackerType,
   formClassifyRef,
@@ -33,6 +33,7 @@ export default function ClassifyForm({
     <FormZod
       formSchema={classifyTransactionSchema}
       formFieldBody={defineClassifyTransactionFormBody({
+        selectedTransaction,
         editTrackerTypeDialogProps,
         expenseTrackerType,
         incomeTrackerType,
@@ -41,7 +42,8 @@ export default function ClassifyForm({
         setOpenEditDialog: setIsOpenDialogEditTrackerType,
         openEditDialog: isOpenDialogEditTrackerType
       })}
-      onSubmit={(data) => handleClassify({ ...data, transactionId } as IClassifyTransactionBody)}
+      // onSubmit={(data) => handleClassify({ ...data, transactionId } as IClassifyTransactionBody)}
+      onSubmit={(data) => {}}
       submitRef={formClassifyRef}
     />
   )

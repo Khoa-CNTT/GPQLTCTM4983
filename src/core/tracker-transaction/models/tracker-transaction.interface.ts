@@ -15,6 +15,7 @@ import {
   IDataTransactionTable,
   IDialogTransaction,
   ITransaction,
+  IUnclassifiedTransaction,
   IUpdateTransactionBody
 } from '@/core/transaction/models'
 import { IBaseResponseData, IDataTableConfig } from '@/types/common.i'
@@ -54,7 +55,7 @@ export interface ITrackerTransaction {
 export interface IUpdateTrackerTransactionBody {
   id: string
   reasonName: string
-  description: string
+  description?: string
   trackerTypeId: string
 }
 
@@ -151,13 +152,11 @@ export interface IDetailUpdateTrackerTransactionDialog {
 }
 
 export interface ITrackerTransactionDialogProps {
-  unclassifiedTxDialog: IUnclassifiedTxDialog
   classifyTransactionDialog: IClassiFyFormProps
   createTrackerTransactionDialog: ICreateTrackerTransactionDialog
   sharedDialogElements: ISharedDialogElements
   createTrackerTransactionTypeDialog: ICreateTrackerTransactionTypeDialog
   detailUpdateTrackerTransactionDialog: IDetailUpdateTrackerTransactionDialog
-  setTransactionIdClassifying: React.Dispatch<React.SetStateAction<string>>
 }
 
 export interface IDetailUpdateTransactionDialogProps {
@@ -229,3 +228,4 @@ export type TTrackerTransactionActions =
   | 'getStatisticExpenditureFund'
   | 'getExpenditureFund'
   | 'getStatisticOverview'
+  | 'getBudgetTarget'

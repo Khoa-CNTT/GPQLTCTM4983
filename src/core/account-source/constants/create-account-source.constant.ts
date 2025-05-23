@@ -20,10 +20,10 @@ export const createAccountSourceSchema = z.object({
   accountSourceName: z
     .string({ message: getTranslation('Source Name is required', 'Tên nguồn tài khoản là bắt buộc') })
     .trim()
-    .min(5, {
+    .min(1, {
       message: getTranslation(
-        'Source Name must be at least 5 characters long',
-        'Tên nguồn tài khoản phải có ít nhất 5 ký tự'
+        'Source Name must be at least 1 characters long',
+        'Tên nguồn tài khoản phải có ít nhất 1 ký tự'
       )
     })
     .max(30, {

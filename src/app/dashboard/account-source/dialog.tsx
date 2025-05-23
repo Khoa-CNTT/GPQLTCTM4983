@@ -1,11 +1,14 @@
 import { initEmptyAccountSource } from '@/app/dashboard/account-source/constants'
+import { handleTransferAccountSource } from '@/app/dashboard/account-source/handler'
 import CreateAndUpdateAccountSourceForm from '@/components/dashboard/account-source/Create&UpdateForm'
 import DetailUpdateAccountSourceForm from '@/components/dashboard/account-source/DetailUpdateForm'
+import TransferAccountSourceForm from '@/components/dashboard/account-source/TransferForm'
 import CustomDialog from '@/components/dashboard/Dialog'
 import {
   EAccountSourceType,
   IAccountSource,
   IAccountSourceBody,
+  IAccountSourceTransfer,
   IDialogAccountSource
 } from '@/core/account-source/models'
 import { IDialogConfig } from '@/types/common.i'
@@ -21,18 +24,22 @@ interface IAccountSourceDialogProps {
     isUpdating: boolean
     isDeletingOne: boolean
     isDeletingMultiple: boolean
+    isTransferring: boolean
   }
 
   callBack: (payload: IAccountSourceBody, setIsVerified: (isVerified: boolean) => void) => void
+  transferCallBack: (payload: IAccountSourceTransfer) => void
   detailAccountSourceDialog: {
     dataDetail: IAccountSource
   }
 }
 
 export default function AccountSourceDialog({
+  fundId,
   sharedDialogElements,
   detailAccountSourceDialog,
-  callBack
+  callBack,
+  transferCallBack
 }: IAccountSourceDialogProps) {
   const { t } = useTranslation(['accountSource', 'common'])
   const [typeState, setTypeState] = useState<EAccountSourceType>(EAccountSourceType.WALLET)
@@ -93,11 +100,30 @@ export default function AccountSourceDialog({
     }
   }
 
+  const transferConfigDialog: IDialogConfig = {
+    content: (
+      <TransferAccountSourceForm
+        sourceAccountSource={detailAccountSourceDialog.dataDetail}
+        targetFundId={fundId}
+        onSubmit={(values) => {
+          transferCallBack(values);
+        }}
+      />
+    ),
+    description: t('AccountSourceDialog.transferDialog.description'),
+    title: t('AccountSourceDialog.transferDialog.title'),
+    isOpen: sharedDialogElements.isDialogOpen.isDialogTransferOpen,
+    onClose: () => {
+      sharedDialogElements.setIsDialogOpen((prev) => ({ ...prev, isDialogTransferOpen: false }))
+    }
+  }
+
   return (
     <div>
       <CustomDialog config={createConfigDialog} />
       <CustomDialog config={updateConfigDialog} />
       <CustomDialog config={detailsConfigDialog} />
+      <CustomDialog config={transferConfigDialog} />
     </div>
   )
 }

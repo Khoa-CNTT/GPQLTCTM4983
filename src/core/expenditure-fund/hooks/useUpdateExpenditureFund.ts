@@ -12,14 +12,6 @@ import { expenditureFundRoutes } from '../configs'
 export const useUpdateExpenditureFund = (opts?: IUseQueryHookOptions) => {
   return useMutationCustom<IUpdateExpenditureFundBody, IExpenditureFund>({
     pathUrl: expenditureFundRoutes.updateExpenditureFund,
-    method: 'patch',
-    mutateOption: {
-      onError: (error: AxiosError | any) => {
-        if (error.response?.status === 401) {
-          return toast.error(`${error?.response?.data?.messages} !`)
-        }
-        opts?.callBackOnError?.()
-      }
-    }
+    method: 'patch'
   })
 }

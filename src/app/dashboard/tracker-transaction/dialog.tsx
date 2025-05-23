@@ -12,12 +12,10 @@ import DetailUpdateTrackerTransaction from '@/components/dashboard/tracker-trans
 import { initEmptyDetailTrackerTransaction } from './constants'
 
 export default function TrackerTransactionDialog({
-  unclassifiedTxDialog,
   classifyTransactionDialog,
   createTrackerTransactionDialog,
   sharedDialogElements,
-  detailUpdateTrackerTransactionDialog,
-  setTransactionIdClassifying
+  detailUpdateTrackerTransactionDialog
 }: ITrackerTransactionDialogProps) {
   const formClassifyRef = useRef<HTMLFormElement>(null)
   const formCreateRef = useRef<HTMLFormElement>(null)
@@ -28,7 +26,7 @@ export default function TrackerTransactionDialog({
   const [isEditing, setIsEditing] = useState<boolean>(false)
   const classifyingTransactionConfigDialog: IDialogConfig = {
     content: ClassifyForm({
-      transactionId: classifyTransactionDialog.transactionId,
+      selectedTransaction: classifyTransactionDialog.selectedTransaction,
       incomeTrackerType: sharedDialogElements.incomeTrackerType,
       expenseTrackerType: sharedDialogElements.expenseTrackerType,
       editTrackerTypeDialogProps: {
@@ -95,30 +93,6 @@ export default function TrackerTransactionDialog({
       sharedDialogElements.setIsDialogOpen((prev) => ({ ...prev, isDialogCreateOpen: false }))
     }
   }
-  const unclassifiedConfigDialog: IDialogConfig = {
-    content: (
-      <div className='overflow-x-auto'>
-        <DataTable
-          columns={unclassifiedTxDialog.columns}
-          data={unclassifiedTxDialog.unclassifiedTxTableData}
-          config={unclassifiedTxDialog.tableConfig}
-          setConfig={unclassifiedTxDialog.setTableConfig}
-          onRowClick={(rowData) => {
-            setTransactionIdClassifying(rowData.id)
-            sharedDialogElements.setTypeOfTrackerType(rowData.direction as ETypeOfTrackerTransactionType)
-            sharedDialogElements.setIsDialogOpen((prev) => ({ ...prev, isDialogClassifyTransactionOpen: true }))
-          }}
-        />
-      </div>
-    ),
-    className: 'sm:max-w-[425px] md:max-w-[1080px]',
-    description: t('trackerTransaction:trackerTransactionType.unclassifiedDialog.description'),
-    title: t('trackerTransaction:trackerTransactionType.unclassifiedDialog.title'),
-    isOpen: sharedDialogElements.isDialogOpen.isDialogUnclassifiedOpen,
-    onClose: () => {
-      sharedDialogElements.setIsDialogOpen((prev) => ({ ...prev, isDialogUnclassifiedOpen: false }))
-    }
-  }
 
   const detailsConfigDialog: IDialogConfig = {
     content: (
@@ -162,7 +136,6 @@ export default function TrackerTransactionDialog({
   return (
     <div>
       <CustomDialog config={createConfigDialog} />
-      <CustomDialog config={unclassifiedConfigDialog} />
       <CustomDialog config={classifyingTransactionConfigDialog} />
       <CustomDialog config={detailsConfigDialog} />
     </div>

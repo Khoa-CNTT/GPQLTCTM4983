@@ -6,8 +6,8 @@ import { translate } from '@/libraries/utils'
 export const updateFundSavingTargetSchema = z
   .object({
     id: z.string().min(1),
-    name: z.string().min(3).max(100),
-    description: z.string().min(5).max(500).optional(),
+    name: z.string().min(3).max(50),
+    description: z.string().min(5).max(255).optional(),
     targetAmount: z
       .string()
       .min(1)
