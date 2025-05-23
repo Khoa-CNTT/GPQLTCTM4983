@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { AxiosError } from 'axios'
 import {
   Table,
   TableBody,
@@ -90,9 +91,12 @@ export function AdminManagementTable() {
       refetch()
       toast.success(`Quản trị viên đã được cập nhật trạng thái thành công!`)
     },
-    onError: (error) => {
+    onError: (error: AxiosError | any) => {
+      if (error.response?.status === 401) {
+        return toast.error(`${error?.response?.data?.messages || error?.response?.data?.message} !`)
+      }
       console.error('Lỗi khi cập nhật trạng thái quản trị viên:', error)
-      toast.error('Không thể cập nhật trạng thái quản trị viên. Vui lòng thử lại sau.')
+      toast.error(error?.response?.data?.message || 'Không thể cập nhật trạng thái quản trị viên. Vui lòng thử lại sau.')
     }
   })
 

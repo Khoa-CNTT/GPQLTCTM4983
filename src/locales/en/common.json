@@ -108,6 +108,9 @@
     }
   },
   "loading": "Loading",
+  "common": {
+    "loading": "Loading..."
+  },
   "noTransactionsAvailable": "No transactions available at the moment",
   "noDataText": "No data available",
   "fundToggle": {
@@ -259,5 +262,9 @@
     "logging_out": "Logging out...",
     "logout_success": "Logged out successfully",
     "logout_error": "Error occurred while logging out"
+  },
+  "dashboard": {
+    "total_users": "Total Users",
+    "total_admins": "Administrators"
   }
 }

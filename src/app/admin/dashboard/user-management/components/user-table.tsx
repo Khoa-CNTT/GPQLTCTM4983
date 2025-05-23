@@ -35,6 +35,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { UserDetailsDialog } from '@/app/dashboard/user-management/components/user-details-dialog'
 import toast from 'react-hot-toast'
 import { useTranslation } from 'react-i18next'
+import { handleApiError } from '@/libraries/errorHandler'
 
 export interface User {
   id: string
@@ -98,8 +99,7 @@ export function UserTable() {
       toast.success(t('user.status_update_success', 'Người dùng đã được cập nhật trạng thái thành công!'))
     },
     onError: (error) => {
-      console.error('Lỗi khi cập nhật trạng thái người dùng:', error)
-      toast.error(t('user.status_update_error', 'Không thể cập nhật trạng thái người dùng. Vui lòng thử lại sau.'))
+      handleApiError(error)
     }
   })
 

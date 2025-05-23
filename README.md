@@ -31,7 +31,7 @@ Bạn đã mệt mỏi với những ứng dụng tài chính phức tạp làm 
 | **Frontend Web** | [github.com/auroraphtgrp01/fe-uniko](https://github.com/auroraphtgrp01/fe-uniko) | Ứng dụng web sử dụng Next.js, ShadCN UI, TypeScript |
 | **Mobile App** | [github.com/auroraphtgrp01/mobile-uniko](https://github.com/auroraphtgrp01/mobile-uniko) | Ứng dụng di động cho Android & iOS sử dụng Flutter |
 | **Backend API** | [github.com/auroraphtgrp01/be-uniko](https://github.com/auroraphtgrp01/be-uniko) | API backend sử dụng NestJS, Prisma, PostgreSQL |
-| **AI Agents** | [github.com/auroraphtgrp01/ai-uniko](https://github.com/auroraphtgrp01/ai-uniko) | Agent thông minh sử dụng Playwright, LangChain, Gemini |
+| **AI Agents** | [github.com/auroraphtgrp01/llm-uniko](https://github.com/auroraphtgrp01/llm-uniko) | Agent thông minh sử dụng Playwright, LangChain, Gemini |
 
 ### 🌈 Trải nghiệm UNIKO
 

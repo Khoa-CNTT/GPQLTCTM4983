@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import toast from 'react-hot-toast'
+import { handleApiError } from '@/libraries/errorHandler'
 import { translate } from '@/libraries/utils'
 import { Textarea } from '@/components/ui/textarea'
 import {
@@ -97,7 +98,7 @@ export function EditTransactionTypeDialog({
         onSuccess()
       },
       onError: (error: any) => {
-        toast.error(error.response?.data?.message || t('admin.transactionTypes.updateError'))
+        handleApiError(error)
       }
     })
   }

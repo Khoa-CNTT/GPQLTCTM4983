@@ -10,6 +10,7 @@ import httpService from '@/libraries/http'
 import toast from 'react-hot-toast'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
+import { handleApiError } from '@/libraries/errorHandler'
 
 interface CreateAdminDialogProps {
   isOpen: boolean
@@ -50,8 +51,7 @@ export function CreateAdminDialog({ isOpen, onClose, onSuccess }: CreateAdminDia
       onClose()
     },
     onError: (error) => {
-      console.error('Lỗi khi tạo quản trị viên:', error)
-      toast.error(t('admin.add_error', 'Không thể tạo quản trị viên. Vui lòng thử lại sau.'))
+      handleApiError(error)
     }
   })
 
