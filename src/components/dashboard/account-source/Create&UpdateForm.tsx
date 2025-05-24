@@ -50,10 +50,6 @@ export default function CreateAndUpdateAccountSourceForm({
     accountSource: { accountSourceName: '', accountSourceType: EAccountSourceType.WALLET, initAmount: '' }
   })
   const currentNameRef = useRef<string>(defaultValue?.name || '')
-  const [latestName, setLatestName] = useState<string>(defaultValue?.name || '')
-  const [formValues, setFormValues] = useState<{ accountSourceName: string }>({
-    accountSourceName: defaultValue?.name || ''
-  })
   const [isVerified, setIsVerified] = useState<boolean>(false)
   const [isVerifying, setIsVerifying] = useState<boolean>(false)
   const [verifyPayload, setVerifyPayload] = useState<{ username: string; password: string; numberAccount: string }>({
@@ -79,8 +75,6 @@ export default function CreateAndUpdateAccountSourceForm({
     accountSourceType: EAccountSourceType
   }) => {
     currentNameRef.current = v.accountSourceName
-    setLatestName(v.accountSourceName)
-    setFormValues((prev) => ({ ...prev, accountSourceName: v.accountSourceName }))
     console.log('Source form submitted with name:', v.accountSourceName)
 
     const newPayload: IAccountSourceBody = {
@@ -89,6 +83,7 @@ export default function CreateAndUpdateAccountSourceForm({
       accountSourceType: typeState,
       initAmount: Number(v.initAmount || 0)
     }
+    console.log('newPayload', v.accountSourceName)
 
     if (defaultValue !== initEmptyAccountSource && defaultValue?.id) {
       newPayload.id = defaultValue.id
@@ -100,11 +95,11 @@ export default function CreateAndUpdateAccountSourceForm({
   }
 
   const handleSubmitBank = (v: any) => {
-    console.log('Bank form submitted with latest name:', formValues.accountSourceName)
-
+    const sourceValues = formSourceControlRef.current?.getValues()
+    console.log('Bank form submitted with latest name:', sourceValues.accountSourceName)
     const bankPayload: IAccountSourceBody = {
       ...v,
-      name: formValues.accountSourceName,
+      name: sourceValues.accountSourceName,
       accountSourceType: typeState
     }
 
@@ -212,9 +207,6 @@ export default function CreateAndUpdateAccountSourceForm({
   useEffect(() => {
     if (defaultValue) {
       currentNameRef.current = defaultValue.name
-      setLatestName(defaultValue.name)
-      setFormValues({ accountSourceName: defaultValue.name })
-
       setDefaultValueData({
         accountBank: {
           type: defaultValue.accountBank?.type ?? EBankTypes.MB_BANK,
