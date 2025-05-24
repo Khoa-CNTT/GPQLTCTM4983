@@ -150,3 +150,4 @@ export type TTransactionActions =
   | 'getAllExpenditureFund'
   | 'getExpenditureFund'
   | 'getStatisticOverview'
+  | 'getBudgetTarget'

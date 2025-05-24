@@ -85,6 +85,7 @@ import { Checkbox } from '@/components/ui/checkbox'
 import { ArrowUpDown } from 'lucide-react'
 import { EPaymentEvents } from '../tracker-transaction/constants'
 import { AgentDialog } from '@/components/dashboard/tracker-transaction/AgentDialog'
+import { useFundSavingTarget } from '@/core/fund-saving-target/hooks'
 
 export default function TransactionForm() {
   // states
@@ -176,7 +177,8 @@ export default function TransactionForm() {
     query: uncTableQueryOptions,
     fundId
   })
-
+  const { getAllFundSavingTarget } = useFundSavingTarget()
+  const { refetchAllData: refetchBudgetTarget } = getAllFundSavingTarget(fundId)
   const { dataTodayTxs } = getTodayTransactions({ query: todayTableQueryOptions, fundId })
   const { isGetMeUserPending } = getMe(true)
   const { getAllExpenditureFundData, refetchAllExpendingFund } = getAllExpenditureFund()
@@ -210,7 +212,8 @@ export default function TransactionForm() {
     getTrackerTransaction: resetCacheDataTrackerTx,
     getAllExpenditureFund: refetchAllExpendingFund,
     getExpenditureFund: resetCacheExpenditureFund,
-    getStatisticOverview: refetchGetStatisticOverviewPageData
+    getStatisticOverview: refetchGetStatisticOverviewPageData,
+    getBudgetTarget: refetchBudgetTarget
   }
 
   const callBackRefetchTransactionPage = (actions: TTransactionActions[]) => {

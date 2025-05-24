@@ -375,28 +375,28 @@ export default function AccountSourceForm() {
           ...options,
           onError: (error: any) => {
             console.log('Transfer error full object:', JSON.stringify(error, null, 2))
-            
-            const errorMessage = error?.message || 
-                               error?.response?.data?.message || 
-                               error?.response?.data?.details?.[0] ||
-                               '';
-            
+
+            const errorMessage =
+              error?.message || error?.response?.data?.message || error?.response?.data?.details?.[0] || ''
+
             if (error?.response?.status === 403) {
               toast.error(t('accountSource:transfer.noPermission', 'Bạn không có quyền thực hiện chuyển tiền'))
               return
             }
-            
+
             if (error?.response?.status === 501 || errorMessage.includes('not the owner')) {
               toast.error(t('accountSource:transfer.notOwner', 'Bạn không phải chủ sở hữu của ví này'))
               return
             }
-            
+
             if (errorMessage && !errorMessage.includes('status code')) {
               toast.error(errorMessage)
             } else {
-              toast.error(t('accountSource:transfer.failed', 'Chuyển tiền thất bại, vui lòng xem lại quyền hạn truy cập'))
+              toast.error(
+                t('accountSource:transfer.failed', 'Chuyển tiền thất bại, vui lòng xem lại quyền hạn truy cập')
+              )
             }
-            
+
             if (options?.onError) options.onError(error)
           }
         })

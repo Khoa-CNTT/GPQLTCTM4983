@@ -98,6 +98,7 @@ export const handleClassifyTransaction = async ({
       | 'getTrackerTransaction'
       | 'getExpenditureFund'
       | 'getStatisticOverview'
+      | 'getBudgetTarget'
     )[]
   ) => void
   setUncDataTableConfig: React.Dispatch<React.SetStateAction<IDataTableConfig>>
