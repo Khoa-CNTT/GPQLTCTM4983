@@ -131,7 +131,7 @@ export const createTrackerTransactionSchema = z
         message: 'Tên lý do phải là chuỗi hợp lệ'
       })
       .trim()
-      .min(5, { message: 'Tên lý do phải có ít nhất 5 ký tự' })
+      .min(1, { message: 'Tên lý do không được để trống' })
       .max(100, { message: 'Tên lý do không được vượt quá 100 ký tự' }),
     amount: z
       .any()
