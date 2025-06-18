@@ -790,14 +790,7 @@ export default memo(function HeroSection() {
               </div>
             </motion.div>
 
-            {/* Created By - No animation */}
-            <div className='mt-2 text-xs font-medium text-slate-500/70 dark:text-white/50'>
-              <span className='inline-flex items-center gap-1'>
-                <span>Created with</span>
-                <span className='text-rose-400'>❤️</span>
-                <span>by Le Minh Tuan</span>
-              </span>
-            </div>
+            
           </motion.div>
 
           {/* Right column - Dashboard preview without lazy loading */}

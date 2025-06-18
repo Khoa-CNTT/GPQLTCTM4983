@@ -43,12 +43,7 @@ export default function Home() {
               "price": "0",
               "priceCurrency": "VND"
             },
-            "author": {
-              "@type": "Person",
-              "name": "Lê Minh Tuấn",
-              "alternateName": "auroraphtgrp",
-              "url": "https://github.com/auroraphtgrp01"
-            },
+
             "description": "Phần mềm quản lý tài chính thông minh UNIKO giúp tối ưu hóa việc theo dõi và quản lý tài chính cá nhân với AI",
             "aggregateRating": {
               "@type": "AggregateRating",

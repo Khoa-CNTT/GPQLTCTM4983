@@ -1,19 +1,7 @@
-<div align="center">
-  <img src="https://upload.wikimedia.org/wikipedia/vi/1/12/Logo_dtu_footer.png" alt="Logo DTU" width="20%" />
-  
-</div>
+
 <div align="center">
 🌟 UNIKO - Quản lý Tài chính 🌟
 
-### Giải pháp quản lý tài chính thông minh đa nền tảng 💫
-
-[![Next.js](https://img.shields.io/badge/Next.js-black?style=for-the-badge&logo=next.js&logoColor=white)](https://nextjs.org/)
-[![Flutter](https://img.shields.io/badge/Flutter-02569B?style=for-the-badge&logo=flutter&logoColor=white)](https://flutter.dev/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
-[![Nest.js](https://img.shields.io/badge/NestJS-E0234E?style=for-the-badge&logo=nestjs&logoColor=white)](https://nestjs.com/)
-[![License](https://img.shields.io/badge/License-MIT-green.svg?style=for-the-badge)](LICENSE)
-
-</div>
 
 
 
@@ -24,14 +12,7 @@
 
 Bạn đã mệt mỏi với những ứng dụng tài chính phức tạp làm đau đầu? Hãy chào đón UNIKO - người bạn đồng hành kỳ diệu trên hành trình đến với tự do tài chính! 🚀 Chúng tôi không chỉ là một ứng dụng tài chính thông thường; chúng tôi là người thì thầm tài chính của riêng bạn, biến những con số khó hiểu thành những thông tin hữu ích và trực quan.
 
-### 📚 Repositories của Dự án
 
-| Thành phần | Repository URL | Mô tả |
-|------------|----------------|-------|
-| **Frontend Web** | [github.com/auroraphtgrp01/fe-uniko](https://github.com/auroraphtgrp01/fe-uniko) | Ứng dụng web sử dụng Next.js, ShadCN UI, TypeScript |
-| **Mobile App** | [github.com/auroraphtgrp01/mobile-uniko](https://github.com/auroraphtgrp01/mobile-uniko) | Ứng dụng di động cho Android & iOS sử dụng Flutter |
-| **Backend API** | [github.com/auroraphtgrp01/be-uniko](https://github.com/auroraphtgrp01/be-uniko) | API backend sử dụng NestJS, Prisma, PostgreSQL |
-| **AI Agents** | [github.com/auroraphtgrp01/llm-uniko](https://github.com/auroraphtgrp01/llm-uniko) | Agent thông minh sử dụng Playwright, LangChain, Gemini |
 
 ### 🌈 Trải nghiệm UNIKO
 
@@ -105,24 +86,6 @@ Hãy tưởng tượng bạn có một người bạn thân về tài chính lu�
 - **Gemini Flash 2.0**: Mô hình ngôn ngữ tiên tiến
 - **AI Agents**: Tự động hóa ghi chép và phân tích giao dịch
   
-![image](https://github.com/user-attachments/assets/a51c4824-923a-41ff-8711-206ecbf031a8)
-![image](https://github.com/user-attachments/assets/c1915646-d818-46a5-ad2a-58f7b27786d0)
-
-## 👥 Đội ngũ tuyệt vời của chúng tôi
-
-### 🎮 Người dẫn đầu tầm nhìn
-- **Lê Minh Tuấn** ([@auroraphtgrp01](https://github.com/auroraphtgrp01))
-  > Team Lead – Phụ trách kiến trúc hệ thống, phân tích & thiết kế CSDL, phát triển AI, xây dựng Web/App, nghiên cứu và tích hợp công nghệ.
-
-### ⭐ Những người đóng góp tài năng
-- **Trần Nguyễn Duy Khánh** ([@AugustusDngQt](https://github.com/AugustusDngQt))
-  > Fullstack Developer – Phát triển API backend, hỗ trợ tích hợp AI, xây dựng luồng chức năng cho frontend.
-- **Hồ Thị Thanh Thanh** ([@Beathnh](https://github.com/ThanhkThanh))
-  > Frontend & Mobile App Developer – Thiết kế giao diện người dùng, xây dựng luồng chức năng cho frontend & mobile app.
-- **Nguyễn Quang Huy** ([@kwanghy2303](https://github.com/kwanghy2303))
-  > UI/UX & Frontend Developer – Thiết kế giao diện người dùng, tối ưu giao diện đa nền tảng và xây dựng luồng chức năng cho frontend.
-- **Đoàn Võ Văn Trọng** ([@vantrong2405](https://github.com/vantrong2405))
-  > UI/UX & Frontend Developer – Thiết kế giao diện người dùng, tối ưu giao diện đa nền tảng và xây dựng luồng chức năng cho frontend.
 
 ### Yêu cầu tiên quyết
 ```bash
@@ -181,11 +144,3 @@ cd backend
 yarn build
 yarn start:prod
 ```
-
-<div align="center">
-
-### ✨ Được tạo ra với 💖 bởi UNIKO Dream Team ✨
-
-[Bắt đầu hành trình](https://uniko.finance) • [Tìm hiểu thêm](https://docs.uniko.finance) • [Báo cáo lỗi](https://github.com/auroraphtgrp01/uniko/issues)
-
-</div>

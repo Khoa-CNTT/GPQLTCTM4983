@@ -53,7 +53,7 @@ export const PlatformSection = memo(() => {
       icon: <Sparkles className="h-4 w-4 text-violet-500" />,
       title: 'Trợ lý AI thông minh',
       description:
-        'AI phân tích chi tiêu, dự báo xu hướng và đưa ra lời khuyên tài chính cá nhân hóa. Tìm hiểu cách tối ưu ngân sách và đạt mục tiêu tài chính với trợ lý AI của chúng tôi do Lê Minh Tuấn phát triển.'
+        'AI phân tích chi tiêu, dự báo xu hướng và đưa ra lời khuyên tài chính cá nhân hóa. Tìm hiểu cách tối ưu ngân sách và đạt mục tiêu tài chính với trợ lý AI.'
     },
     {
       id: 'insights',

@@ -9,19 +9,12 @@ import { Button } from '@/components/ui/button'
 import { ArrowRight } from 'lucide-react'
 
 // Import static assets
-import AvatarTuan from '@/images/contributors/Tuan.jpg'
-import AvatarKhanh from '@/images/contributors/Khanh.jpg'
-import AvatarHuy from '@/images/contributors/Huy.jpg'
-import AvatarThanh from '@/images/contributors/Thanh.jpg'
-import AvatarTrong from '@/images/contributors/Trong.jpg'
+
 
 // Import HeroSection directly instead of lazy loading
 import HeroSection from '@/components/homepage/HeroSection'
 
 // Dynamically import heavyweight components
-const ContributorsSection = dynamic(() => import('@/components/homepage/ContributorsSection'), {
-  ssr: true
-})
 
 const Navbar = dynamic(() => import('@/components/homepage/Navbar'), {
   ssr: true
@@ -43,40 +36,7 @@ const IPhoneDemo = dynamic(() => import('./IPhoneDemo').then(mod => mod.IPhoneDe
   ssr: false // Heavy component, load it after initial render
 })
 
-// Define contributor data to prevent re-creation on render
-const contributors = [
-  {
-    name: 'Le Minh Tuan',
-    role: 'Founder & Leader Developer',
-    image: AvatarTuan,
-    srcGit: 'https://github.com/auroraphtgrp01',
-    priority: true
-  },
-  {
-    name: 'Tran Nguyen Duy Khanh',
-    role: 'Fullstack Developer',
-    image: AvatarKhanh,
-    srcGit: 'https://github.com/AugustusDngQt'
-  },
-  {
-    name: 'Ho Thi Thanh Thanh',
-    role: 'Frontend Developer',
-    image: AvatarThanh,
-    srcGit: 'https://github.com/ThanhkThanh'
-  },
-  {
-    name: 'Doan Vo Van Trong',
-    role: 'Frontend Developer',
-    image: AvatarTrong,
-    srcGit: 'https://github.com/vantrong2405'
-  },
-  {
-    name: 'Nguyen Quang Huy',
-    role: 'Frontend Developer',
-    image: AvatarHuy,
-    srcGit: 'https://github.com/kwanghy2303'
-  }
-]
+
 
 const MainSection = () => {
   const containerRef = useRef<HTMLDivElement>(null)
@@ -373,17 +333,7 @@ const MainSection = () => {
             </div>
           </motion.section> */}
 
-          {/* Contributors Section - Enhanced animations */}
-          <motion.section
-            id='contributors'
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true, margin: '-100px' }}
-            transition={{ duration: 0.8 }}
-            className='relative'
-          >
-            <ContributorsSection contributors={contributors} />
-          </motion.section>
+
         </div>
 
         {/* Footer with Enhanced animations */}
@@ -439,44 +389,7 @@ const MainSection = () => {
                   Ứng dụng quản lý tài chính thông minh giúp theo dõi chi tiêu và phân tích tài chính với AI. Đơn giản hóa tài chính cá nhân của bạn.
                 </p>
                 
-                <div className="flex space-x-5">
-                  <motion.a 
-                    href="https://github.com/auroraphtgrp01" 
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label="GitHub của Lê Minh Tuấn"
-                    className="group relative flex h-10 w-10 items-center justify-center rounded-full bg-gray-100 text-gray-600 transition-all hover:bg-indigo-50 hover:text-indigo-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-indigo-950/30 dark:hover:text-indigo-400"
-                    whileHover={{ 
-                      scale: 1.1,
-                      backgroundColor: "rgb(238, 242, 255)",
-                      boxShadow: "0 0 15px rgba(79, 70, 229, 0.2)"
-                    }}
-                  >
-                    <svg className="h-5 w-5 transition-transform group-hover:scale-110" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                      <path fillRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clipRule="evenodd" />
-                    </svg>
-                    <span className="absolute -bottom-7 left-1/2 -translate-x-1/2 rounded-md bg-gray-800 px-2 py-1 text-xs text-white opacity-0 transition-opacity group-hover:opacity-100 dark:bg-gray-700">GitHub</span>
-                  </motion.a>
-                  
-                  <motion.a 
-                    href="mailto:contact@uniko.app" 
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label="Email liên hệ"
-                    className="group relative flex h-10 w-10 items-center justify-center rounded-full bg-gray-100 text-gray-600 transition-all hover:bg-indigo-50 hover:text-indigo-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-indigo-950/30 dark:hover:text-indigo-400"
-                    whileHover={{ 
-                      scale: 1.1,
-                      backgroundColor: "rgb(238, 242, 255)",
-                      boxShadow: "0 0 15px rgba(79, 70, 229, 0.2)"
-                    }}
-                  >
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 transition-transform group-hover:scale-110" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
-                      <polyline points="22,6 12,13 2,6"></polyline>
-                    </svg>
-                    <span className="absolute -bottom-7 left-1/2 -translate-x-1/2 rounded-md bg-gray-800 px-2 py-1 text-xs text-white opacity-0 transition-opacity group-hover:opacity-100 dark:bg-gray-700">Email</span>
-                  </motion.a>
-                </div>
+
               </div>
 
               {/* Links & Navigation - Enhanced with animations */}
@@ -553,12 +466,7 @@ const MainSection = () => {
                     ></motion.div>
                   </div>
                   <ul className="space-y-3">
-                    <motion.li whileHover={{ x: 5 }} transition={{ type: "spring", stiffness: 300 }}>
-                      <a href="/#contributors" className="group flex items-center text-sm text-gray-600 transition-all hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400">
-                        <span className="mr-2 h-0.5 w-0 bg-indigo-500 transition-all group-hover:w-2"></span>
-                        Đội ngũ phát triển
-                      </a>
-                    </motion.li>
+
                     <motion.li whileHover={{ x: 5 }} transition={{ type: "spring", stiffness: 300 }}>
                       <a href="/#" className="group flex items-center text-sm text-gray-600 transition-all hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400">
                         <span className="mr-2 h-0.5 w-0 bg-indigo-500 transition-all group-hover:w-2"></span>
@@ -663,7 +571,7 @@ const MainSection = () => {
                   transition: { duration: 0.3 } 
                 }}
               >
-                &copy; {new Date().getFullYear()} UNIKO. Phát triển bởi <a href="https://github.com/auroraphtgrp01" target="_blank" rel="noopener noreferrer" className="relative inline-block font-medium text-indigo-600 transition-colors after:absolute after:-bottom-px after:left-0 after:h-px after:w-0 after:bg-indigo-600 after:transition-all hover:text-indigo-700 hover:after:w-full dark:text-indigo-400 dark:after:bg-indigo-400 dark:hover:text-indigo-300">Lê Minh Tuấn</a>. Tất cả các quyền được bảo lưu.
+                &copy; {new Date().getFullYear()} UNIKO. Tất cả các quyền được bảo lưu.
               </motion.p>
             </div>
           </div>
