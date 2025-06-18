@@ -1,5 +1,5 @@
 'use client'
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { DataTable } from '@/components/dashboard/DataTable'
 import { getColumns } from '@/components/dashboard/ColumnsTable'
@@ -13,7 +13,8 @@ import {
   HardDriveDownload,
   PcCase,
   Layers2Icon,
-  ArrowUpDown
+  ArrowUpDown,
+  FilterIcon
 } from 'lucide-react'
 import {
   formatCurrency,
@@ -38,7 +39,8 @@ import {
   initDialogFlag,
   initEmptyDetailTrackerTransaction,
   initTrackerTransactionTab,
-  EPaymentEvents
+  EPaymentEvents,
+  formatTrackerTransactionData
 } from './constants'
 import TrackerTransactionDialog from './dialog'
 import { initTableConfig } from '@/constants/data-table'
@@ -112,6 +114,11 @@ import { useOverviewPage } from '@/core/overview/hooks'
 import { Checkbox } from '@/components/ui/checkbox'
 import { AgentDialog } from '@/components/dashboard/tracker-transaction/AgentDialog'
 import { useFundSavingTarget } from '@/core/fund-saving-target/hooks'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
+import { CalendarIcon } from 'lucide-react'
+import { format, startOfMonth, endOfMonth, startOfYear, endOfYear } from 'date-fns'
+import { vi } from 'date-fns/locale'
 
 export default function TrackerTransactionForm() {
   // states
@@ -150,6 +157,14 @@ export default function TrackerTransactionForm() {
 
   const [isLoadingUnclassified, setIsLoadingUnclassified] = useState<boolean>(false)
   const [idDeletes, setIdDeletes] = useState<string[]>([])
+
+  // Thêm các state cho filter date
+  const [selectedYear, setSelectedYear] = useState<string>('all')
+  const [selectedMonth, setSelectedMonth] = useState<string>('all')
+  const [selectedDay, setSelectedDay] = useState<string>('all')
+  const [filterDateRange, setFilterDateRange] = useState<{ from?: Date; to?: Date }>({})
+  const [isOpenAgentDialog, setIsOpenAgentDialog] = useState(false)
+
   // hooks
   const socket = useSocket()
   const { user, fundId, checkHeightRange, viewportHeight } = useStoreLocal()
@@ -181,7 +196,7 @@ export default function TrackerTransactionForm() {
   const { getUnclassifiedTransactions, updateTransaction, statusUpdate: statusUpdateTransaction } = useTransaction()
   const { dataTrackerTransactionType, refetchTrackerTransactionType } = getAllTrackerTransactionType(fundId)
   const { statisticData } = getStatisticData(dates || {}, fundId)
-  const { advancedTrackerTxData, isGetAdvancedPending } = getAdvancedData({
+  const { advancedTrackerTxData, isGetAdvancedPending, refetchGetAdvancedTrackerTransaction } = getAdvancedData({
     query: queryOptions,
     fundId
   })
@@ -225,8 +240,6 @@ export default function TrackerTransactionForm() {
     [GET_ADVANCED_TRANSACTION_KEY],
     updateCacheDataTransactionForClassify
   )
-
-  const [isOpenAgentDialog, setIsOpenAgentDialog] = useState(false)
 
   // functions
   const actionMap: Record<TTrackerTransactionActions, () => void> = {
@@ -341,18 +354,87 @@ export default function TrackerTransactionForm() {
       initTrackerTypeData(dataTrackerTransactionType.data, setIncomingTrackerType, setExpenseTrackerType)
   }, [dataTrackerTransactionType])
 
+  // Client-side filter function để filter data theo thời gian
+  const filterTrackersByDate = useCallback((trackers: ITrackerTransaction[]) => {
+    if (selectedYear === 'all' && selectedMonth === 'all' && selectedDay === 'all') {
+      console.log('🔍 No date filter applied, showing all trackers')
+      return trackers
+    }
+
+    return trackers.filter((tracker) => {
+      // Sử dụng tracker.time hoặc tracker.Transaction?.transactionDateTime
+      const trackerDate = tracker.time || tracker.Transaction?.transactionDateTime
+      if (!trackerDate) return false
+
+      const date = new Date(trackerDate)
+      if (isNaN(date.getTime())) return false
+
+      const year = date.getFullYear()
+      const month = date.getMonth() + 1 // getMonth() returns 0-11
+      const day = date.getDate()
+
+      console.log(`🔍 Checking tracker: ${tracker.reasonName}, Date: ${year}-${month}-${day}`)
+
+      // Check năm
+      if (selectedYear !== 'all' && year !== parseInt(selectedYear)) {
+        return false
+      }
+
+      // Check tháng (chỉ khi đã chọn năm)
+      if (selectedYear !== 'all' && selectedMonth !== 'all' && month !== parseInt(selectedMonth)) {
+        return false
+      }
+
+      // Check ngày (chỉ khi đã chọn năm và tháng)
+      if (selectedYear !== 'all' && selectedMonth !== 'all' && selectedDay !== 'all' && day !== parseInt(selectedDay)) {
+        return false
+      }
+
+      return true
+    })
+  }, [selectedYear, selectedMonth, selectedDay])
+
+  // Combined filter: type filter + date filter + format date
   useEffect(() => {
-    setTableData(
-      filterTrackerTransactionWithType(dataTableConfig.selectedTypes || [], advancedTrackerTxData?.data || [])
-    )
-  }, [dataTableConfig.selectedTypes])
+    if (advancedTrackerTxData?.data && statisticData?.data) {
+      console.log('🔄 Applying combined filters (type + date) + format date')
+      
+      // Bước 1: Filter theo date trước
+      const dateFilteredTrackers = filterTrackersByDate(advancedTrackerTxData.data)
+      console.log('📊 After date filter:', dateFilteredTrackers.length, 'items')
+      
+      // Bước 2: Filter theo type
+      const typeAndDateFilteredData = filterTrackerTransactionWithType(
+        dataTableConfig.selectedTypes || [], 
+        dateFilteredTrackers
+      )
+      console.log('📊 After type filter:', typeAndDateFilteredData.length, 'items')
+      
+      // Bước 3: Format date cho các item đã filter
+      const formattedData = typeAndDateFilteredData.map((item) => {
+        const transactionDate =
+          item?.transactionDate && !isNaN(new Date(item.transactionDate).getTime())
+            ? item.transactionDate
+            : new Date().toISOString()
+        return {
+          ...item,
+          transactionDate: formatDateTimeVN(transactionDate, true)
+        }
+      })
+      console.log('📊 After format date:', formattedData.length, 'items')
+      
+      setTableData(formattedData)
+    }
+  }, [advancedTrackerTxData, dataTableConfig.selectedTypes, selectedYear, selectedMonth, selectedDay, filterTrackersByDate, statisticData])
 
   useEffect(() => {
     setQueryOptions((prev) => ({ ...prev, page: dataTableConfig.currentPage, limit: dataTableConfig.limit }))
   }, [dataTableConfig])
 
   useEffect(() => {
-    initTrackerTransactionDataTable(isGetAdvancedPending, advancedTrackerTxData, setDataTableConfig, setTableData)
+    if (!advancedTrackerTxData) {
+      initTrackerTransactionDataTable(isGetAdvancedPending, advancedTrackerTxData, setDataTableConfig, setTableData)
+    }
   }, [isGetAdvancedPending, advancedTrackerTxData])
 
   useEffect(() => {
@@ -365,22 +447,7 @@ export default function TrackerTransactionForm() {
     }
   }, [dataUnclassifiedTxs])
 
-  useEffect(() => {
-    if (advancedTrackerTxData && statisticData?.data) {
-      setTableData((prev) =>
-        prev.map((item) => {
-          const transactionDate =
-            item?.transactionDate && !isNaN(new Date(item.transactionDate).getTime())
-              ? item.transactionDate
-              : new Date().toISOString()
-          return {
-            ...item,
-            transactionDate: formatDateTimeVN(transactionDate, true)
-          }
-        })
-      )
-    }
-  }, [advancedTrackerTxData, statisticData])
+
 
   useEffect(() => {
     if (statisticData) {
@@ -500,6 +567,63 @@ export default function TrackerTransactionForm() {
     }
   }, [viewportHeight])
 
+  // Thêm các helper functions cho date filter
+  const generateYears = () => {
+    const currentYear = new Date().getFullYear()
+    const years = []
+    for (let i = currentYear; i >= currentYear - 10; i--) {
+      years.push(i.toString())
+    }
+    return years
+  }
+
+  const generateMonths = () => {
+    return [
+      { value: '1', label: 'Tháng 1' },
+      { value: '2', label: 'Tháng 2' },
+      { value: '3', label: 'Tháng 3' },
+      { value: '4', label: 'Tháng 4' },
+      { value: '5', label: 'Tháng 5' },
+      { value: '6', label: 'Tháng 6' },
+      { value: '7', label: 'Tháng 7' },
+      { value: '8', label: 'Tháng 8' },
+      { value: '9', label: 'Tháng 9' },
+      { value: '10', label: 'Tháng 10' },
+      { value: '11', label: 'Tháng 11' },
+      { value: '12', label: 'Tháng 12' }
+    ]
+  }
+
+  const generateDaysInMonth = (year: number, month: number) => {
+    const daysInMonth = new Date(year, month, 0).getDate()
+    const days = []
+    for (let i = 1; i <= daysInMonth; i++) {
+      days.push(i.toString())
+    }
+    return days
+  }
+
+  const resetDateFilter = useCallback(() => {
+    console.log('🔄 Resetting date filter')
+    setSelectedYear('all')
+    setSelectedMonth('all')
+    setSelectedDay('all')
+  }, [])
+
+  // useEffect để log khi filter thay đổi
+  useEffect(() => {
+    console.log('🔍 Filter Debug:', { selectedYear, selectedMonth, selectedDay })
+  }, [selectedYear, selectedMonth, selectedDay])
+
+  // Debug effect để track advancedTrackerTxData
+  useEffect(() => {
+    console.log('📊 advancedTrackerTxData updated:', advancedTrackerTxData?.data?.length, 'items')
+    if (advancedTrackerTxData?.data && advancedTrackerTxData.data.length > 0) {
+      console.log('📅 First item date:', advancedTrackerTxData.data[0]?.time)
+      console.log('📅 Last item date:', advancedTrackerTxData.data[advancedTrackerTxData.data.length - 1]?.time)
+    }
+  }, [advancedTrackerTxData])
+
   return (
     <div className='grid select-none grid-cols-1 gap-4 max-[1300px]:grid-cols-1 xl:grid-cols-3'>
       {/* Left Section */}
@@ -602,13 +726,111 @@ export default function TrackerTransactionForm() {
                     ) : (
                       <ArrowDownIcon className='mr-1 h-4 w-4 animate-bounce' />
                     )}
-                    {/* <span>{t('notiExpense', { percentage: 15 })}</span> */}
                     {(statisticData?.data?.expense?.rate?.[0] === '-' ? '' : '+') +
                       (statisticData?.data?.expense.rate || '0') +
                       `% ${t('fromLastWeek')}`}
                   </p>
                 </div>
               </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Date Filter Section */}
+        <div className='mt-4'>
+          <Card>
+            <CardHeader className='pb-3'>
+              <CardTitle className='flex items-center gap-2 text-lg'>
+                <FilterIcon className='h-5 w-5' />
+                Bộ lọc thời gian
+              </CardTitle>
+            </CardHeader>
+            <CardContent className='space-y-4'>
+              <div className='grid grid-cols-1 gap-4 md:grid-cols-4'>
+                {/* Year Filter */}
+                <div className='space-y-2'>
+                  <label className='text-sm font-medium'>Năm</label>
+                  <Select value={selectedYear} onValueChange={setSelectedYear}>
+                    <SelectTrigger>
+                      <SelectValue placeholder='Chọn năm' />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value='all'>Tất cả</SelectItem>
+                      {generateYears().map((year) => (
+                        <SelectItem key={year} value={year}>
+                          {year}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {/* Month Filter */}
+                <div className='space-y-2'>
+                  <label className='text-sm font-medium'>Tháng</label>
+                  <Select value={selectedMonth} onValueChange={setSelectedMonth} disabled={selectedYear === 'all'}>
+                    <SelectTrigger>
+                      <SelectValue placeholder='Chọn tháng' />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value='all'>Tất cả</SelectItem>
+                      {generateMonths().map((month) => (
+                        <SelectItem key={month.value} value={month.value}>
+                          {month.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {/* Day Filter */}
+                <div className='space-y-2'>
+                  <label className='text-sm font-medium'>Ngày</label>
+                  <Select
+                    value={selectedDay}
+                    onValueChange={setSelectedDay}
+                    disabled={selectedYear === 'all' || selectedMonth === 'all'}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder='Chọn ngày' />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value='all'>Tất cả</SelectItem>
+                      {selectedYear !== 'all' &&
+                        selectedMonth !== 'all' &&
+                        generateDaysInMonth(parseInt(selectedYear), parseInt(selectedMonth)).map((day) => (
+                          <SelectItem key={day} value={day}>
+                            Ngày {day}
+                          </SelectItem>
+                        ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {/* Reset Button */}
+                <div className='flex items-end'>
+                  <Button variant='outline' onClick={resetDateFilter} className='w-full'>
+                    <ArrowUpDown className='mr-2 h-4 w-4' />
+                    Đặt lại
+                  </Button>
+                </div>
+              </div>
+
+              {/* Current Filter Display */}
+              {(selectedYear !== 'all' || selectedMonth !== 'all' || selectedDay !== 'all') && (
+                <div className='rounded-lg bg-blue-50 p-3 dark:bg-blue-950'>
+                  <p className='text-sm text-blue-700 dark:text-blue-300'>
+                    <span className='font-medium'>Đang lọc: </span>
+                    {selectedYear !== 'all' && selectedMonth !== 'all' && selectedDay !== 'all'
+                      ? `Ngày ${selectedDay}/${selectedMonth}/${selectedYear}`
+                      : selectedYear !== 'all' && selectedMonth !== 'all'
+                      ? `Tháng ${selectedMonth}/${selectedYear}`
+                      : selectedYear !== 'all'
+                      ? `Năm ${selectedYear}`
+                      : 'Tất cả'}
+                  </p>
+                </div>
+              )}
             </CardContent>
           </Card>
         </div>
@@ -671,7 +893,6 @@ export default function TrackerTransactionForm() {
       <div className='flex h-full w-full flex-col space-y-4 md:col-span-2 min-[1280px]:col-span-1'>
         <div className='h-[57%]'>
           <TrackerTransactionChart tabConfig={tabConfig} statisticDateRange={{ dates, setDates }} />
-          {/* ------------------------- */}
         </div>
         <div className='h-[calc(45%)]'>
           <Card className='flex h-full flex-col'>
@@ -683,7 +904,6 @@ export default function TrackerTransactionForm() {
                     variant={'secondary'}
                     className='w-full flex-1 items-center justify-center whitespace-nowrap sm:w-auto sm:flex-none'
                     onClick={() => {
-                      // setIsDialogOpen((prev) => ({ ...prev, isDialogUnclassifiedOpen: true }))
                       setIsOpenAgentDialog(true)
                     }}
                   >
@@ -704,7 +924,6 @@ export default function TrackerTransactionForm() {
                 </div>
               </div>
             </CardHeader>
-            {/* className='flex-1 overflow-hidden' */}
             <CardContent>
               <FlatList
                 viewportHeight={viewportHeight}

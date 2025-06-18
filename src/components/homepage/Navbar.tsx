@@ -104,7 +104,7 @@ export default function Navbar() {
           </div>
         </a>
         <ul className='hidden space-x-10 md:flex'>
-          {['home', 'overview', 'platform', 'contributors'].map((item, index) => (
+          {['home', 'overview', 'platform'].map((item, index) => (
             <motion.li
               key={item}
               initial={{ opacity: 0, y: -20 }}
@@ -120,8 +120,7 @@ export default function Navbar() {
                 className='font-semibold text-gray-700 transition-colors hover:text-primary dark:text-gray-200 dark:hover:text-primary'
               >
                 {item === 'home' ? 'Trang chủ' :
-                  item === 'overview' ? 'Tổng quan' :
-                    item === 'platform' ? 'Nền tảng' : 'Đóng góp'}
+                  item === 'overview' ? 'Tổng quan' : 'Nền tảng'}
               </a>
             </motion.li>
           ))}
@@ -157,15 +156,6 @@ export default function Navbar() {
                 onClick={() => setIsMenuOpen(false)}
               >
                 Nền tảng
-              </a>
-            </li>
-            <li>
-              <a
-                href='#contributors'
-                className='text-xl font-semibold text-gray-700 dark:text-foreground'
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Đóng góp
               </a>
             </li>
           </ul>
