@@ -168,7 +168,7 @@
     "source_name_required": "Source Name is required",
     "source_name_min": "Source Name must be at least 5 characters long",
     "source_name_max": "Source Name must be at most 30 characters long",
-    "source_name_pattern": "Source name can only contain letters and spaces",
+
     "account_source_type": "Account source type must be either \"Wallet\" or \"Banking\"",
     "init_amount_required": "Initial Amount is required"
   }

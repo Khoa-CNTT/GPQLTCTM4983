@@ -168,7 +168,7 @@
     "source_name_required": "Tên nguồn tài khoản là bắt buộc",
     "source_name_min": "Tên nguồn tài khoản phải có ít nhất 5 ký tự",
     "source_name_max": "Tên nguồn tài khoản không được quá 30 ký tự",
-    "source_name_pattern": "Tên nguồn tài khoản chỉ có thể chứa chữ cái và khoảng trắng",
+
     "account_source_type": "Loại nguồn tài khoản phải là \"Ví điện tử\" hoặc \"Ngân hàng\"",
     "init_amount_required": "Số dư ban đầu là bắt buộc"
   }
