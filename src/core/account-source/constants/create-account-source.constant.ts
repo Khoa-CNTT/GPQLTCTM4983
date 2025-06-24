@@ -31,13 +31,7 @@ export const createAccountSourceSchema = z.object({
         'Source Name must be at most 30 characters long',
         'Tên nguồn tài khoản không được quá 30 ký tự'
       )
-    })
-    .refine((val) => /^[A-Za-zÀ-ỹ\s]+$/.test(val), {
-      message: getTranslation(
-        'Source name can only contain letters and spaces',
-        'Tên nguồn tài khoản chỉ có thể chứa chữ cái và khoảng trắng'
-      )
-    }),
+        }),
   accountSourceType: z.nativeEnum(EAccountSourceType, {
     message: getTranslation(
       'Account source type must be either "Wallet" or "Banking"',

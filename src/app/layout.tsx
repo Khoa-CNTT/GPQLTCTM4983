@@ -36,7 +36,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'UNIKO - Quản Lý Tài Chính Thông Minh',
+    title: 'UNIKO - Quản Lý Tài Chính Thông Minh 1',
     description: 'Ứng dụng quản lý tài chính thông minh với AI giúp theo dõi chi tiêu và phân tích dữ liệu tài chính cá nhân.'
   }
 }
